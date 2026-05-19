@@ -8,10 +8,14 @@ export const existsConnection = (
 	const sourceColumns = sourceTable.columns.map((col) => col.name);
 	const targetColumns = targetTable.columns.map((col) => col.name);
 
-	return (
-		sourceColumns.some((col) => col.includes(targetTable.label)) ||
-		targetColumns.some((col) => col.includes(sourceTable.label))
-	);
+	// Check for exact match: column name must be exactly "{tableName}_id"
+	const targetForeignKeyName = `${targetTable.label}_id`;
+	const sourceForeignKeyName = `${sourceTable.label}_id`;
+	
+	const sourceHasTarget = sourceColumns.includes(targetForeignKeyName);
+	const targetHasSource = targetColumns.includes(sourceForeignKeyName);
+	
+	return sourceHasTarget || targetHasSource;
 };
 
 export const getNextAvailableSubmodelIndex = (nodes: Node<TableData>[]) => {
