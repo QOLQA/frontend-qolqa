@@ -67,12 +67,12 @@ export function FloatingEdge({
 			/>
 			<CardinalityLabel
 				edgeId={id}
-				labelX={labelX}
-				labelY={labelY}
-				cardinality={cardinality}
-			/>
-		</>
-	);
+			labelX={labelX}
+			labelY={labelY}
+			cardinality={cardinality}
+		/>
+	</>
+);
 }
 
 export const edgeTypes = {
