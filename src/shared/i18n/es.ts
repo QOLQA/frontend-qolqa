@@ -60,6 +60,13 @@ export const es = {
 			deleting: "Eliminando versión...",
 			cannotDeleteLast: "No se puede eliminar la única versión.",
 		},
+	deleteEdge: {
+		title: "Eliminar Relación",
+		confirmMessage: "¿Estás seguro de que deseas eliminar esta relación?",
+		irreversibleAction:
+			"Esta acción no se puede deshacer y eliminará la columna de clave foránea.",
+		deleteButtonAriaLabel: "Eliminar relación",
+	},
 		newQuery: {
 			title: "Nueva consulta",
 			queryLabel: "Consulta:",

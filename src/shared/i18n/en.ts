@@ -60,6 +60,13 @@ export const en = {
 			deleting: "Deleting version...",
 			cannotDeleteLast: "Cannot delete the only version.",
 		},
+	deleteEdge: {
+		title: "Delete Relationship",
+		confirmMessage: "Are you sure you want to delete this relationship?",
+		irreversibleAction:
+			"This action cannot be undone and will remove the foreign key column.",
+		deleteButtonAriaLabel: "Delete relationship",
+	},
 		newQuery: {
 			title: "New query",
 			queryLabel: "Query:",
