@@ -91,7 +91,7 @@ export const CardinalityLabel = React.memo(
             <button
               type="button"
               onClick={handleDeleteClick}
-              className="flex items-center bg-terciary-gray justify-center text-lighter-gray hover:bg-secondary-gray/80 hover:text-red-600 cursor-pointer p-4 rounded transition-colors duration-200"
+              className="flex items-center justify-center w-8 h-8 bg-terciary-gray text-lighter-gray hover:bg-secondary-gray/80 hover:text-red-600 cursor-pointer rounded transition-colors duration-200 appearance-none webkit-appearance-none transform-gpu"
               aria-label={t("modals.deleteEdge.deleteButtonAriaLabel")}
             >
               <Trash className="size-4" />
