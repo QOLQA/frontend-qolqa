@@ -4,6 +4,23 @@ export interface User {
 	email: string;
 	full_name?: string;
 	avatar?: string;
+	profile_picture_url?: string;
+	is_active: boolean;
+	created_at: string;
+}
+
+export interface UserUpdateRequest {
+	email?: string;
+	full_name?: string;
+	profile_picture_url?: string;
+}
+
+export interface UserResponse {
+	id: string;
+	username: string;
+	email: string;
+	full_name?: string;
+	profile_picture_url?: string | null;
 	is_active: boolean;
 	created_at: string;
 }
