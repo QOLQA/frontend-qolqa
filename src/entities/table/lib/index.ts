@@ -4,6 +4,7 @@ export {
 	addNestedTableRecursively,
 	createNestedTable,
 } from "./table-operations";
+export { getColumnTypeLabel, COLUMN_TYPE_LABELS } from "./column-type-labels";
 export {
 	existsConnection,
 	getNextAvailableSubmodelIndex,
