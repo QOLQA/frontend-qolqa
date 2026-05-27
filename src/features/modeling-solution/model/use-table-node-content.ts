@@ -15,6 +15,7 @@ import { useAddNestedTable } from "./use-add-nested-table";
 import { useDeleteTable } from "./use-delete-table";
 import { useEditTable } from "./use-edit-table";
 import { useUpdateCardinality } from "./use-update-cardinality";
+import { useToggleFkArray } from "./use-toggle-fk-array";
 
 interface UseTableNodeContentProps {
 	id: string;
@@ -60,6 +61,7 @@ export const useTableNodeContent = ({ id, data }: UseTableNodeContentProps) => {
 	});
 	const handleDeleteAttribute = useDeleteAttribute({ nodes, editNode });
 	const handleCardinalityChange = useUpdateCardinality({ nodes, editNode });
+	const { handleToggle: handleToggleFkArray } = useToggleFkArray(id);
 	const handleEditTable = useEditTable({
 		nodeId: id,
 		nodes,
@@ -88,5 +90,6 @@ export const useTableNodeContent = ({ id, data }: UseTableNodeContentProps) => {
 		handleDeleteTableClick: handleDeleteTable,
 		handleCloseDocumentModal: documentModal.closeDocumentModal,
 		handleCloseAtributesModal: attributeModal.closeAttributesModal,
+		handleToggleFkArray,
 	};
 };
