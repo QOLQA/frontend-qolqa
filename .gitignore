@@ -46,4 +46,8 @@ next-env.d.ts
 exploration_report.md
 .agents/
 .claude/
-.gga
+
+
+openspec/
+skills-lock.json
+
