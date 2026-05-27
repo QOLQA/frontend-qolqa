@@ -19,7 +19,7 @@ describe("getColumnTypeLabel", () => {
   });
 
   it("returns 'FK []' for FOREIGN_KEY_ARRAY", () => {
-    expect(getColumnTypeLabel("FOREIGN_KEY_ARRAY")).toBe("FK []");
+    expect(getColumnTypeLabel("FOREIGN_KEY_ARRAY")).toBe("FK [ ]");
   });
 
   it("passes through unknown types unchanged", () => {
