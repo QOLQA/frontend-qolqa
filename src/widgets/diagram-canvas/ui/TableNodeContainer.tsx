@@ -33,6 +33,7 @@ export function TableNodeContainer({
 		handleDeleteTableClick,
 		handleCloseDocumentModal,
 		handleCloseAtributesModal,
+		handleToggleFkArray,
 	} = useTableNodeContent({ id, data });
 
 	return (
@@ -48,6 +49,7 @@ export function TableNodeContainer({
 				onCardinalityChange={handleCardinalityChange}
 				onEditAttribute={handleEditAtribute}
 				onDeleteAttribute={handleDeleteAttribute}
+				onToggleFkArray={handleToggleFkArray}
 			/>
 			{isDocumentModalOpen && (
 				<ModalDocument

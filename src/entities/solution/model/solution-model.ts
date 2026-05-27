@@ -13,10 +13,16 @@ export interface EdgeData {
 	[key: string]: unknown;
 }
 
+export type ColumnType =
+	| "PRIMARY_KEY"
+	| "FOREIGN_KEY"
+	| "FOREIGN_KEY_ARRAY"
+	| (string & {}); // escape hatch for user-defined types (VARCHAR, INT, etc.)
+
 export interface Column {
 	id: string;
 	name: string;
-	type: string;
+	type: ColumnType;
 }
 
 export interface TableData {

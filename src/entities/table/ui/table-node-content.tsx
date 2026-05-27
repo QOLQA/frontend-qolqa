@@ -35,6 +35,7 @@ interface TableNodeContentProps extends TableNodeProps {
 	) => void;
 	onEditAttribute?: (column: Column) => void;
 	onDeleteAttribute?: (columnId: string) => void;
+	onToggleFkArray?: (columnId: string) => void;
 }
 
 export const TableNodeContent = React.memo(
@@ -49,6 +50,7 @@ export const TableNodeContent = React.memo(
 		onCardinalityChange = () => {},
 		onEditAttribute = () => {},
 		onDeleteAttribute = () => {},
+		onToggleFkArray,
 	}: TableNodeContentProps) => {
 		const { t } = useTranslation();
 
@@ -56,18 +58,19 @@ export const TableNodeContent = React.memo(
 			() =>
 				data.columns?.map((column: Column, index: number) => (
 					<React.Fragment key={column.id}>
-						<AttributeNode
-							column={column}
-							columnId={column.id}
-							handleEdit={onEditAttribute}
-							handleDelete={onDeleteAttribute}
-						/>
+					<AttributeNode
+						column={column}
+						columnId={column.id}
+						handleEdit={onEditAttribute}
+						handleDelete={onDeleteAttribute}
+						handleToggleFkArray={onToggleFkArray}
+					/>
 						{index < data.columns.length - 1 && (
 							<hr className="border border-gray" />
 						)}
 					</React.Fragment>
 				)),
-			[data.columns, onEditAttribute, onDeleteAttribute]
+			[data.columns, onEditAttribute, onDeleteAttribute, onToggleFkArray]
 		);
 
 		const nestedTableNodes = useMemo(
@@ -83,9 +86,10 @@ export const TableNodeContent = React.memo(
 						onAddDocuments={onAddDocuments}
 						onDeleteTable={onDeleteTable}
 						onCardinalityChange={onCardinalityChange}
-						onEditAttribute={onEditAttribute}
-						onDeleteAttribute={onDeleteAttribute}
-					/>
+					onEditAttribute={onEditAttribute}
+					onDeleteAttribute={onDeleteAttribute}
+					onToggleFkArray={onToggleFkArray}
+				/>
 				)),
 			[
 				data.nestedTables,
@@ -97,6 +101,7 @@ export const TableNodeContent = React.memo(
 				onCardinalityChange,
 				onEditAttribute,
 				onDeleteAttribute,
+				onToggleFkArray,
 			]
 		);
 
