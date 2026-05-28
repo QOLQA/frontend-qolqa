@@ -1,3 +1,4 @@
+import type { LoginResult, UserResponse, RegisterData } from "@fsd/entities/user";
 import type { LoginFormData, RegisterFormData } from "./validation";
 
 type OptimisticState = {
@@ -6,7 +7,7 @@ type OptimisticState = {
 };
 
 export const createLoginAction = (
-	login: (credentials: { username: string; password: string }) => Promise<void>,
+	login: (credentials: { username: string; password: string }) => Promise<LoginResult>,
 	setOptimisticState: (state: OptimisticState) => void,
 	onSuccess: () => void,
 ) => {
@@ -34,12 +35,7 @@ export const createLoginAction = (
 };
 
 export const createRegisterAction = (
-	register: (data: {
-		username: string;
-		email: string;
-		password: string;
-		full_name?: string;
-	}) => Promise<void>,
+	register: (data: RegisterData) => Promise<UserResponse>,
 	setOptimisticState: (state: OptimisticState) => void,
 	onSuccess: () => void,
 ) => {

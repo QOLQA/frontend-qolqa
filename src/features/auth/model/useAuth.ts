@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { handleApiError } from "@fsd/shared/api";
+import { handleApiError, API_URL } from "@fsd/shared/api";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
-import type { User, LoginCredentials, RegisterData } from "@fsd/entities/user";
-
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+import type { User, UserResponse, LoginResult, LoginCredentials, RegisterData } from "@fsd/entities/user";
 
 export const useAuth = () => {
 	const { t } = useTranslation();
@@ -13,6 +11,7 @@ export const useAuth = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
+	// React Compiler cannot optimize: async function used as dep in useEffect below
 	const checkAuth = useCallback(async () => {
 		const token = localStorage.getItem("access_token");
 
@@ -35,8 +34,7 @@ export const useAuth = () => {
 				localStorage.removeItem("access_token");
 				setUser(null);
 			}
-		} catch (err) {
-			console.error("Error verificando autenticación:", err);
+		} catch {
 			localStorage.removeItem("access_token");
 			setUser(null);
 		} finally {
@@ -48,8 +46,9 @@ export const useAuth = () => {
 		checkAuth();
 	}, [checkAuth]);
 
+	// React Compiler cannot optimize: depends on checkAuth (stable ref needed to avoid stale closure)
 	const login = useCallback(
-		async (credentials: LoginCredentials) => {
+		async (credentials: LoginCredentials): Promise<LoginResult> => {
 			setError(null);
 			setLoading(true);
 
@@ -105,8 +104,9 @@ export const useAuth = () => {
 		[checkAuth, t]
 	);
 
+	// React Compiler cannot optimize: depends on login (stable ref needed to avoid stale closure)
 	const register = useCallback(
-		async (data: RegisterData) => {
+		async (data: RegisterData): Promise<UserResponse> => {
 			setError(null);
 			setLoading(true);
 
@@ -153,6 +153,7 @@ export const useAuth = () => {
 		[login, t]
 	);
 
+	// React Compiler cannot optimize: closure over setUser/setError state setters
 	const logout = useCallback(() => {
 		localStorage.removeItem("access_token");
 
@@ -165,6 +166,27 @@ export const useAuth = () => {
 		setError(null);
 	}, []);
 
+	// React Compiler cannot optimize: async function passed as stable ref to AuthContext consumers
+	const refreshUser = useCallback(async (): Promise<void> => {
+		const token = localStorage.getItem("access_token");
+		if (!token) return;
+
+		try {
+			const response = await fetch(`${API_URL}/auth/me`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (response.ok) {
+				const userData = await response.json();
+				setUser(userData);
+			}
+		} catch {
+			// Refresh is best-effort — user stays as-is if the request fails
+		}
+	}, []);
+
 	return {
 		user,
 		loading,
@@ -174,5 +196,6 @@ export const useAuth = () => {
 		logout,
 		isAuthenticated: !!user,
 		checkAuth,
+		refreshUser,
 	};
 };

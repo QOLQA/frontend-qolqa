@@ -1,1 +1,1 @@
-export type { User, LoginCredentials, RegisterData } from "./model/user";
+export type { User, UserUpdateRequest, UserResponse, LoginResult, LoginCredentials, RegisterData } from "./model/user";
