@@ -5,6 +5,12 @@
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
+export { API_URL };
+
+// Error keys — consumers are responsible for i18n translation
+export const API_ERROR_SESSION_EXPIRED = "errors.session_expired";
+export const API_ERROR_REQUEST_FAILED = "errors.request_failed";
+
 export const getAuthToken = (): string | null => {
 	if (typeof window === "undefined") return null;
 	return localStorage.getItem("access_token");
@@ -38,7 +44,7 @@ export const fetchWithAuth = async (
 		if (typeof window !== "undefined") {
 			window.location.href = "/login";
 		}
-		throw new Error("Sesión expirada");
+		throw new Error(API_ERROR_SESSION_EXPIRED);
 	}
 
 	const headers: Record<string, string> = {
@@ -52,25 +58,20 @@ export const fetchWithAuth = async (
 
 	const url = endpoint.startsWith("http") ? endpoint : `${API_URL}${endpoint}`;
 
-	try {
-		const response = await fetch(url, {
-			...options,
-			headers,
-		});
+	const response = await fetch(url, {
+		...options,
+		headers,
+	});
 
-		if (response.status === 401) {
-			localStorage.removeItem("access_token");
-			if (typeof window !== "undefined") {
-				window.location.href = "/login";
-			}
-			throw new Error("Sesión expirada");
+	if (response.status === 401) {
+		localStorage.removeItem("access_token");
+		if (typeof window !== "undefined") {
+			window.location.href = "/login";
 		}
-
-		return response;
-	} catch (error) {
-		console.error("Error en request:", error);
-		throw error;
+		throw new Error(API_ERROR_SESSION_EXPIRED);
 	}
+
+	return response;
 };
 
 export const api = {
@@ -78,7 +79,7 @@ export const api = {
 		const response = await fetchWithAuth(endpoint);
 		if (!response.ok) {
 			const error = await response.json();
-			throw new Error(error.detail || "Error en la petición");
+			throw new Error(error.detail || API_ERROR_REQUEST_FAILED);
 		}
 		return response.json();
 	},
@@ -90,7 +91,7 @@ export const api = {
 		});
 		if (!response.ok) {
 			const error = await response.json();
-			throw new Error(error.detail || "Error en la petición");
+			throw new Error(error.detail || API_ERROR_REQUEST_FAILED);
 		}
 		return response.json();
 	},
@@ -102,7 +103,7 @@ export const api = {
 		});
 		if (!response.ok) {
 			const error = await response.json();
-			throw new Error(error.detail || "Error en la petición");
+			throw new Error(error.detail || API_ERROR_REQUEST_FAILED);
 		}
 		return response.json();
 	},
@@ -113,7 +114,7 @@ export const api = {
 		});
 		if (!response.ok && response.status !== 204) {
 			const error = await response.json();
-			throw new Error(error.detail || "Error en la petición");
+			throw new Error(error.detail || API_ERROR_REQUEST_FAILED);
 		}
 	},
 };
