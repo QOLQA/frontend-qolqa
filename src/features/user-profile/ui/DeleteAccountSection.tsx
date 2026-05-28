@@ -2,18 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "@fsd/shared/ui/alert-dialog";
+import { Modal } from "@fsd/shared/ui/modal";
 import { Button } from "@fsd/shared/ui/button";
+import { AlertTriangle } from "lucide-react";
 
 interface DeleteAccountSectionProps {
 	deleteAccount: () => Promise<void>;
@@ -23,6 +14,7 @@ export function DeleteAccountSection({
 	deleteAccount,
 }: DeleteAccountSectionProps) {
 	const router = useRouter();
+	const [confirmOpen, setConfirmOpen] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const handleConfirm = async () => {
@@ -32,38 +24,43 @@ export function DeleteAccountSection({
 			router.push("/login");
 		} finally {
 			setIsDeleting(false);
+			setConfirmOpen(false);
 		}
 	};
 
 	return (
-		<div className="border-t border-destructive/20 pt-6">
-			<p className="mb-3 text-sm font-medium text-destructive">Danger zone</p>
-			<AlertDialog>
-				<AlertDialogTrigger asChild>
-					<Button variant="destructive" disabled={isDeleting}>
-						{isDeleting ? "Deleting…" : "Delete account"}
-					</Button>
-				</AlertDialogTrigger>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-						<AlertDialogDescription>
-							This action cannot be undone. Your account will be permanently
-							deleted.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleConfirm}
-							disabled={isDeleting}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							{isDeleting ? "Deleting…" : "Yes, delete my account"}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-		</div>
+		<>
+			<div className="border-t border-gray pt-6">
+				<p className="mb-3 text-p font-medium text-red">Danger zone</p>
+				<Button
+					variant="outline"
+					disabled={isDeleting}
+					onClick={() => setConfirmOpen(true)}
+					className="cursor-pointer text-h3 text-white !bg-red border-none hover:!bg-red-dark hover:!text-white disabled:opacity-50"
+				>
+					Delete account
+				</Button>
+			</div>
+
+			<Modal
+				title="Delete account"
+				open={confirmOpen}
+				setOpen={setConfirmOpen}
+				onSubmit={handleConfirm}
+				type="delete"
+			>
+				<div className="my-4 flex items-start gap-4">
+					<AlertTriangle className="text-red shrink-0 size-10 mt-0.5 mr-2" />
+					<div className="flex-1">
+						<p className="text-white text-h5">
+							Are you sure you want to delete your account?
+						</p>
+						<p className="text-red text-p mt-2">
+							This action cannot be undone. Your account will be permanently deleted.
+						</p>
+					</div>
+				</div>
+			</Modal>
+		</>
 	);
 }

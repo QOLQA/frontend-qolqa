@@ -1,12 +1,6 @@
 "use client";
 
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@fsd/shared/ui/dialog";
-import { Skeleton } from "@fsd/shared/ui/skeleton";
+import { Modal } from "@fsd/shared/ui/modal";
 import { useUserProfile } from "@fsd/features/user-profile/model/use-user-profile";
 import { AvatarUpload } from "./AvatarUpload";
 import { ProfileForm } from "./ProfileForm";
@@ -35,20 +29,15 @@ export function UserProfileDialog({
 		});
 
 	return (
-		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="max-w-md">
-				<DialogHeader>
-					<DialogTitle>Profile settings</DialogTitle>
-				</DialogHeader>
-
+		<Modal title="Profile settings" open={open} setOpen={onOpenChange} showCloseButton>
+			<>
 				{isLoading ? (
 					<div className="space-y-4 py-2">
 						<div className="flex justify-center">
-							<Skeleton className="size-20 rounded-full" />
+							<div className="size-20 rounded-full bg-gray animate-pulse" />
 						</div>
-						<Skeleton className="h-10 w-full" />
-						<Skeleton className="h-10 w-full" />
-						<Skeleton className="h-10 w-full" />
+						<div className="h-10 w-full rounded-md bg-gray animate-pulse" />
+						<div className="h-10 w-full rounded-md bg-gray animate-pulse" />
 					</div>
 				) : (
 					<div className="space-y-6 py-2">
@@ -65,7 +54,7 @@ export function UserProfileDialog({
 						<DeleteAccountSection deleteAccount={deleteAccount} />
 					</div>
 				)}
-			</DialogContent>
-		</Dialog>
+			</>
+		</Modal>
 	);
 }
