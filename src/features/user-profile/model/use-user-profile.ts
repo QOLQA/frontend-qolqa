@@ -12,6 +12,8 @@ interface UseUserProfileOptions {
 	userId?: string;
 	/** Called after a successful deleteAccount() — typically clears the auth session. */
 	onAccountDeleted: () => void;
+	/** Called after a successful updateProfile() — typically refreshes the auth session user. */
+	onProfileUpdated?: () => Promise<void>;
 }
 
 interface UseUserProfileReturn {
@@ -26,6 +28,7 @@ interface UseUserProfileReturn {
 export function useUserProfile({
 	userId,
 	onAccountDeleted,
+	onProfileUpdated,
 }: UseUserProfileOptions): UseUserProfileReturn {
 	const [user, setUser] = useState<User | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
@@ -51,6 +54,7 @@ export function useUserProfile({
 		try {
 			await updateUserMe(data);
 			await refreshUser();
+			await onProfileUpdated?.();
 		} catch (err) {
 			const message =
 				err instanceof Error ? err.message : "Failed to update profile";

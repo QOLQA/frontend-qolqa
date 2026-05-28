@@ -30,7 +30,7 @@ export function ProfileForm({ user, updateProfile }: ProfileFormProps) {
 
 	const form = useForm<ProfileFormValues>({
 		resolver: zodResolver(ProfileFormSchema),
-		defaultValues: {
+		values: {
 			full_name: user?.full_name ?? "",
 			email: user?.email ?? "",
 			profile_picture_url: user?.profile_picture_url ?? "",

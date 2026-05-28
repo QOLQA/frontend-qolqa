@@ -31,7 +31,7 @@ function getInitials(name: string): string {
 
 export function NavUser({ user }: { user: User }) {
 	const { isMobile } = useSidebar();
-	const { logout } = useAuthContext();
+	const { logout, refreshUser, user: authUser } = useAuthContext();
 	const [profileOpen, setProfileOpen] = useState(false);
 
 	return (
@@ -91,7 +91,13 @@ export function NavUser({ user }: { user: User }) {
 				</SidebarMenuItem>
 			</SidebarMenu>
 
-			<UserProfileDialog open={profileOpen} onOpenChange={setProfileOpen} />
+			<UserProfileDialog
+				open={profileOpen}
+				onOpenChange={setProfileOpen}
+				userId={authUser?.id ?? ""}
+				onProfileUpdated={refreshUser}
+				onAccountDeleted={logout}
+			/>
 		</>
 	);
 }

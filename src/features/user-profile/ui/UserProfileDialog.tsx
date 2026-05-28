@@ -7,7 +7,6 @@ import {
 	DialogTitle,
 } from "@fsd/shared/ui/dialog";
 import { Skeleton } from "@fsd/shared/ui/skeleton";
-import { useAuthContext } from "@fsd/app/providers/AuthProvider";
 import { useUserProfile } from "@fsd/features/user-profile/model/use-user-profile";
 import { AvatarUpload } from "./AvatarUpload";
 import { ProfileForm } from "./ProfileForm";
@@ -16,18 +15,23 @@ import { DeleteAccountSection } from "./DeleteAccountSection";
 interface UserProfileDialogProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
+	userId: string;
+	onProfileUpdated?: () => Promise<void>;
+	onAccountDeleted?: () => void;
 }
 
 export function UserProfileDialog({
 	open,
 	onOpenChange,
+	userId,
+	onProfileUpdated,
+	onAccountDeleted,
 }: UserProfileDialogProps) {
-	const { user: authUser, logout } = useAuthContext();
-
 	const { user, isLoading, updateProfile, uploadAvatar, deleteAccount } =
 		useUserProfile({
-			userId: authUser?.id,
-			onAccountDeleted: logout,
+			userId,
+			onAccountDeleted: onAccountDeleted ?? (() => {}),
+			onProfileUpdated,
 		});
 
 	return (
