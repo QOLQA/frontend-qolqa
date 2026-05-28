@@ -2,23 +2,16 @@
 
 import { createContext, useContext, type ReactNode } from "react";
 import { useAuth } from "@fsd/features/auth";
-import type { User } from "@fsd/entities/user";
+import type { User, UserResponse, LoginResult, RegisterData, LoginCredentials } from "@fsd/entities/user";
 
 interface AuthContextType {
 	user: User | null;
 	loading: boolean;
 	error: string | null;
-	login: (credentials: {
-		username: string;
-		password: string;
-	}) => Promise<unknown>;
-	register: (data: {
-		username: string;
-		email: string;
-		password: string;
-		full_name?: string;
-	}) => Promise<unknown>;
+	login: (credentials: LoginCredentials) => Promise<LoginResult>;
+	register: (data: RegisterData) => Promise<UserResponse>;
 	logout: () => void;
+	refreshUser: () => Promise<void>;
 	isAuthenticated: boolean;
 }
 

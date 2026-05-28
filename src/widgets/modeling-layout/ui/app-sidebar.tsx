@@ -17,24 +17,23 @@ export function AppSidebar({ navItems, ...props }: AppSidebarProps) {
 
 	const data: Data = {
 		user: {
-			id: authUser?.id || "",
-			username: authUser?.full_name || authUser?.username || "User",
-			email: authUser?.email || "",
-			is_active: authUser?.is_active || false,
-			created_at: authUser?.created_at || "",
-			avatar: "/user.png",
+			id: authUser?.id ?? "",
+			username: authUser?.full_name ?? authUser?.username ?? "User",
+			email: authUser?.email ?? "",
+			is_active: authUser?.is_active ?? false,
+			created_at: authUser?.created_at ?? "",
+			avatar: authUser?.profile_picture_url ?? authUser?.avatar ?? "/user.png",
 		},
 		navMain: navItems,
 	};
 
-	const [activeItem, setActiveItem] = useState<NavItem>(
-		navItems[0] ?? ({} as NavItem)
-	);
+	// navItems is always non-empty — enforced by all callers
+	const [activeItem, setActiveItem] = useState<NavItem>(navItems[0] as NavItem);
 
 	return (
 		<Sidebar
 			collapsible="icon"
-			className=" overflow-hidden h-full  [&>[data-sidebar=sidebar]]:flex-row [&>[data-sidebar=sidebar]]:bg-secondary-gray pb-5 bg-secondary-gray"
+			className="overflow-hidden h-full [&>[data-sidebar=sidebar]]:flex-row [&>[data-sidebar=sidebar]]:bg-secondary-gray pb-5 bg-secondary-gray"
 			{...props}
 		>
 			<SidebarIcons

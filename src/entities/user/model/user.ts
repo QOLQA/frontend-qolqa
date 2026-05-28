@@ -25,6 +25,10 @@ export interface UserResponse {
 	created_at: string;
 }
 
+export interface LoginResult {
+	access_token: string;
+}
+
 export interface LoginCredentials {
 	username: string;
 	password: string;
