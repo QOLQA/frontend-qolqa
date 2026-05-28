@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAuthContext } from "@fsd/app/providers";
+import { useAuthContext } from "@fsd/features/auth";
 import { Sidebar, useSidebar } from "@fsd/shared/ui/sidebar";
 import { SidebarContentPrinc } from "@fsd/widgets/modeling-layout/ui/sidebar-content";
 import { SidebarIcons } from "@fsd/widgets/modeling-layout/ui/sidebar-icons";
@@ -27,7 +27,7 @@ export function AppSidebar({ navItems, ...props }: AppSidebarProps) {
 		navMain: navItems,
 	};
 
-	// navItems is always non-empty — enforced by all callers
+	// Safe: callers always pass at least one nav item (enforced by usage contract)
 	const [activeItem, setActiveItem] = useState<NavItem>(navItems[0] as NavItem);
 
 	return (

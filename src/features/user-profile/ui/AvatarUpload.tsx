@@ -7,6 +7,7 @@ import {
 	AvatarImage,
 } from "@fsd/shared/ui/avatar";
 import { cn } from "@fsd/shared/lib/classnames";
+import { getInitials } from "@fsd/shared/lib/initials";
 import type { User, UserUpdateRequest } from "@fsd/entities/user";
 
 interface AvatarUploadProps {
@@ -17,17 +18,6 @@ interface AvatarUploadProps {
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
-
-function getInitials(user: User | null): string {
-	if (!user) return "?";
-	const name = user.full_name ?? user.username;
-	return name
-		.split(" ")
-		.map((part) => part[0])
-		.slice(0, 2)
-		.join("")
-		.toUpperCase();
-}
 
 export function AvatarUpload({
 	user,
@@ -101,9 +91,9 @@ export function AvatarUpload({
 					isDragging && "ring-2 ring-ring",
 				)}
 			>
-				<Avatar className="size-20">
+				<Avatar className="size-28">
 					<AvatarImage src={avatarSrc} alt={user?.full_name ?? user?.username} />
-					<AvatarFallback className="text-lg">{getInitials(user)}</AvatarFallback>
+					<AvatarFallback className="text-lg">{getInitials(user?.full_name ?? user?.username ?? "")}</AvatarFallback>
 				</Avatar>
 
 				{isUploading && (

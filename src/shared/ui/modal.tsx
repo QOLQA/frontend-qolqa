@@ -1,7 +1,8 @@
 "use client";
 
-import type { ReactElement } from "react";
+import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
+import { cn } from "@fsd/shared/lib/classnames";
 import { createPortal } from "react-dom";
 import { Button } from "./button";
 import { ArrowLeft, X } from "lucide-react";
@@ -9,16 +10,17 @@ import { useTranslation } from "@fsd/shared/i18n/use-translation";
 
 interface ModalProps {
 	title: string;
-	children: ReactElement;
+	children: ReactNode;
 	onSubmit?: () => void;
 	open: boolean;
 	setOpen: (open: boolean) => void;
 	type?: "create" | "update" | "next" | "save" | "delete";
 	showCloseButton?: boolean;
 	onReturnPreviewsStep?: () => void;
+	contentClassName?: string;
 }
 
-export const Modal = ({
+export function Modal({
 	title,
 	children,
 	onSubmit,
@@ -27,7 +29,8 @@ export const Modal = ({
 	type = "create",
 	showCloseButton = true,
 	onReturnPreviewsStep,
-}: ModalProps) => {
+	contentClassName,
+}: ModalProps) {
 	const { t } = useTranslation();
 	const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -71,7 +74,7 @@ export const Modal = ({
 		>
 			<div
 				onClick={(e) => e.stopPropagation()}
-				className="w-[730px] bg-secondary-gray border-2 border-gray rounded-lg p-6 relative"
+				className={cn("w-[730px] bg-secondary-gray border-2 border-gray rounded-lg p-6 relative", contentClassName)}
 			>
 				{/* Header */}
 				<div className=" my-4 relative flex items-center justify-center ">
@@ -86,11 +89,12 @@ export const Modal = ({
 					)}
 					<h2 className="text-white text-h3 font-semibold">{title}</h2>
 					{showCloseButton && (
-						<button
-							onClick={handleClose}
-							className="text-white hover:text-gray-300 absolute right-0 top-0 cursor-pointer"
-							aria-label="Close modal"
-						>
+					<button
+						type="button"
+						onClick={handleClose}
+						className="text-white hover:text-gray-300 absolute right-0 top-0 cursor-pointer"
+						aria-label="Close modal"
+					>
 							<X className="text-secondary-white hover:text-white !w-auto !h-[26px]" />
 						</button>
 					)}
@@ -134,4 +138,4 @@ export const Modal = ({
 		</dialog>,
 		document.body,
 	);
-};
+}

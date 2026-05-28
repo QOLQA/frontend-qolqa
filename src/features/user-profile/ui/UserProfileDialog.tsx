@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { Modal } from "@fsd/shared/ui/modal";
 import { useUserProfile } from "@fsd/features/user-profile/model/use-user-profile";
 import { AvatarUpload } from "./AvatarUpload";
@@ -21,6 +22,8 @@ export function UserProfileDialog({
 	onProfileUpdated,
 	onAccountDeleted,
 }: UserProfileDialogProps) {
+	const formRef = useRef<HTMLFormElement>(null);
+
 	const { user, isLoading, updateProfile, uploadAvatar, deleteAccount } =
 		useUserProfile({
 			userId,
@@ -28,13 +31,24 @@ export function UserProfileDialog({
 			onProfileUpdated,
 		});
 
+	const handleModalSubmit = () => {
+		formRef.current?.requestSubmit();
+	};
+
 	return (
-		<Modal title="Profile settings" open={open} setOpen={onOpenChange} showCloseButton>
-			<>
-				{isLoading ? (
+		<Modal
+			title="Profile settings"
+			open={open}
+			setOpen={onOpenChange}
+			showCloseButton
+			type="update"
+			contentClassName="w-[420px]"
+			onSubmit={handleModalSubmit}
+		>
+		{isLoading ? (
 					<div className="space-y-4 py-2">
 						<div className="flex justify-center">
-							<div className="size-20 rounded-full bg-gray animate-pulse" />
+							<div className="size-28 rounded-full bg-gray animate-pulse" />
 						</div>
 						<div className="h-10 w-full rounded-md bg-gray animate-pulse" />
 						<div className="h-10 w-full rounded-md bg-gray animate-pulse" />
@@ -49,12 +63,11 @@ export function UserProfileDialog({
 							/>
 						</div>
 
-						<ProfileForm user={user} updateProfile={updateProfile} />
+						<ProfileForm ref={formRef} user={user} updateProfile={updateProfile} />
 
 						<DeleteAccountSection deleteAccount={deleteAccount} />
 					</div>
 				)}
-			</>
 		</Modal>
 	);
 }

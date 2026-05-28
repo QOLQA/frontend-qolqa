@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { ChevronsUpDown, LogOut, UserRound } from "lucide-react";
 import type { User } from "@fsd/entities/user";
-import { useAuthContext } from "@fsd/app/providers";
+import { useAuthContext } from "@fsd/features/auth";
+import { getInitials } from "@fsd/shared/lib/initials";
 import { UserProfileDialog } from "@fsd/features/user-profile";
 import { Avatar, AvatarFallback, AvatarImage } from "@fsd/shared/ui/avatar";
 import {
@@ -20,14 +21,6 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@fsd/shared/ui/sidebar";
-
-function getInitials(name: string): string {
-	const names = name.trim().split(" ");
-	if (names.length >= 2) {
-		return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
-	}
-	return name.substring(0, 2).toUpperCase();
-}
 
 export function NavUser({ user }: { user: User }) {
 	const { isMobile } = useSidebar();
@@ -65,7 +58,7 @@ export function NavUser({ user }: { user: User }) {
 						>
 							<DropdownMenuLabel className="p-0 font-normal">
 								<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-									<Avatar className="h-8 w-8">
+									<Avatar className="size-8">
 										<AvatarImage src={user.avatar} alt={user.username} />
 										<AvatarFallback className="rounded-lg">
 											{getInitials(user.username)}
@@ -78,11 +71,11 @@ export function NavUser({ user }: { user: User }) {
 								</div>
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onSelect={() => setProfileOpen(true)}>
-								<UserRound />
-								Profile
-							</DropdownMenuItem>
-							<DropdownMenuItem onSelect={logout}>
+						<DropdownMenuItem className="cursor-pointer" onSelect={() => setProfileOpen(true)}>
+							<UserRound />
+							Profile
+						</DropdownMenuItem>
+						<DropdownMenuItem className="cursor-pointer" onSelect={logout}>
 								<LogOut />
 								Log out
 							</DropdownMenuItem>

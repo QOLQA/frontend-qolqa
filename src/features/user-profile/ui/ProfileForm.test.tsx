@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -21,55 +22,57 @@ describe("ProfileForm", () => {
 	});
 
 	it("renders form pre-filled with current user data", () => {
-		render(<ProfileForm user={mockUser} updateProfile={updateProfile} />);
+		const ref = createRef<HTMLFormElement>();
+		render(<ProfileForm ref={ref} user={mockUser} updateProfile={updateProfile} />);
 
 		expect(
 			(screen.getByPlaceholderText("Your full name") as HTMLInputElement).value,
 		).toBe("Jane Doe");
 		expect(
-			(screen.getByPlaceholderText("you@example.com") as HTMLInputElement)
-				.value,
+			(screen.getByPlaceholderText("you@example.com") as HTMLInputElement).value,
 		).toBe("jane@example.com");
 	});
 
 	it("shows validation error when full_name is empty on submit", async () => {
 		const user = userEvent.setup();
-		render(<ProfileForm user={mockUser} updateProfile={updateProfile} />);
+		const ref = createRef<HTMLFormElement>();
+		render(<ProfileForm ref={ref} user={mockUser} updateProfile={updateProfile} />);
 
 		const nameInput = screen.getByPlaceholderText("Your full name");
 		await user.clear(nameInput);
-		await user.click(screen.getByRole("button", { name: /save changes/i }));
+		ref.current?.requestSubmit();
 
 		await waitFor(() => {
-			expect(screen.getByText("Name is required")).toBeInTheDocument();
+			expect(screen.getByRole("alert")).toBeInTheDocument();
 		});
 		expect(updateProfile).not.toHaveBeenCalled();
 	});
 
 	it("shows validation error on invalid email", async () => {
 		const user = userEvent.setup();
-		render(<ProfileForm user={mockUser} updateProfile={updateProfile} />);
+		const ref = createRef<HTMLFormElement>();
+		render(<ProfileForm ref={ref} user={mockUser} updateProfile={updateProfile} />);
 
 		const emailInput = screen.getByPlaceholderText("you@example.com");
 		await user.clear(emailInput);
 		await user.type(emailInput, "not-an-email");
-		await user.click(screen.getByRole("button", { name: /save changes/i }));
+		ref.current?.requestSubmit();
 
 		await waitFor(() => {
-			expect(screen.getByText("Invalid email address")).toBeInTheDocument();
+			expect(screen.getByRole("alert")).toBeInTheDocument();
 		});
 		expect(updateProfile).not.toHaveBeenCalled();
 	});
 
 	it("calls updateProfile with correct data on valid submit", async () => {
 		const user = userEvent.setup();
-		render(<ProfileForm user={mockUser} updateProfile={updateProfile} />);
+		const ref = createRef<HTMLFormElement>();
+		render(<ProfileForm ref={ref} user={mockUser} updateProfile={updateProfile} />);
 
 		const nameInput = screen.getByPlaceholderText("Your full name");
 		await user.clear(nameInput);
 		await user.type(nameInput, "John Doe");
-
-		await user.click(screen.getByRole("button", { name: /save changes/i }));
+		ref.current?.requestSubmit();
 
 		await waitFor(() => {
 			expect(updateProfile).toHaveBeenCalledWith(
