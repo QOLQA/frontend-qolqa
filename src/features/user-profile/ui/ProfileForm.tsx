@@ -55,34 +55,40 @@ export function ProfileForm({ ref, user, updateProfile }: ProfileFormProps) {
 	return (
 		<form ref={ref} onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
 			{/* Full name */}
-			<div className="flex flex-col gap-1">
-				<Label htmlFor="full_name">Full name</Label>
+			<div className="space-y-2">
+				<Label htmlFor="full_name" className="text-white">Full name</Label>
 				<Input
 					id="full_name"
 					type="text"
 					placeholder="Your full name"
 					{...register("full_name")}
-					className={cn(errors.full_name && "border-red")}
+					className={cn(
+						"px-4 py-3 h-auto text-white placeholder-secondary-white rounded-lg focus:border-blue transition-colors duration-300",
+						errors.full_name && "border-red",
+					)}
 				/>
 				{errors.full_name && (
-					<p className="text-xs text-red" role="alert">
+					<p className="text-sm text-red mt-1" role="alert">
 						{errors.full_name.message}
 					</p>
 				)}
 			</div>
 
 			{/* Email */}
-			<div className="flex flex-col gap-1">
-				<Label htmlFor="email">Email</Label>
+			<div className="space-y-2">
+				<Label htmlFor="email" className="text-white">Email</Label>
 				<Input
 					id="email"
 					type="email"
 					placeholder="you@example.com"
 					{...register("email")}
-					className={cn(errors.email && "border-red")}
+					className={cn(
+						"px-4 py-3 h-auto text-white placeholder-secondary-white rounded-lg focus:border-blue transition-colors duration-300",
+						errors.email && "border-red",
+					)}
 				/>
 				{errors.email && (
-					<p className="text-xs text-red" role="alert">
+					<p className="text-sm text-red mt-1" role="alert">
 						{errors.email.message}
 					</p>
 				)}
@@ -90,12 +96,12 @@ export function ProfileForm({ ref, user, updateProfile }: ProfileFormProps) {
 
 			{/* Feedback */}
 			{successMessage && (
-				<p className="text-xs text-green" role="status">
+				<p className="text-sm text-green" role="status">
 					{successMessage}
 				</p>
 			)}
 			{errorMessage && (
-				<p className="text-xs text-red" role="alert">
+				<p className="text-sm text-red" role="alert">
 					{errorMessage}
 				</p>
 			)}
