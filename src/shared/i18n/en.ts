@@ -29,6 +29,7 @@ export const en = {
 			title: "Create collection",
 			nameLabel: "Name",
 			creating: "Creating collection...",
+			nameTooShort: "Name must be at least 4 characters long.",
 		},
 		error: {
 			accept: "Accept",
@@ -37,6 +38,7 @@ export const en = {
 			title: "New project",
 			nameLabel: "Project Name:",
 			creating: "Creating project...",
+			nameTooShort: "Name must be at least 4 characters long.",
 		},
 		editProject: {
 			title: "Edit project",
@@ -60,13 +62,13 @@ export const en = {
 			deleting: "Deleting version...",
 			cannotDeleteLast: "Cannot delete the only version.",
 		},
-	deleteEdge: {
-		title: "Delete Relationship",
-		confirmMessage: "Are you sure you want to delete this relationship?",
-		irreversibleAction:
-			"This action cannot be undone and will remove the foreign key column.",
-		deleteButtonAriaLabel: "Delete relationship",
-	},
+		deleteEdge: {
+			title: "Delete Relationship",
+			confirmMessage: "Are you sure you want to delete this relationship?",
+			irreversibleAction:
+				"This action cannot be undone and will remove the foreign key column.",
+			deleteButtonAriaLabel: "Delete relationship",
+		},
 		newQuery: {
 			title: "New query",
 			queryLabel: "Query:",
@@ -143,4 +145,9 @@ export const en = {
 } as const;
 
 export type TranslationKeys = typeof en;
+
+type DeepStringValues<T> = {
+	[K in keyof T]: T[K] extends Record<string, unknown> ? DeepStringValues<T[K]> : string;
+};
+export type TranslationShape = DeepStringValues<TranslationKeys>;
 
