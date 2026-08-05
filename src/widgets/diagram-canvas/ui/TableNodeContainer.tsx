@@ -3,7 +3,7 @@
 import type { TableNodeProps } from "@fsd/entities/solution";
 import { TableNodeContent } from "@fsd/entities/table";
 import {
-	ModalAtributes,
+	ModalAttributes,
 	ModalDocument,
 	useTableNodeContent,
 } from "@fsd/features/modeling-solution";
@@ -59,12 +59,12 @@ export function TableNodeContainer({
 				/>
 			)}
 			{isAtributesModalOpen && (
-				<ModalAtributes
+				<ModalAttributes
 					open={isAtributesModalOpen}
 					setOpen={handleCloseAtributesModal}
 					onSubmit={handleAddAtribute}
 					type={typeAtributesModal}
-					atributesToUpdate={
+					attributesToUpdate={
 						typeAtributesModal === "update" ? atributesToUpdate : undefined
 					}
 				/>

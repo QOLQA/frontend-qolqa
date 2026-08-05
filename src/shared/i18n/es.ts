@@ -1,3 +1,5 @@
+import type { TranslationShape } from "./en";
+
 export const es = {
 	// Common buttons
 	common: {
@@ -29,6 +31,7 @@ export const es = {
 			title: "Crear colección",
 			nameLabel: "Nombre",
 			creating: "Creando colección...",
+			nameTooShort: "El nombre debe tener al menos 4 caracteres.",
 		},
 		error: {
 			accept: "Aceptar",
@@ -37,6 +40,7 @@ export const es = {
 			title: "Nuevo proyecto",
 			nameLabel: "Nombre del proyecto:",
 			creating: "Creando proyecto...",
+			nameTooShort: "El nombre debe tener al menos 4 caracteres.",
 		},
 		editProject: {
 			title: "Editar proyecto",
@@ -60,13 +64,13 @@ export const es = {
 			deleting: "Eliminando versión...",
 			cannotDeleteLast: "No se puede eliminar la única versión.",
 		},
-	deleteEdge: {
-		title: "Eliminar Relación",
-		confirmMessage: "¿Estás seguro de que deseas eliminar esta relación?",
-		irreversibleAction:
-			"Esta acción no se puede deshacer y eliminará la columna de clave foránea.",
-		deleteButtonAriaLabel: "Eliminar relación",
-	},
+		deleteEdge: {
+			title: "Eliminar Relación",
+			confirmMessage: "¿Estás seguro de que deseas eliminar esta relación?",
+			irreversibleAction:
+				"Esta acción no se puede deshacer y eliminará la columna de clave foránea.",
+			deleteButtonAriaLabel: "Eliminar relación",
+		},
 		newQuery: {
 			title: "Nueva consulta",
 			queryLabel: "Consulta:",
@@ -76,6 +80,7 @@ export const es = {
 		document: {
 			createTitle: "Crear documento",
 			nameLabel: "Nombre",
+			nameRequired: "El nombre es obligatorio.",
 		},
 		attributes: {
 			addTitle: "Agregar atributo",
@@ -143,5 +148,5 @@ export const es = {
 		somethingWentWrong:
 			"Algo salió mal. Por favor, inténtalo de nuevo.",
 	},
-} as const;
+} as const satisfies TranslationShape;
 
