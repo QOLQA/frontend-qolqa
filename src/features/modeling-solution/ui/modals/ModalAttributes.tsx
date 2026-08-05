@@ -141,6 +141,7 @@ export function ModalAttributes({
 								variant="ghost"
 								size="icon"
 								onClick={() => remove(index)}
+								className="group cursor-pointer"
 							>
 								<Trash className="text-gray-400 group-hover:text-red-500 transition-colors size-4" />
 							</Button>
