@@ -9,6 +9,6 @@ export {
 	type DiagramSessionLoaderData,
 } from "./model/use-diagram-session-hydration";
 export { edgeTypes } from "./ui/diagram/FloatingEdge";
-export { default as ModalAddCollection } from "./ui/modals/ModalAddCollection";
-export { default as ModalDocument } from "./ui/modals/ModalDocument";
+export { ModalAddCollection } from "./ui/modals/ModalAddCollection";
+export { ModalDocument } from "./ui/modals/ModalDocument";
 export { default as ModalAtributes } from "./ui/modals/ModalAtributes";
