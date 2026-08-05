@@ -80,6 +80,7 @@ export const es = {
 		document: {
 			createTitle: "Crear documento",
 			nameLabel: "Nombre",
+			nameRequired: "El nombre es obligatorio.",
 		},
 		attributes: {
 			addTitle: "Agregar atributo",

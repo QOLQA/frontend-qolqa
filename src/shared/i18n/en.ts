@@ -78,6 +78,7 @@ export const en = {
 		document: {
 			createTitle: "Create document",
 			nameLabel: "Name",
+			nameRequired: "Name is required.",
 		},
 		attributes: {
 			addTitle: "Add attribute",
