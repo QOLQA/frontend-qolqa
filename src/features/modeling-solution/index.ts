@@ -11,4 +11,4 @@ export {
 export { edgeTypes } from "./ui/diagram/FloatingEdge";
 export { ModalAddCollection } from "./ui/modals/ModalAddCollection";
 export { ModalDocument } from "./ui/modals/ModalDocument";
-export { default as ModalAtributes } from "./ui/modals/ModalAtributes";
+export { ModalAttributes } from "./ui/modals/ModalAttributes";
