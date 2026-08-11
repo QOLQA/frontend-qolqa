@@ -58,7 +58,7 @@ export const en = {
       },
     },
     team: {
-      tag: "Development Team",
+      tag: "Team",
       title: "Built by Engineers",
       subtitle:
         "The engineering team behind the Qolqa real-time schema analysis engine.",

@@ -12,19 +12,19 @@ interface Member {
 
 const TEAM_MEMBERS: Member[] = [
   {
-    name: "Integrante 1",
-    role: "Lead Architect & Engine Developer",
-    image: "/team/member1.png",
+    name: "Dr. Harley Vera Olivera",
+    role: "",
+    image: "/team/integrante-harley.jpg",
   },
   {
-    name: "Integrante 2",
-    role: "Frontend & Canvas Engineer",
-    image: "/team/member2.png",
+    name: "Br. Anghelo Alagon Fernandez",
+    role: "",
+    image: "/team/integrante-anghelo.jpg",
   },
   {
-    name: "Integrante 3",
-    role: "Database Researcher",
-    image: "/team/member3.png",
+    name: "Br. Yerson Chirinos Vilca",
+    role: "",
+    image: "/team/integrante-chiri.jpeg",
   },
 ];
 
