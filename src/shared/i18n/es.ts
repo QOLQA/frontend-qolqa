@@ -6,8 +6,8 @@ export const es = {
       badge: "Análisis de Esquemas en Tiempo Real",
       title: "Diseña, Evalúa y Optimiza Esquemas NoSQL",
       subtitle:
-        "Transforma complejas arquitecturas de bases de datos basadas en grafos en métricas cuantificables de calidad en tiempo real.",
-      ctaPrimary: "Lanzar Canvas",
+        "Herramienta visual de diseño guiada por métricas para bases de datos NoSQL orientadas a documentos.",
+      ctaPrimary: "Log In",
       ctaSecondary: "Explorar Métricas",
     },
     features: {

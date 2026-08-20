@@ -4,8 +4,8 @@ export const en = {
       badge: "Real-Time Schema Analytics",
       title: "Design, Evaluate, and Optimize NoSQL Schemas",
       subtitle:
-        "Transform complex graph-based database architectures into quantifiable quality metrics in real time.",
-      ctaPrimary: "Launch Canvas",
+        "A metrics-driven visual design tool for document-oriented NoSQL databases.",
+      ctaPrimary: "Log In",
       ctaSecondary: "Explore Metrics",
     },
     features: {
