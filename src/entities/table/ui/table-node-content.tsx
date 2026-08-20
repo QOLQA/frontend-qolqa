@@ -130,7 +130,7 @@ export const TableNodeContent = React.memo(
 
             <ManagedDropdownMenu>
               <DropdownMenuTrigger asChild>
-                <MoreButton className="hover:text-lighter-gray" />
+                <MoreButton className="text-black hover:text-lighter-gray" />
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="z-50"
