@@ -74,7 +74,7 @@ export function AddDocumentSection({
 				value={searchTerm}
 				onChange={(e) => setSearchTerm(e.target.value)}
 				onKeyDown={handleKeyDown}
-				className="w-full px-3 py-2 bg-primary-black border border-gray rounded-md text-[#ffffff] dark:text-white placeholder:text-lighter-gray focus:outline-none focus:border-secondary-white"
+				className="w-full px-3 py-2 bg-primary-black border border-gray rounded-md text-white placeholder:text-lighter-gray focus:outline-none focus:border-white dark:focus:border-blue"
 				autoFocus
 			/>
 			{searchTerm && (

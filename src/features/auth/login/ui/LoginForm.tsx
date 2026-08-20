@@ -47,7 +47,7 @@ export function LoginForm({
 						placeholder="Enter your username"
 						className={`w-full px-4 py-3 rounded-lg bg-terciary-gray border ${
 							errors.username ? "border-red" : "border-gray"
-						} text-white placeholder-secondary-white focus:outline-none focus:border-blue transition-colors duration-300`}
+						} text-white placeholder-secondary-white focus:outline-none focus:border-white dark:focus:border-blue transition-colors duration-300`}
 						{...registerField("username", registerValidation.username)}
 					/>
 					{errors.username && (
@@ -68,7 +68,7 @@ export function LoginForm({
 						id="full_name"
 						type="text"
 						placeholder="Enter your full name"
-						className="w-full px-4 py-3 rounded-lg bg-terciary-gray border border-gray text-[#ffffff] dark:text-white placeholder-secondary-white focus:outline-none focus:border-blue transition-colors duration-300"
+						className="w-full px-4 py-3 rounded-lg bg-terciary-gray border border-gray text-white placeholder-secondary-white focus:outline-none focus:border-white dark:focus:border-blue transition-colors duration-300"
 						{...registerField("full_name")}
 					/>
 				</div>
@@ -88,7 +88,7 @@ export function LoginForm({
 						placeholder="Enter your username"
 						className={`w-full px-4 py-3 rounded-lg bg-terciary-gray border ${
 							errors.username ? "border-red" : "border-gray"
-						} text-white placeholder-secondary-white focus:outline-none focus:border-blue transition-colors duration-300`}
+						} text-white placeholder-secondary-white focus:outline-none focus:border-white dark:focus:border-blue transition-colors duration-300`}
 						{...registerField("username", loginValidation.username)}
 					/>
 					{errors.username && (
@@ -111,7 +111,7 @@ export function LoginForm({
 						placeholder="Enter your email"
 						className={`w-full px-4 py-3 rounded-lg bg-terciary-gray border ${
 							errors.email ? "border-red" : "border-gray"
-						} text-white placeholder-secondary-white focus:outline-none focus:border-blue transition-colors duration-300`}
+						} text-white placeholder-secondary-white focus:outline-none focus:border-white dark:focus:border-blue transition-colors duration-300`}
 						{...registerField("email", registerValidation.email)}
 					/>
 					{errors.email && (
@@ -133,7 +133,7 @@ export function LoginForm({
 					placeholder="Enter your password"
 					className={`w-full px-4 py-3 rounded-lg bg-terciary-gray border ${
 						errors.password ? "border-red" : "border-gray"
-					} text-white placeholder-secondary-white focus:outline-none focus:border-blue transition-colors duration-300`}
+					} text-white placeholder-secondary-white focus:outline-none focus:border-white dark:focus:border-blue transition-colors duration-300`}
 					{...registerField(
 						"password",
 						isSignUp ? registerValidation.password : loginValidation.password,
