@@ -114,7 +114,7 @@ export const TableNodeContent = React.memo(
 			<>
 				<div className={isNested ? "table nested-table" : "table"}>
 					<div
-						className="table-header text-white"
+						className="table-header text-[#ffffff] dark:text-white"
 						style={{ backgroundColor: headerColor }}
 					>
 						<div className="flex items-center">

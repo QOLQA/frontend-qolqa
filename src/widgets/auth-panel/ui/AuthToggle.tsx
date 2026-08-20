@@ -11,7 +11,7 @@ export function AuthToggle({ isSignUp, onToggle }: AuthToggleProps) {
 				onClick={() => onToggle(false)}
 				className={`flex-1 py-3 px-4 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer ${
 					!isSignUp
-						? "bg-blue text-white shadow-sm scale-[1.02]"
+						? "bg-blue text-[#ffffff] dark:text-white shadow-sm scale-[1.02]"
 						: "text-secondary-white hover:text-white hover:bg-cuartenary-gray"
 				}`}
 			>
@@ -22,7 +22,7 @@ export function AuthToggle({ isSignUp, onToggle }: AuthToggleProps) {
 				onClick={() => onToggle(true)}
 				className={`flex-1 py-3 px-4 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer ${
 					isSignUp
-						? "bg-blue text-white shadow-sm scale-[1.02]"
+						? "bg-blue text-[#ffffff] dark:text-white shadow-sm scale-[1.02]"
 						: "text-secondary-white hover:text-white hover:bg-cuartenary-gray"
 				}`}
 			>

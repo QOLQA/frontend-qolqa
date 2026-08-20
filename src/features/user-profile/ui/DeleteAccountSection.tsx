@@ -36,7 +36,7 @@ export function DeleteAccountSection({
 					variant="outline"
 					disabled={isDeleting}
 					onClick={() => setConfirmOpen(true)}
-					className="cursor-pointer text-h3 text-white !bg-red border-none hover:!bg-red-dark hover:!text-white disabled:opacity-50"
+					className="cursor-pointer text-h3 text-[#ffffff] dark:text-white !bg-red border-none hover:!bg-red-dark hover:!text-white disabled:opacity-50"
 				>
 					Delete account
 				</Button>

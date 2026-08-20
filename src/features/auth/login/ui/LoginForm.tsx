@@ -68,7 +68,7 @@ export function LoginForm({
 						id="full_name"
 						type="text"
 						placeholder="Enter your full name"
-						className="w-full px-4 py-3 rounded-lg bg-terciary-gray border border-gray text-white placeholder-secondary-white focus:outline-none focus:border-blue transition-colors duration-300"
+						className="w-full px-4 py-3 rounded-lg bg-terciary-gray border border-gray text-[#ffffff] dark:text-white placeholder-secondary-white focus:outline-none focus:border-blue transition-colors duration-300"
 						{...registerField("full_name")}
 					/>
 				</div>

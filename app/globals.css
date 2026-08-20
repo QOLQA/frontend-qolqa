@@ -177,6 +177,11 @@
 	--radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Light-mode-only: softer active sidebar button */
+:root [data-sidebar="menu-button"][data-active="true"] {
+	background-color: var(--color-secondary-gray);
+}
+
 /* ──────────────────────────────────────────────
    Tailwind CSS 4 theme — @theme for non-color tokens
    ────────────────────────────────────────────── */

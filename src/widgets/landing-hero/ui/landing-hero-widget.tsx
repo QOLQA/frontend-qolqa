@@ -46,7 +46,7 @@ export const LandingHeroWidget = () => {
         >
           <Link
             href="/login"
-            className="px-6 py-3 rounded-md bg-blue text-foreground font-medium hover:bg-blue/90 transition-colors shadow-lg shadow-blue/20"
+            className="px-6 py-3 rounded-md bg-blue text-[#ffffff] dark:text-white font-medium hover:bg-blue/90 transition-colors shadow-lg shadow-blue/20"
           >
             {t("landing.hero.ctaPrimary")}
           </Link>

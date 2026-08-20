@@ -29,7 +29,7 @@ export const LandingDonationWidget = () => {
             href="https://paypal.me/your-paypal-link"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block px-8 py-3.5 rounded-md bg-blue text-foreground font-medium hover:bg-blue/90 transition-colors shadow-lg shadow-blue/25"
+            className="inline-block px-8 py-3.5 rounded-md bg-blue text-[#ffffff] dark:text-white font-medium hover:bg-blue/90 transition-colors shadow-lg shadow-blue/25"
           >
             {t("landing.donation.cta")}
           </a>
