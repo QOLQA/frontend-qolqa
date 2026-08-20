@@ -12,7 +12,7 @@ export const PreloaderWidget = () => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0f0f0f] text-[#dfdfdf]"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black text-white"
     >
       <div ref={logoRef} className="relative flex flex-col items-center">
         {/* Anillo de pulso de energía eléctrica */}
@@ -28,10 +28,10 @@ export const PreloaderWidget = () => {
           {/* Contador porcentual */}
           <div className="flex items-baseline gap-1 font-mono text-3xl font-bold tracking-tighter">
             <span ref={numberRef}>0</span>
-            <span className="text-xs text-[#0052cc]">%</span>
+            <span className="text-xs text-blue">%</span>
           </div>
 
-          <p className="text-xs font-mono text-[#747474] mt-2 tracking-widest uppercase">
+          <p className="text-xs font-mono text-lighter-gray mt-2 tracking-widest uppercase">
             Initializing Engine...
           </p>
         </div>

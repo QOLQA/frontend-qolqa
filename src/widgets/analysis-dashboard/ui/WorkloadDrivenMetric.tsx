@@ -11,7 +11,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 const chartConfig = {
 	completude: {
 		label: "Completude",
-		color: "#E93544",
+		color: "var(--color-red)",
 	},
 } satisfies ChartConfig;
 
@@ -42,15 +42,15 @@ export function WorkloadDrivenMetric({
 					<Bar
 						dataKey="completude"
 						stackId="a"
-						fill="#E93544"
+						fill="var(--color-red)"
 						radius={[0, 0, 4, 4]}
 					/>
 				</BarChart>
 			</ChartContainer>
 
 			<div className="flex gap-2 flex-row justify-center">
-				<div className=" text-[#E93544] flex items-center gap-2">
-					<div className="size-4 bg-[#E93544] rounded-sm"></div>
+				<div className=" text-red flex items-center gap-2">
+					<div className="size-4 bg-red rounded-sm"></div>
 					<p>Completude (Queries Handled)</p>
 				</div>
 			</div>

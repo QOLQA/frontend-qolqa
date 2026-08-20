@@ -2,7 +2,9 @@
 
 import { BaseEdge, getSmoothStepPath, useInternalNode } from "@xyflow/react";
 import type { EdgeProps } from "@xyflow/react";
+import { useTheme } from "next-themes";
 import { getEdgeParams } from "@fsd/shared/lib/xyflow";
+import { getCanvasThemeColors } from "@fsd/shared/lib/xyflow/canvas-theme-colors";
 import { CardinalityLabel } from "./CardinalityLabel";
 import type { CardinalityType, EdgeData } from "@fsd/entities/solution";
 
@@ -17,6 +19,8 @@ export function FloatingEdge({
 }: EdgeProps) {
 	const sourceNode = useInternalNode(source);
 	const targetNode = useInternalNode(target);
+	const { resolvedTheme } = useTheme();
+	const canvasColors = getCanvasThemeColors(resolvedTheme);
 
 	if (!sourceNode || !targetNode) {
 		return null;
@@ -37,14 +41,14 @@ export function FloatingEdge({
 		borderRadius: 0,
 	});
 
-	const strokeColor = selected ? "#747474" : "#4e4e4e";
+	const strokeColor = selected ? canvasColors.edgeStrokeSelected : canvasColors.edgeStroke;
 	const strokeWidth = selected ? 2.5 : 2;
 
 	const updatedMarkerEnd =
 		selected && markerEnd && typeof markerEnd === "object"
 			? {
 					...(markerEnd as object),
-					color: "#0052cc",
+					color: canvasColors.edgeMarkerSelected,
 				}
 			: markerEnd;
 

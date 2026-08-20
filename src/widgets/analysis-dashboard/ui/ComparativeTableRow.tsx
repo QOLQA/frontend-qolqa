@@ -78,22 +78,22 @@ export function ComparativeTableRow({
 					</h3>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[90px] h-[32px] flex justify-center items-center bg-[#0052CC]/10 rounded-lg">
-						<h3 className="text-[20px] font-bold text-[#0052CC]">
+					<div className="w-[90px] h-[32px] flex justify-center items-center bg-blue/10 rounded-lg">
+						<h3 className="text-[20px] font-bold text-blue">
 							{metric.access_pattern}
 						</h3>
 					</div>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[90px] h-[32px] flex justify-center items-center bg-[#00875A]/10 rounded-lg">
-						<h3 className="text-[20px] font-bold text-[#00875A]">
+					<div className="w-[90px] h-[32px] flex justify-center items-center bg-green/10 rounded-lg">
+						<h3 className="text-[20px] font-bold text-green">
 							{metric.recovery_cost}
 						</h3>
 					</div>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[90px] h-[32px] flex justify-center items-center bg-[#5243AA]/10 rounded-lg">
-						<h3 className="text-[20px] font-bold text-[#5243AA]">
+					<div className="w-[90px] h-[32px] flex justify-center items-center bg-purple/10 rounded-lg">
+						<h3 className="text-[20px] font-bold text-purple">
 							{metric.redundancy}
 						</h3>
 					</div>
@@ -106,8 +106,8 @@ export function ComparativeTableRow({
 					</div>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[90px] h-[32px] flex justify-center items-center bg-[#E93544]/10 rounded-lg">
-						<h3 className="text-[20px] font-bold text-[#E93544]">
+					<div className="w-[90px] h-[32px] flex justify-center items-center bg-red/10 rounded-lg">
+						<h3 className="text-[20px] font-bold text-red">
 							{completudeVal}
 						</h3>
 					</div>
