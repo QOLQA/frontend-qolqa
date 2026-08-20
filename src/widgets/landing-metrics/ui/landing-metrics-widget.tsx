@@ -37,14 +37,14 @@ export const LandingMetricsWidget = () => {
     <section
       ref={containerRef}
       id="metrics"
-      className="py-24 bg-[#0f0f0f] border-t border-[#363636]/40"
+      className="py-24 bg-background border-t border-gray/40"
     >
       <div className="max-w-[1400px] mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="text-xs font-semibold tracking-wider text-[#0052cc] uppercase">
+          <span className="text-xs font-semibold tracking-wider text-blue uppercase">
             {t("landing.metrics.tag")}
           </span>
-          <h2 className="text-h2 font-bold text-[#dfdfdf] mt-2">
+          <h2 className="text-h2 font-bold text-foreground mt-2">
             {t("landing.metrics.title")}
           </h2>
         </div>
@@ -53,23 +53,23 @@ export const LandingMetricsWidget = () => {
           {metricsData.map((metric) => (
             <div
               key={metric.key}
-              className={`p-8 rounded-xl bg-[#1e1e1e] border border-[#363636] border-t-4 ${metric.color} hover:bg-[#232323] transition-colors`}
+              className={`p-8 rounded-xl bg-secondary-gray border border-gray border-t-4 ${metric.color} hover:bg-terciary-gray transition-colors`}
             >
-              <h3 className="text-h3 font-semibold text-[#dfdfdf]">
+              <h3 className="text-h3 font-semibold text-foreground">
                 {t(
                   `landing.metrics.${metric.key}.name` as Parameters<
                     typeof t
                   >[0],
                 )}
               </h3>
-              <p className="text-xs text-[#0052cc] font-mono mt-1">
+              <p className="text-xs text-blue font-mono mt-1">
                 {t(
                   `landing.metrics.${metric.key}.subtitle` as Parameters<
                     typeof t
                   >[0],
                 )}
               </p>
-              <p className="text-p-sm text-[#747474] mt-4">
+              <p className="text-p-sm text-lighter-gray mt-4">
                 {t(
                   `landing.metrics.${metric.key}.description` as Parameters<
                     typeof t
@@ -78,7 +78,7 @@ export const LandingMetricsWidget = () => {
               </p>
 
               {/* Contenedor formal para la ecuación */}
-              <div className="mt-6 p-4 rounded-lg bg-[#171717] border border-[#363636] font-mono text-xs text-[#9d9d9d] overflow-x-auto">
+              <div className="mt-6 p-4 rounded-lg bg-primary-gray border border-gray font-mono text-xs text-secondary-white overflow-x-auto">
                 {t(
                   `landing.metrics.${metric.key}.formula` as Parameters<
                     typeof t

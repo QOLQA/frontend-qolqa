@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
+import { getThemeColors } from "../model/theme-colors";
 
 interface Node {
   x: number;
@@ -12,6 +14,7 @@ interface Node {
 
 export const ElectricBackgroundWidget = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,6 +22,8 @@ export const ElectricBackgroundWidget = () => {
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    const colors = getThemeColors(resolvedTheme);
 
     let animationFrameId: number;
     let width = (canvas.width = window.innerWidth);
@@ -71,19 +76,19 @@ export const ElectricBackgroundWidget = () => {
       }
 
       ctx.lineTo(x2, y2);
-      ctx.strokeStyle = `rgba(0, 82, 204, ${Math.min(1, alpha * 1.8)})`; // Azul brillante #0052cc
+      ctx.strokeStyle = `${colors.lightningColor} ${Math.min(1, alpha * 1.8)})`;
       ctx.lineWidth = 1.5;
       ctx.stroke();
     };
 
     const render = () => {
-      // Dibujar fondo oscuro directamente en canvas
-      ctx.fillStyle = "#0f0f0f";
+      // Draw background with theme-aware colors
+      ctx.fillStyle = colors.background;
       ctx.fillRect(0, 0, width, height);
 
       // Grid de fondo
       const gridSize = 60;
-      ctx.strokeStyle = "rgba(54, 54, 54, 0.25)";
+      ctx.strokeStyle = colors.gridStroke;
       ctx.lineWidth = 0.5;
 
       for (let x = 0; x < width; x += gridSize) {
@@ -109,8 +114,8 @@ export const ElectricBackgroundWidget = () => {
 
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "#0052cc";
-        ctx.shadowColor = "#0052cc";
+        ctx.fillStyle = colors.nodeColor;
+        ctx.shadowColor = colors.nodeColor;
         ctx.shadowBlur = 8;
         ctx.fill();
         ctx.shadowBlur = 0;
@@ -126,7 +131,7 @@ export const ElectricBackgroundWidget = () => {
               ctx.beginPath();
               ctx.moveTo(node.x, node.y);
               ctx.lineTo(other.x, other.y);
-              ctx.strokeStyle = `rgba(0, 82, 204, ${alpha})`;
+              ctx.strokeStyle = `${colors.lightningColor} ${alpha})`;
               ctx.lineWidth = 1;
               ctx.stroke();
             }
@@ -150,7 +155,7 @@ export const ElectricBackgroundWidget = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [resolvedTheme]);
 
   return (
     <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />
