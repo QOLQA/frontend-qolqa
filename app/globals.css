@@ -11,17 +11,17 @@
 	/* Radius */
 	--radius: 0.625rem;
 
-	/* Custom gray scale — light mode */
-	--color-black: #fafaf9;
-	--color-primary-gray: #f5f5f4;
-	--color-secondary-gray: #e7e5e4;
-	--color-terciary-gray: #d6d3d1;
-	--color-cuartenary-gray: #c8c5c0;
-	--color-gray: #a8a29e;
-	--color-semilighter-gray: #78716c;
-	--color-lighter-gray: #57534e;
-	--color-secondary-white: #44403c;
-	--color-white: #1c1917;
+	/* Custom gray scale — light mode (raw tokens; mapped in @theme inline) */
+	--black: #fafaf9;
+	--primary-gray: #f5f5f4;
+	--secondary-gray: #e7e5e4;
+	--terciary-gray: #d6d3d1;
+	--cuartenary-gray: #c8c5c0;
+	--gray: #a8a29e;
+	--semilighter-gray: #78716c;
+	--lighter-gray: #57534e;
+	--secondary-white: #44403c;
+	--white: #1c1917;
 
 	/* Shadcn/ui — light mode */
 	--background: oklch(1 0 0);
@@ -62,16 +62,16 @@
    ────────────────────────────────────────────── */
 .dark {
 	/* Custom gray scale — dark mode */
-	--color-black: #0f0f0f;
-	--color-primary-gray: #171717;
-	--color-secondary-gray: #1e1e1e;
-	--color-terciary-gray: #232323;
-	--color-cuartenary-gray: #292929;
-	--color-gray: #363636;
-	--color-semilighter-gray: #4a4a4a;
-	--color-lighter-gray: #747474;
-	--color-secondary-white: #9d9d9d;
-	--color-white: #dfdfdf;
+	--black: #0f0f0f;
+	--primary-gray: #171717;
+	--secondary-gray: #1e1e1e;
+	--terciary-gray: #232323;
+	--cuartenary-gray: #292929;
+	--gray: #363636;
+	--semilighter-gray: #4a4a4a;
+	--lighter-gray: #747474;
+	--secondary-white: #9d9d9d;
+	--white: #dfdfdf;
 
 	/* Shadcn/ui — dark mode */
 	--background: oklch(0.147 0.004 49.25);
@@ -107,22 +107,36 @@
 	--sidebar-ring: oklch(0.553 0.013 58.071);
 }
 
+/* Runtime aliases — unlayered so they override @layer theme and switch with .dark */
+:root {
+	--color-black: var(--black);
+	--color-primary-gray: var(--primary-gray);
+	--color-secondary-gray: var(--secondary-gray);
+	--color-terciary-gray: var(--terciary-gray);
+	--color-cuartenary-gray: var(--cuartenary-gray);
+	--color-gray: var(--gray);
+	--color-semilighter-gray: var(--semilighter-gray);
+	--color-lighter-gray: var(--lighter-gray);
+	--color-secondary-white: var(--secondary-white);
+	--color-white: var(--white);
+}
+
 /* ──────────────────────────────────────────────
    Tailwind CSS 4 theme — @theme inline for colors
    (preserves var() references for runtime resolution)
    ────────────────────────────────────────────── */
 @theme inline {
-	/* Custom gray scale */
-	--color-black: var(--color-black);
-	--color-primary-gray: var(--color-primary-gray);
-	--color-secondary-gray: var(--color-secondary-gray);
-	--color-terciary-gray: var(--color-terciary-gray);
-	--color-cuartenary-gray: var(--color-cuartenary-gray);
-	--color-gray: var(--color-gray);
-	--color-semilighter-gray: var(--color-semilighter-gray);
-	--color-lighter-gray: var(--color-lighter-gray);
-	--color-secondary-white: var(--color-secondary-white);
-	--color-white: var(--color-white);
+	/* Custom gray scale — runtime aliases for Tailwind utilities */
+	--color-black: var(--black);
+	--color-primary-gray: var(--primary-gray);
+	--color-secondary-gray: var(--secondary-gray);
+	--color-terciary-gray: var(--terciary-gray);
+	--color-cuartenary-gray: var(--cuartenary-gray);
+	--color-gray: var(--gray);
+	--color-semilighter-gray: var(--semilighter-gray);
+	--color-lighter-gray: var(--lighter-gray);
+	--color-secondary-white: var(--secondary-white);
+	--color-white: var(--white);
 
 	/* Accent colors (not theme-switched) */
 	--color-blue: #0052cc;
