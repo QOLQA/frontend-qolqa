@@ -16,7 +16,7 @@ export function QueryStatsGraph() {
 	const chartData = [
 		{
 			porcentage: handledPercentage,
-			fill: "var(--color-red)",
+			fill: "var(--metric-gauge-arc)",
 		},
 	];
 
@@ -34,7 +34,7 @@ export function QueryStatsGraph() {
 				outerRadius={98}
 			>
 				<defs>
-					<filter id="glow">
+					<filter id="metric-gauge-glow">
 						<feGaussianBlur stdDeviation="4" result="coloredBlur" />
 						<feMerge>
 							<feMergeNode in="coloredBlur" />
@@ -46,15 +46,13 @@ export function QueryStatsGraph() {
 					gridType="circle"
 					radialLines={false}
 					stroke="none"
-					className="first:fill-[#3C4254] last:fill-cuartenary-gray"
-					style={{ filter: "url(#glow)" }}
+					className="metric-gauge-glow first:fill-[var(--metric-gauge-track)] last:fill-[var(--metric-gauge-center)]"
 					polarRadius={[80, 73]}
 				/>
 				<RadialBar
 					dataKey="porcentage"
-					className="fill-cuartenary-gray"
 					cornerRadius={10}
-					style={{ filter: "url(#glow)" }}
+					className="metric-gauge-glow"
 				/>
 				<PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
 					<Label
@@ -70,14 +68,14 @@ export function QueryStatsGraph() {
 										<tspan
 											x={viewBox.cx}
 											y={(viewBox.cy || 0) - 2}
-											className="fill-white text-4xl font-bold"
+											className="fill-[var(--metric-gauge-label)] text-4xl font-bold"
 										>
 											{handledPercentage}%
 										</tspan>
 										<tspan
 											x={viewBox.cx}
 											y={(viewBox.cy || 0) + 32}
-											className="fill-white text-p"
+											className="fill-[var(--metric-gauge-label)] text-p"
 										>
 											Completude
 										</tspan>

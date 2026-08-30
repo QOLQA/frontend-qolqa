@@ -33,22 +33,22 @@ export function SubmodelRow({ metric, completude }: SubmodelRowProps) {
 					</h3>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[70px] h-[26px] flex justify-center items-center bg-blue/10 rounded-lg">
-						<h3 className="text-[16px] font-bold text-blue">
+					<div className="w-[70px] h-[26px] flex justify-center items-center rounded-lg bg-[color-mix(in_srgb,var(--metric-access)_12%,transparent)]">
+						<h3 className="text-[16px] font-bold text-[var(--metric-access)]">
 							{metric.access_pattern}
 						</h3>
 					</div>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[70px] h-[26px] flex justify-center items-center bg-green/10 rounded-lg">
-						<h3 className="text-[16px] font-bold text-green">
+					<div className="w-[70px] h-[26px] flex justify-center items-center rounded-lg bg-[color-mix(in_srgb,var(--metric-recovery)_12%,transparent)]">
+						<h3 className="text-[16px] font-bold text-[var(--metric-recovery)]">
 							{metric.recovery_cost}
 						</h3>
 					</div>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[70px] h-[26px] flex justify-center items-center bg-purple/10 rounded-lg">
-						<h3 className="text-[16px] font-bold text-purple">
+					<div className="w-[70px] h-[26px] flex justify-center items-center rounded-lg bg-[color-mix(in_srgb,var(--metric-redundancy)_12%,transparent)]">
+						<h3 className="text-[16px] font-bold text-[var(--metric-redundancy)]">
 							{metric.redundancy}
 						</h3>
 					</div>

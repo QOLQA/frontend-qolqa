@@ -28,6 +28,21 @@
 	--icon-intense: #6b7280;
 	--icon-active-bg: #ededed;
 
+	/* Statistics metrics — light (tinted surfaces, no glow) */
+	--metric-access: #1d4ed8;
+	--metric-access-surface: #eff6ff;
+	--metric-access-foreground: #1d4ed8;
+	--metric-recovery: #009966;
+	--metric-recovery-surface: #ecfdf5;
+	--metric-recovery-foreground: #009966;
+	--metric-redundancy: #6e11b0;
+	--metric-redundancy-surface: #f5f3ff;
+	--metric-redundancy-foreground: #6e11b0;
+	--metric-gauge-arc: #fb2c36;
+	--metric-gauge-track: #e5e7eb;
+	--metric-gauge-center: #ffffff;
+	--metric-gauge-label: #111827;
+
 	/* Shadcn/ui — light mode */
 	--background: #f9fafb;
 	--foreground: #111827;
@@ -82,6 +97,21 @@
 	--icon-muted: #747474;
 	--icon-intense: #dfdfdf;
 	--icon-active-bg: #363636;
+
+	/* Statistics metrics — dark (solid fills + glow) */
+	--metric-access: #0052cc;
+	--metric-access-surface: #0052cc;
+	--metric-access-foreground: #ffffff;
+	--metric-recovery: #00875a;
+	--metric-recovery-surface: #00875a;
+	--metric-recovery-foreground: #ffffff;
+	--metric-redundancy: #5243aa;
+	--metric-redundancy-surface: #5243aa;
+	--metric-redundancy-foreground: #ffffff;
+	--metric-gauge-arc: #e93544;
+	--metric-gauge-track: #3c4254;
+	--metric-gauge-center: var(--cuartenary-gray);
+	--metric-gauge-label: #ffffff;
 
 	/* Shadcn/ui — dark mode */
 	--background: oklch(0.147 0.004 49.25);
@@ -156,11 +186,11 @@
 	--color-icon-intense: var(--icon-intense);
 	--color-icon-active-bg: var(--icon-active-bg);
 
-	/* Accent colors (not theme-switched) */
-	--color-blue: #0052cc;
-	--color-red: #e93544;
-	--color-green: #006239;
-	--color-purple: #5243aa;
+	/* Accent colors — theme-switched via metric / brand tokens */
+	--color-blue: var(--metric-access);
+	--color-red: var(--metric-gauge-arc);
+	--color-green: var(--metric-recovery);
+	--color-purple: var(--metric-redundancy);
 	--color-edge: #4e4e4e;
 	--color-red-dark: #8c111d;
 	--color-green-dark: #003d24;
@@ -594,4 +624,21 @@ div.customHandle {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
 	background-color: rgba(116, 116, 116, 0.2);
+}
+
+/* Statistics metrics — glow only in dark mode */
+.metric-gauge-glow {
+	filter: none;
+}
+
+.dark .metric-gauge-glow {
+	filter: url(#metric-gauge-glow);
+}
+
+.metric-bar-segment {
+	box-shadow: none;
+}
+
+.dark .metric-bar-segment {
+	box-shadow: 0 0 15px var(--segment-color);
 }

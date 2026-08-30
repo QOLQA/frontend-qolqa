@@ -11,15 +11,15 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 const chartConfig = {
 	redundancy: {
 		label: "Redundancy",
-		color: "var(--color-purple)",
+		color: "var(--metric-redundancy)",
 	},
 	recovery_cost: {
 		label: "Recovery Cost",
-		color: "var(--color-green)",
+		color: "var(--metric-recovery)",
 	},
 	access_pattern: {
 		label: "Access Pattern",
-		color: "var(--color-blue)",
+		color: "var(--metric-access)",
 	},
 } satisfies ChartConfig;
 
@@ -50,35 +50,35 @@ export function ModelIntrinsicMetrics({
 					<Bar
 						dataKey="redundancy"
 						stackId="a"
-						fill="var(--color-purple)"
+						fill="var(--metric-redundancy)"
 						radius={[0, 0, 4, 4]}
 					/>
 					<Bar
 						dataKey="recovery_cost"
 						stackId="a"
-						fill="var(--color-green)"
+						fill="var(--metric-recovery)"
 						radius={[4, 4, 0, 0]}
 					/>
 					<Bar
 						dataKey="access_pattern"
 						stackId="a"
-						fill="var(--color-blue)"
+						fill="var(--metric-access)"
 						radius={[4, 4, 0, 0]}
 					/>
 				</BarChart>
 			</ChartContainer>
 
 			<div className="flex gap-2 flex-row justify-between pl-10">
-				<div className=" text-blue flex items-center gap-2">
-					<div className="size-4 bg-blue rounded-sm"></div>
+				<div className="text-[var(--metric-access)] flex items-center gap-2">
+					<div className="size-4 rounded-sm bg-[var(--metric-access)]"></div>
 					<p>Access Pattern</p>
 				</div>
-				<div className=" text-green flex items-center gap-2">
-					<div className="size-4 bg-green rounded-sm"></div>
+				<div className="text-[var(--metric-recovery)] flex items-center gap-2">
+					<div className="size-4 rounded-sm bg-[var(--metric-recovery)]"></div>
 					<p>Recovery Cost</p>
 				</div>
-				<div className=" text-purple flex items-center gap-2">
-					<div className="size-4 bg-purple rounded-sm"></div>
+				<div className="text-[var(--metric-redundancy)] flex items-center gap-2">
+					<div className="size-4 rounded-sm bg-[var(--metric-redundancy)]"></div>
 					<p>Redundancy</p>
 				</div>
 			</div>
