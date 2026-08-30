@@ -4,10 +4,12 @@ import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
 import { cn } from "@fsd/shared/lib/classnames";
 
-const THEME_CYCLE = ["system", "light", "dark"] as const;
+const THEME_CYCLE = ["light", "dark"] as const;
 
 function getNextTheme(current: string | undefined): string {
-	const idx = THEME_CYCLE.indexOf(current as (typeof THEME_CYCLE)[number]);
+	const resolved =
+		current === "light" || current === "dark" ? current : "light";
+	const idx = THEME_CYCLE.indexOf(resolved);
 	return THEME_CYCLE[(idx + 1) % THEME_CYCLE.length];
 }
 
@@ -15,7 +17,7 @@ function ThemeToggle({ className }: { className?: string }) {
 	const { theme, resolvedTheme, setTheme } = useTheme();
 
 	function handleClick() {
-		setTheme(getNextTheme(theme));
+		setTheme(getNextTheme(theme ?? resolvedTheme));
 	}
 
 	const isDark = resolvedTheme === "dark";
@@ -26,7 +28,7 @@ function ThemeToggle({ className }: { className?: string }) {
 			aria-label="Toggle theme"
 			onClick={handleClick}
 			className={cn(
-				"inline-flex items-center justify-center rounded-xl p-2 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none",
+				"relative inline-flex items-center justify-center rounded-xl p-2 cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none",
 				className,
 			)}
 		>
