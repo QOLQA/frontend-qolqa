@@ -17,8 +17,8 @@ export const QueryItem = ({ query, actionsSlot }: QueryItemProps) => {
 	const { t } = useTranslation();
 
 	return (
-		<div className="flex flex-col items-start bg-gray w-full p-4 gap-3 rounded-lg relative">
-			<div className="text-center py-2 px-3 w-full bg-cuartenary-gray rounded-lg text-white">
+		<div className="flex flex-col items-start bg-terciary-gray border border-gray w-full p-4 gap-3 rounded-lg relative">
+			<div className="text-center py-2 px-3 w-full bg-primary-gray rounded-lg text-white">
 				{query.full_query.split(" ").map((word, index) => {
 					const key = `${word}-${index}`;
 					if (query.collections.includes(word)) {
@@ -34,7 +34,7 @@ export const QueryItem = ({ query, actionsSlot }: QueryItemProps) => {
 				{query.collections.map((collection) => (
 					<div
 						key={`${collection}-query`}
-						className="text-white border border-white text-p rounded-lg py-1 px-3 bg-transparent"
+						className="text-secondary-white border border-gray text-p rounded-lg py-1 px-3 bg-terciary-gray"
 					>
 						{collection}
 					</div>

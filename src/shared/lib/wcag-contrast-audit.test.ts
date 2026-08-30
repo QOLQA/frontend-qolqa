@@ -123,31 +123,31 @@ function contrastRatio(
 // ─── Theme color definitions (from app/globals.css) ─────────────────────────
 
 const LIGHT_COLORS = {
-	// Custom gray scale
-	black: "#fafaf9",
-	primaryGray: "#f5f5f4",
-	secondaryGray: "#e7e5e4",
-	terciaryGray: "#d6d3d1",
-	cuartenaryGray: "#c8c5c0",
-	gray: "#a8a29e",
-	semilighterGray: "#78716c",
-	lighterGray: "#57534e",
-	secondaryWhite: "#44403c",
-	white: "#1c1917",
+	// Custom gray scale — Figma light palette
+	black: "#f9fafb",
+	primaryGray: "#f3f4f6",
+	secondaryGray: "#f9fafb",
+	terciaryGray: "#ffffff",
+	cuartenaryGray: "#ededed",
+	gray: "#e5e7eb",
+	semilighterGray: "#6b7280",
+	lighterGray: "#747474",
+	secondaryWhite: "#374151",
+	white: "#111827",
 	// Shadcn/ui
-	background: "oklch(1 0 0)",
-	foreground: "oklch(0.145 0 0)",
-	card: "oklch(1 0 0)",
-	cardForeground: "oklch(0.145 0 0)",
-	muted: "oklch(0.97 0 0)",
-	mutedForeground: "oklch(0.556 0 0)",
+	background: "#f9fafb",
+	foreground: "#111827",
+	card: "#ffffff",
+	cardForeground: "#111827",
+	muted: "#f3f4f6",
+	mutedForeground: "#6b7280",
 	primary: "oklch(0.923 0.003 48.717)",
 	primaryForeground: "oklch(0.216 0.006 56.043)",
-	secondary: "oklch(0.97 0 0)",
-	secondaryForeground: "oklch(0.205 0 0)",
-	border: "oklch(0.922 0 0)",
-	accent: "oklch(0.97 0 0)",
-	accentForeground: "oklch(0.205 0 0)",
+	secondary: "#f3f4f6",
+	secondaryForeground: "#111827",
+	border: "#e5e7eb",
+	accent: "#f3f4f6",
+	accentForeground: "#111827",
 } as const;
 
 const DARK_COLORS = {
@@ -344,7 +344,7 @@ describe("WCAG AA Contrast Audit", () => {
 	});
 
 	describe("Custom gray scale contrast (light mode)", () => {
-		const bg = LIGHT_COLORS.black; // #fafaf9
+		const bg = LIGHT_COLORS.black; // #f9fafb
 
 		it("secondary-white on background ≥ 3:1 (UI elements)", () => {
 			const fg = parseColorToRgb(LIGHT_COLORS.secondaryWhite);
@@ -363,7 +363,7 @@ describe("WCAG AA Contrast Audit", () => {
 		it("gray on background — decorative/border token (measurement)", () => {
 			// gray is used for borders and thumbnails, not text.
 			// WCAG 1.4.11 non-text contrast requires 3:1 for UI components.
-			// Light mode: #a8a29e on #fafaf9 → ~2.41:1 (below 3:1)
+			// Light mode: #e5e7eb on #f9fafb — decorative border, not text.
 			// This is a documented design characteristic — the gray scale is
 			// decorative rather than functional text contrast.
 			const fg = parseColorToRgb(LIGHT_COLORS.gray);

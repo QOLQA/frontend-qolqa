@@ -39,19 +39,18 @@ export const DropdownQueries = ({ editQuery }: DropdownQueriesProps) => {
 			<ManagedDropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<MoreButton
-						className="text-lighter-gray "
+						className="text-white"
 						onClick={(e) => {
 							e.stopPropagation();
 						}}
 					/>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent
-					className="z-50 !bg-gray"
+					className="z-50"
 					side="right"
 					variant="menu-1"
 				>
 					<DropdownMenuItem
-						className="hover:!bg-cuartenary-gray"
 						type="normal"
 						onClick={handleEdit}
 					>
@@ -70,10 +69,10 @@ export const DropdownQueries = ({ editQuery }: DropdownQueriesProps) => {
 						</svg>
 						Edit
 					</DropdownMenuItem>
-					<DropdownMenuSeparator className="bg-secondary-white" />
+					<DropdownMenuSeparator className="bg-gray" />
 					<DropdownMenuItem
 						type="delete"
-						className="text-red hover:!bg-cuartenary-gray"
+						className="text-red"
 						onClick={handleDelete}
 					>
 						<svg

@@ -26,10 +26,10 @@ const DARK_CANVAS_COLORS: CanvasThemeColors = {
 };
 
 const LIGHT_CANVAS_COLORS: CanvasThemeColors = {
-  handleBackground: "#e7e5e4",
-  handleBorder: "#a8a29e",
-  edgeStroke: "#a8a29e",
-  edgeStrokeSelected: "#57534e",
+  handleBackground: "#ffffff",
+  handleBorder: "#e5e7eb",
+  edgeStroke: "#9ca3af",
+  edgeStrokeSelected: "#6b7280",
   edgeMarkerSelected: "#0052cc",
 };
 

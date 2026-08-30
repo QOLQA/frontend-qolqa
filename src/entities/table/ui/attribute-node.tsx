@@ -42,7 +42,7 @@ export function AttributeNode({
             {column.type !== "PRIMARY_KEY" ? (
               <DropdownMenuTrigger asChild>
                 <MoreButton
-                  className="text-lighter-gray"
+                  className="text-white"
                   onClick={(e) => e.stopPropagation()}
                 />
               </DropdownMenuTrigger>

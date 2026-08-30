@@ -69,7 +69,7 @@ export const ButtonDuplicateVersion = () => {
 			onClick={handleDuplicate}
 			title={t("header.duplicateVersion") || "Duplicate version"}
 		>
-			<DuplicateIcon className="text-lighter-gray cursor-pointer group-hover:text-white group-hover:ease-in-out group-hover:duration-300" />
+			<DuplicateIcon className="text-white cursor-pointer group-hover:text-lighter-gray dark:group-hover:text-white group-hover:ease-in-out group-hover:duration-300" />
 		</button>
 	);
 };

@@ -12,8 +12,8 @@ describe("getThemeColors", () => {
 
   it("returns light colors when theme is 'light'", () => {
     const colors = getThemeColors("light");
-    expect(colors.background).toBe("#fafaf9");
-    expect(colors.gridStroke).toBe("rgba(168, 162, 158, 0.2)");
+    expect(colors.background).toBe("#f9fafb");
+    expect(colors.gridStroke).toBe("rgba(229, 231, 235, 0.7)");
     expect(colors.nodeColor).toBe("#0052cc");
     expect(colors.lightningColor).toBe("rgba(0, 82, 204,");
   });

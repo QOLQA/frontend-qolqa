@@ -26,7 +26,7 @@ export const AppHeader = ({ title }: { title: string }) => {
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-4">
             <ArrowLeft className="text-white" />
-            <ArrowRight className="text-lighter-gray" />
+            <ArrowRight className="text-white" />
           </div>
           <div className="flex items-center gap-3">
             <h1 className="text-h4 text-white">{title}</h1>

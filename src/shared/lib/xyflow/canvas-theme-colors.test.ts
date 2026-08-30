@@ -13,10 +13,10 @@ describe("getCanvasThemeColors", () => {
 
   it("returns light canvas colors when theme is 'light'", () => {
     const colors = getCanvasThemeColors("light");
-    expect(colors.handleBackground).toBe("#e7e5e4");
-    expect(colors.handleBorder).toBe("#a8a29e");
-    expect(colors.edgeStroke).toBe("#a8a29e");
-    expect(colors.edgeStrokeSelected).toBe("#57534e");
+    expect(colors.handleBackground).toBe("#ffffff");
+    expect(colors.handleBorder).toBe("#e5e7eb");
+    expect(colors.edgeStroke).toBe("#9ca3af");
+    expect(colors.edgeStrokeSelected).toBe("#6b7280");
     expect(colors.edgeMarkerSelected).toBe("#0052cc");
   });
 
@@ -31,9 +31,9 @@ describe("getCanvasThemeColors", () => {
     expect(colors.handleBackground).toBe("#1e1e1e");
   });
 
-  it("light handle background matches secondary-gray light value", () => {
+  it("light handle background matches canvas surface white", () => {
     const colors = getCanvasThemeColors("light");
-    expect(colors.handleBackground).toBe("#e7e5e4");
+    expect(colors.handleBackground).toBe("#ffffff");
   });
 
   it("dark handle background matches secondary-gray dark value", () => {

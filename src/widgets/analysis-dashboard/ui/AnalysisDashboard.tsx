@@ -18,7 +18,7 @@ export function AnalysisDashboard() {
 	} = useAnalysisChartData();
 
 	return (
-		<section className="flex flex-col h-full w-full items-center justify-center gap-10 bg-primary-gray rounded-xl p-4">
+		<section className="flex flex-col h-full w-full items-center justify-center gap-10 bg-terciary-gray border border-gray dark:border-transparent rounded-xl p-4">
 			<div className="flex flex-col w-full h-auto overflow-y-auto justify-start items-center gap-12 custom-scrollbar ">
 				<div className="flex flex-col w-full justify-start items-start gap-4 p-4">
 					<div className="flex flex-row items-center gap-6">

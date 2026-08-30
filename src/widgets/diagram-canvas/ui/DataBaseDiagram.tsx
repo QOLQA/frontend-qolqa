@@ -48,15 +48,17 @@ const DatabaseDiagram = () => {
 				onSubmit={handleAddCollection}
 			/>
 
-			<ReactFlow
-				{...reactFlowProps}
-				nodeTypes={nodeTypes}
-				edgeTypes={edgeTypes}
-			>
-				<Background className="!bg-terciary-gray rounded-xl" />
-				<Controls className="text-white controls-with-buttons " />
-				<MiniMap nodeClassName="!fill-gray" className="!bg-secondary-gray" />
-			</ReactFlow>
+			<div className="w-full h-full rounded-xl border border-gray dark:border-transparent overflow-hidden">
+				<ReactFlow
+					{...reactFlowProps}
+					nodeTypes={nodeTypes}
+					edgeTypes={edgeTypes}
+				>
+					<Background className="!bg-terciary-gray" gap={20} />
+					<Controls className="text-white controls-with-buttons " />
+					<MiniMap nodeClassName="!fill-gray" className="!bg-terciary-gray" />
+				</ReactFlow>
+			</div>
 		</div>
 	);
 };

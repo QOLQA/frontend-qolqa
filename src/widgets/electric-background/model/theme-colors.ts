@@ -13,8 +13,8 @@ const DARK_COLORS: ThemeColors = {
 };
 
 const LIGHT_COLORS: ThemeColors = {
-  background: "#fafaf9",
-  gridStroke: "rgba(168, 162, 158, 0.2)",
+  background: "#f9fafb",
+  gridStroke: "rgba(229, 231, 235, 0.7)",
   nodeColor: "#0052cc",
   lightningColor: "rgba(0, 82, 204,",
 };
