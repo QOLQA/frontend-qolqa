@@ -96,7 +96,7 @@ export const ButtonSave = () => {
 
 	return (
 		<button type="button" className="group cursor-pointer" onClick={handleSave}>
-			<Save className="text-white cursor-pointer group-hover:text-lighter-gray dark:group-hover:text-white group-hover:ease-in-out group-hover:duration-300" />
+			<Save className="text-icon-muted cursor-pointer group-hover:text-icon-intense transition-colors duration-300" />
 		</button>
 	);
 };

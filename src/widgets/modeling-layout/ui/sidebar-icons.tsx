@@ -54,7 +54,7 @@ export const SidebarIcons = ({
 											}
 										}}
 										isActive={activeItem?.title === item.title}
-										className="!h-[2.375rem] !w-[2.375rem] flex items-center justify-center mx-auto text-white hover:bg-cuartenary-gray hover:text-white [&>svg]:w-[1.25rem] [&>svg]:h-[1.25rem] "
+										className="!h-[2.375rem] !w-[2.375rem] flex items-center justify-center mx-auto cursor-pointer !text-icon-muted hover:!bg-icon-active-bg hover:!text-icon-intense data-[active=true]:!bg-icon-active-bg data-[active=true]:!text-icon-intense [&>svg]:w-[1.25rem] [&>svg]:h-[1.25rem]"
 									>
 										{item.icon && item.icon}
 										<span className="md:hidden">{item.title}</span>

@@ -23,6 +23,11 @@
 	--secondary-white: #374151;
 	--white: #111827;
 
+	/* Icon rail / header actions (Figma 4304:565) */
+	--icon-muted: #a0a6b0;
+	--icon-intense: #6b7280;
+	--icon-active-bg: #ededed;
+
 	/* Shadcn/ui — light mode */
 	--background: #f9fafb;
 	--foreground: #111827;
@@ -73,6 +78,11 @@
 	--secondary-white: #9d9d9d;
 	--white: #dfdfdf;
 
+	/* Icon rail / header actions (Figma 4304:576) */
+	--icon-muted: #747474;
+	--icon-intense: #dfdfdf;
+	--icon-active-bg: #363636;
+
 	/* Shadcn/ui — dark mode */
 	--background: oklch(0.147 0.004 49.25);
 	--foreground: oklch(0.985 0.001 106.423);
@@ -119,6 +129,9 @@
 	--color-lighter-gray: var(--lighter-gray);
 	--color-secondary-white: var(--secondary-white);
 	--color-white: var(--white);
+	--color-icon-muted: var(--icon-muted);
+	--color-icon-intense: var(--icon-intense);
+	--color-icon-active-bg: var(--icon-active-bg);
 }
 
 /* ──────────────────────────────────────────────
@@ -137,6 +150,11 @@
 	--color-lighter-gray: var(--lighter-gray);
 	--color-secondary-white: var(--secondary-white);
 	--color-white: var(--white);
+
+	/* Icon rail / header action colors */
+	--color-icon-muted: var(--icon-muted);
+	--color-icon-intense: var(--icon-intense);
+	--color-icon-active-bg: var(--icon-active-bg);
 
 	/* Accent colors (not theme-switched) */
 	--color-blue: #0052cc;
@@ -191,9 +209,10 @@
 	--radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Light-mode-only: Figma icon rail active state (#ededed) */
-:root [data-sidebar="menu-button"][data-active="true"] {
-	background-color: var(--color-cuartenary-gray);
+/* Icon rail active state — Figma light #ededed / dark #363636 */
+[data-sidebar="menu-button"][data-active="true"] {
+	background-color: var(--color-icon-active-bg);
+	color: var(--color-icon-intense);
 }
 
 /* ──────────────────────────────────────────────
