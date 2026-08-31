@@ -1,4 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
+function computeHighlightedWords(words: string[], tables: string[]): string[] {
+	const matchedWords: string[] = [];
+	words.forEach((word) => {
+		const wordPrefix = word.toLowerCase().slice(0, 3);
+		if (tables.some((t) => t.toLowerCase().slice(0, 3) === wordPrefix)) {
+			matchedWords.push(word);
+		}
+	});
+	return matchedWords;
+}
 
 function autoSelectTables(
 	words: string[],
@@ -28,23 +39,47 @@ function autoSelectTables(
 export function useTableSelection(
 	queryText: string,
 	availableTableNames: string[],
-	isOpen: boolean
+	isOpen: boolean,
+	initialTables?: string[]
 ) {
 	const [selectedTables, setSelectedTables] = useState<string[]>([]);
 	const [highlightedWords, setHighlightedWords] = useState<string[]>([]);
 	const [error, setError] = useState(false);
 	const words = queryText.trim().split(/\s+/);
 
+	// Guards seeding so selection is initialized only once per modal open.
+	// Manual add/remove afterwards is driven by the exposed handlers and is
+	// never re-seeded by this effect, even if the deps change while open.
+	const seededRef = useRef(false);
+
 	useEffect(() => {
-		if (isOpen && queryText.trim()) {
-			const { tables, matchedWords } = autoSelectTables(
-				words,
-				availableTableNames
-			);
-			setSelectedTables(tables);
-			setHighlightedWords(matchedWords);
+		if (!isOpen) {
+			seededRef.current = false;
+			return;
 		}
-	}, [isOpen, queryText]);
+
+		if (seededRef.current) {
+			return;
+		}
+		seededRef.current = true;
+
+		if (queryText.trim()) {
+			const seedWords = queryText.trim().split(/\s+/);
+			if (initialTables) {
+				setSelectedTables(initialTables);
+				setHighlightedWords(
+					computeHighlightedWords(seedWords, initialTables)
+				);
+			} else {
+				const { tables: autoTables, matchedWords } = autoSelectTables(
+					seedWords,
+					availableTableNames
+				);
+				setSelectedTables(autoTables);
+				setHighlightedWords(matchedWords);
+			}
+		}
+	}, [isOpen, queryText, availableTableNames, initialTables]);
 
 	const addTable = (tableName: string) => {
 		if (!selectedTables.includes(tableName)) {

@@ -47,7 +47,12 @@ export const ModalSelectDocs = ({
 		toggleWord,
 		clearSelection,
 		validateSelection,
-	} = useTableSelection(queryText, availableTableNames, open);
+	} = useTableSelection(
+		queryText,
+		availableTableNames,
+		open,
+		mode === "edit" ? queryEdit?.collections : undefined
+	);
 
 	const handleClose = () => {
 		setOpen(false);
