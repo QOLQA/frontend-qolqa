@@ -51,7 +51,7 @@ export const EditProjectModal = React.memo(function EditProjectModal({
 						value={solutionName}
 						onChange={(e) => setSolutionName(e.target.value)}
 						disabled={isPending}
-						className="w-full py-2 px-5 border border-gray rounded-md bg-terciary-gray focus:ring-2 focus:outline-none text-white disabled:opacity-50 disabled:cursor-not-allowed"
+						className="w-full py-2 px-5 border border-gray rounded-md bg-terciary-gray focus:ring-2 focus:ring-white dark:focus:ring-blue focus:outline-none text-white disabled:opacity-50 disabled:cursor-not-allowed"
 					/>
 				</div>
 				{isPending && (

@@ -23,17 +23,23 @@ export function useStatisticsSummary(): StatType[] {
       {
         name: "Access Pattern",
         value: getAccessPattern(nodes, edges),
-        color: "#0052CC",
+        color: "var(--metric-access)",
+        surface: "var(--metric-access-surface)",
+        foreground: "var(--metric-access-foreground)",
       },
       {
         name: "Recovery Cost",
         value: getRecoveryCost(nodes, edges),
-        color: "#00875A",
+        color: "var(--metric-recovery)",
+        surface: "var(--metric-recovery-surface)",
+        foreground: "var(--metric-recovery-foreground)",
       },
       {
         name: "Redundancy",
         value: getRedundancyMetrics(nodes),
-        color: "#5243AA",
+        color: "var(--metric-redundancy)",
+        surface: "var(--metric-redundancy-surface)",
+        foreground: "var(--metric-redundancy-foreground)",
       },
     ],
     [nodes, edges, selectedVersionId]

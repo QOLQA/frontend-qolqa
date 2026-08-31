@@ -15,27 +15,27 @@ export const LandingHeroWidget = () => {
       ref={containerRef}
       className="relative min-h-screen pt-32 pb-24 overflow-hidden bg-transparent"
     >
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-[#0052cc]/20 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-blue/20 rounded-full blur-[130px] pointer-events-none" />
 
       <div className="max-w-[1400px] mx-auto px-6 text-center relative z-10">
         <div
           ref={badgeRef}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1e1e1e]/80 backdrop-blur-md border border-[#363636] text-xs font-medium text-[#0052cc] mb-6 opacity-0"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary-gray/80 backdrop-blur-md border border-gray text-xs font-medium text-blue mb-6 opacity-0"
         >
-          <span className="w-2 h-2 rounded-full bg-[#0052cc] animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-blue animate-pulse" />
           {t("landing.hero.badge")}
         </div>
 
         <h1
           ref={titleRef}
-          className="text-h1 font-bold text-[#dfdfdf] tracking-tight max-w-4xl mx-auto opacity-0"
+          className="text-h1 font-bold text-foreground tracking-tight max-w-4xl mx-auto opacity-0"
         >
           {t("landing.hero.title")}
         </h1>
 
         <p
           ref={subtitleRef}
-          className="text-p-lg text-[#747474] mt-6 max-w-2xl mx-auto opacity-0"
+          className="text-p-lg text-lighter-gray mt-6 max-w-2xl mx-auto opacity-0"
         >
           {t("landing.hero.subtitle")}
         </p>
@@ -46,13 +46,13 @@ export const LandingHeroWidget = () => {
         >
           <Link
             href="/login"
-            className="px-6 py-3 rounded-md bg-[#0052cc] text-[#dfdfdf] font-medium hover:bg-[#0052cc]/90 transition-colors shadow-lg shadow-[#0052cc]/20"
+            className="px-6 py-3 rounded-md bg-blue text-[#ffffff] dark:text-white font-medium hover:bg-blue/90 transition-colors shadow-lg shadow-blue/20"
           >
             {t("landing.hero.ctaPrimary")}
           </Link>
           <a
             href="#metrics"
-            className="px-6 py-3 rounded-md bg-[#1e1e1e]/80 backdrop-blur-md border border-[#363636] text-[#dfdfdf] font-medium hover:bg-[#292929] transition-colors"
+            className="px-6 py-3 rounded-md bg-secondary-gray/80 backdrop-blur-md border border-gray text-foreground font-medium hover:bg-cuartenary-gray transition-colors"
           >
             {t("landing.hero.ctaSecondary")}
           </a>
@@ -61,7 +61,7 @@ export const LandingHeroWidget = () => {
         <div className="mt-16 [perspective:1000px]">
           <div
             ref={cardRef}
-            className="relative mx-auto rounded-xl overflow-hidden border border-[#363636] bg-[#1e1e1e]/90 backdrop-blur-md shadow-2xl max-w-5xl opacity-0 transition-shadow duration-500 hover:shadow-[#0052cc]/20"
+            className="relative mx-auto rounded-xl overflow-hidden border border-gray bg-secondary-gray/90 backdrop-blur-md shadow-2xl max-w-5xl opacity-0 transition-shadow duration-500 hover:shadow-blue/20"
           >
             <Image
               src="/images/hero-canvas-preview.png"

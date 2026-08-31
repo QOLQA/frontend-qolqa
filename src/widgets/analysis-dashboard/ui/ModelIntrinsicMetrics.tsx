@@ -11,15 +11,15 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 const chartConfig = {
 	redundancy: {
 		label: "Redundancy",
-		color: "#5243AA",
+		color: "var(--metric-redundancy)",
 	},
 	recovery_cost: {
 		label: "Recovery Cost",
-		color: "#00875A",
+		color: "var(--metric-recovery)",
 	},
 	access_pattern: {
 		label: "Access Pattern",
-		color: "#0052CC",
+		color: "var(--metric-access)",
 	},
 } satisfies ChartConfig;
 
@@ -50,35 +50,35 @@ export function ModelIntrinsicMetrics({
 					<Bar
 						dataKey="redundancy"
 						stackId="a"
-						fill="#5243AA"
+						fill="var(--metric-redundancy)"
 						radius={[0, 0, 4, 4]}
 					/>
 					<Bar
 						dataKey="recovery_cost"
 						stackId="a"
-						fill="#00875A"
+						fill="var(--metric-recovery)"
 						radius={[4, 4, 0, 0]}
 					/>
 					<Bar
 						dataKey="access_pattern"
 						stackId="a"
-						fill="#0052CC"
+						fill="var(--metric-access)"
 						radius={[4, 4, 0, 0]}
 					/>
 				</BarChart>
 			</ChartContainer>
 
 			<div className="flex gap-2 flex-row justify-between pl-10">
-				<div className=" text-[#0052CC] flex items-center gap-2">
-					<div className="size-4 bg-[#0052CC] rounded-sm"></div>
+				<div className="text-[var(--metric-access)] flex items-center gap-2">
+					<div className="size-4 rounded-sm bg-[var(--metric-access)]"></div>
 					<p>Access Pattern</p>
 				</div>
-				<div className=" text-[#00875A] flex items-center gap-2">
-					<div className="size-4 bg-[#00875A] rounded-sm"></div>
+				<div className="text-[var(--metric-recovery)] flex items-center gap-2">
+					<div className="size-4 rounded-sm bg-[var(--metric-recovery)]"></div>
 					<p>Recovery Cost</p>
 				</div>
-				<div className=" text-[#5243AA] flex items-center gap-2">
-					<div className="size-4 bg-[#5243AA] rounded-sm"></div>
+				<div className="text-[var(--metric-redundancy)] flex items-center gap-2">
+					<div className="size-4 rounded-sm bg-[var(--metric-redundancy)]"></div>
 					<p>Redundancy</p>
 				</div>
 			</div>

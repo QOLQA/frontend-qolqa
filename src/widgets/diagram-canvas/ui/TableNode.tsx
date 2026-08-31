@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import type { NodeTypes } from "@xyflow/react";
+import { useTheme } from "next-themes";
 
 import {
 	type TableNodeProps,
 	useDiagramConnectionUiStore,
 } from "@fsd/entities/solution";
+import { getCanvasThemeColors } from "@fsd/shared/lib/xyflow/canvas-theme-colors";
 import { TableNodeContainer } from "./TableNodeContainer";
 
 export const TableNode = ({ data, id }: TableNodeProps) => {
@@ -16,6 +18,8 @@ export const TableNode = ({ data, id }: TableNodeProps) => {
 		(state) => state.isConnecting,
 	);
 	const isTargetActive = isConnecting && isHovered;
+	const { resolvedTheme } = useTheme();
+	const canvasColors = getCanvasThemeColors(resolvedTheme);
 
 	return (
 		<div
@@ -63,13 +67,13 @@ export const TableNode = ({ data, id }: TableNodeProps) => {
 				}}
 			>
 				<div
-					className="group-hover:bg-[#0052cc] group-hover:border-[#0052cc] group-hover:scale-125 group-hover:shadow-[0_0_0_4px_rgba(0,82,204,0.2)]"
+					className="group-hover:bg-blue group-hover:border-blue group-hover:scale-125 group-hover:shadow-[0_0_0_4px_rgba(0,82,204,0.2)]"
 					style={{
 						width: "12px",
 						height: "12px",
 						borderRadius: "50%",
-						background: "#1e1e1e",
-						border: "2px solid #4e4e4e",
+						background: canvasColors.handleBackground,
+						border: `2px solid ${canvasColors.handleBorder}`,
 						transition: "all 0.2s ease",
 					}}
 				/>

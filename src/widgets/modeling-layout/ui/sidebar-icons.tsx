@@ -31,7 +31,7 @@ export const SidebarIcons = ({
 	return (
 		<Sidebar
 			collapsible="none"
-			className="!w-[calc(var(--sidebar-width-icon)+1px)] bg-secondary-gray "
+			className="!w-[calc(var(--sidebar-width-icon)+1px)] bg-secondary-gray"
 		>
 			<SidebarContent>
 				<SidebarGroup>
@@ -54,7 +54,7 @@ export const SidebarIcons = ({
 											}
 										}}
 										isActive={activeItem?.title === item.title}
-										className="!h-[2.375rem] !w-[2.375rem] flex items-center justify-center mx-auto text-lighter-gray hover:bg-cuartenary-gray hover:text-lighter-gray [&>svg]:w-[1.25rem] [&>svg]:h-[1.25rem] "
+										className="!h-[2.375rem] !w-[2.375rem] flex items-center justify-center mx-auto cursor-pointer !text-icon-muted hover:!bg-icon-active-bg hover:!text-icon-intense data-[active=true]:!bg-icon-active-bg data-[active=true]:!text-icon-intense [&>svg]:w-[1.25rem] [&>svg]:h-[1.25rem]"
 									>
 										{item.icon && item.icon}
 										<span className="md:hidden">{item.title}</span>

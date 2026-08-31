@@ -1,6 +1,7 @@
 "use client";
 
 import type { StatType } from "@fsd/entities/solution";
+import type { CSSProperties } from "react";
 
 export function LineStats({ data }: { data: StatType[] }) {
 	const totalValue = data.reduce((sum, stat) => sum + stat.value, 0);
@@ -13,13 +14,15 @@ export function LineStats({ data }: { data: StatType[] }) {
 				return (
 					<div
 						key={index}
-						className="rounded-2xl"
-						style={{
-							backgroundColor: stat.color,
-							height: `${percentage}%`,
-							width: "8px",
-							boxShadow: `0 0 15px ${stat.color}`,
-						}}
+						className="rounded-2xl metric-bar-segment"
+						style={
+							{
+								backgroundColor: stat.color,
+								height: `${percentage}%`,
+								width: "8px",
+								"--segment-color": stat.color,
+							} as CSSProperties
+						}
 					/>
 				);
 			})}
