@@ -13,7 +13,6 @@ import { SquadStats } from "./SquadStats";
 import { StatsLineTotal } from "./StatsLineTotal";
 
 export function MetricsPanel() {
-	// 1. Select RAW data. This selector is stable and won't cause loops.
 	const { nodes, edges, selectedVersionId } = useSolutionStore(
 		useShallow((state) => ({
 			nodes: state.nodes,
@@ -22,23 +21,28 @@ export function MetricsPanel() {
 		})),
 	);
 
-	// 2. Compute the statistics ONLY when nodes, edges, or version changes.
 	const data = useMemo(() => {
 		return [
 			{
 				name: "Access Pattern",
 				value: getAccessPattern(nodes, edges),
-				color: "#0052CC",
+				color: "var(--metric-access)",
+				surface: "var(--metric-access-surface)",
+				foreground: "var(--metric-access-foreground)",
 			},
 			{
 				name: "Recovery Cost",
 				value: getRecoveryCost(nodes, edges),
-				color: "#00875A",
+				color: "var(--metric-recovery)",
+				surface: "var(--metric-recovery-surface)",
+				foreground: "var(--metric-recovery-foreground)",
 			},
 			{
 				name: "Redundancy",
 				value: getRedundancyMetrics(nodes),
-				color: "#5243AA",
+				color: "var(--metric-redundancy)",
+				surface: "var(--metric-redundancy-surface)",
+				foreground: "var(--metric-redundancy-foreground)",
 			},
 		];
 	}, [nodes, edges, selectedVersionId]);

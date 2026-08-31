@@ -112,5 +112,10 @@ export interface VersionFrontend {
 export interface StatType {
 	name: string;
 	value: number;
+	/** Accent color for the stacked bar */
 	color: string;
+	/** Card background (tinted in light, solid in dark) */
+	surface: string;
+	/** Card text color */
+	foreground: string;
 }

@@ -17,7 +17,7 @@ export function AuthFlow() {
   return (
     <div className="min-h-screen bg-primary-gray flex items-center justify-center p-4 transition-colors duration-300">
       <div className="w-full max-w-md">
-        <div className="bg-secondary-gray rounded-2xl shadow-lg p-8 border border-gray transition-all duration-300">
+        <div className="bg-terciary-gray rounded-2xl shadow-lg p-8 border border-gray transition-all duration-300">
           <div className="flex justify-center mb-5">
             <Logo className="inline-block" logoClassName="text-blue w-52" />
           </div>

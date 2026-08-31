@@ -132,7 +132,7 @@ export function ProjectsPage({
               onClick={() => {
                 setIsAddProjectModalOpen(true);
               }}
-              className="text-white font-weight-900 cursor-pointer bg-black hover:bg-primary-gray"
+              className="text-white dark:text-white font-weight-900 cursor-pointer bg-black hover:bg-primary-gray"
             >
               <Plus /> {t("other.newProject")}
             </Button>

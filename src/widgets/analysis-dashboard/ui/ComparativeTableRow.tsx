@@ -78,22 +78,22 @@ export function ComparativeTableRow({
 					</h3>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[90px] h-[32px] flex justify-center items-center bg-[#0052CC]/10 rounded-lg">
-						<h3 className="text-[20px] font-bold text-[#0052CC]">
+					<div className="w-[90px] h-[32px] flex justify-center items-center rounded-lg bg-[color-mix(in_srgb,var(--metric-access)_12%,transparent)]">
+						<h3 className="text-[20px] font-bold text-[var(--metric-access)]">
 							{metric.access_pattern}
 						</h3>
 					</div>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[90px] h-[32px] flex justify-center items-center bg-[#00875A]/10 rounded-lg">
-						<h3 className="text-[20px] font-bold text-[#00875A]">
+					<div className="w-[90px] h-[32px] flex justify-center items-center rounded-lg bg-[color-mix(in_srgb,var(--metric-recovery)_12%,transparent)]">
+						<h3 className="text-[20px] font-bold text-[var(--metric-recovery)]">
 							{metric.recovery_cost}
 						</h3>
 					</div>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[90px] h-[32px] flex justify-center items-center bg-[#5243AA]/10 rounded-lg">
-						<h3 className="text-[20px] font-bold text-[#5243AA]">
+					<div className="w-[90px] h-[32px] flex justify-center items-center rounded-lg bg-[color-mix(in_srgb,var(--metric-redundancy)_12%,transparent)]">
+						<h3 className="text-[20px] font-bold text-[var(--metric-redundancy)]">
 							{metric.redundancy}
 						</h3>
 					</div>
@@ -106,8 +106,8 @@ export function ComparativeTableRow({
 					</div>
 				</div>
 				<div className="w-[12%] flex justify-center items-center">
-					<div className="w-[90px] h-[32px] flex justify-center items-center bg-[#E93544]/10 rounded-lg">
-						<h3 className="text-[20px] font-bold text-[#E93544]">
+					<div className="w-[90px] h-[32px] flex justify-center items-center rounded-lg bg-[color-mix(in_srgb,var(--metric-gauge-arc)_12%,transparent)]">
+						<h3 className="text-[20px] font-bold text-[var(--metric-gauge-arc)]">
 							{completudeVal}
 						</h3>
 					</div>

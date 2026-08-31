@@ -66,7 +66,7 @@ export function ModalDocument({ onSubmit, open, setOpen }: ModalDocumentProps) {
 						{...register("name")}
 						disabled={isPending}
 						aria-describedby={errors.name ? "document-name-error" : undefined}
-						className="w-full py-2 px-5 border border-gray rounded-md bg-terciary-gray focus:ring-2 focus:outline-none text-white"
+						className="w-full py-2 px-5 border border-gray rounded-md bg-terciary-gray focus:ring-2 focus:ring-white dark:focus:ring-blue focus:outline-none text-white"
 					/>
 				</div>
 				{errors.name && (

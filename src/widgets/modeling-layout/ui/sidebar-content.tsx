@@ -19,9 +19,9 @@ export const SidebarContentPrinc = ({
 	return (
 		<Sidebar
 			collapsible="none"
-			className="hidden flex-1 md:flex bg-cuartenary-gray rounded-2xl p-[36px] text-white gap-y-[16px]  "
+			className="hidden flex-1 md:flex bg-terciary-gray border border-gray dark:border-transparent dark:bg-cuartenary-gray rounded-2xl p-[36px] text-white gap-y-[16px]  "
 		>
-			<SidebarHeader className="gap-3.5 border-b-2 border-semilighter-gray py-4 px-0 ">
+			<SidebarHeader className="gap-3.5 border-b border-gray py-4 px-0 ">
 				<div className="flex w-full items-center justify-between ">
 					<div className="text-base font-medium text-white text-h3 ">
 						{activeItem?.title}
@@ -31,7 +31,7 @@ export const SidebarContentPrinc = ({
 							variant={"outline"}
 							type="button"
 							onClick={activeItem?.aditionalToTitle?.onClick}
-							className="w-[6rem] cursor-pointer border-none text-h3 text-white bg-gray hover:bg-semilighter-gray hover:text-white w-fit"
+							className="w-[6rem] cursor-pointer border border-gray dark:border-none text-h3 text-white bg-primary-gray dark:bg-gray hover:bg-cuartenary-gray dark:hover:bg-semilighter-gray hover:text-white w-fit"
 						>
 							{activeItem?.aditionalToTitle?.titleButton}
 						</Button>

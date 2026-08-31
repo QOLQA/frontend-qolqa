@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import { ChevronsUpDown, LogOut, UserRound } from "lucide-react";
 import type { User } from "@fsd/entities/user";
 import { useAuthContext } from "@fsd/features/auth";
@@ -12,6 +13,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@fsd/shared/ui/dropdown-menu";
@@ -26,6 +29,10 @@ export function NavUser({ user }: { user: User }) {
 	const { isMobile } = useSidebar();
 	const { logout, refreshUser, user: authUser } = useAuthContext();
 	const [profileOpen, setProfileOpen] = useState(false);
+	const { theme, resolvedTheme, setTheme } = useTheme();
+
+	const selectedTheme =
+		theme === "light" || theme === "dark" ? theme : (resolvedTheme ?? "light");
 
 	return (
 		<>
@@ -35,7 +42,7 @@ export function NavUser({ user }: { user: User }) {
 						<DropdownMenuTrigger asChild>
 							<SidebarMenuButton
 								size="lg"
-								className="size-[2.375rem] md:p-0 mx-auto text-lighter-gray"
+								className="size-[2.375rem] md:p-0 mx-auto text-lighter-gray cursor-pointer"
 							>
 								<Avatar className="size-[2.375rem] mx-auto rounded-full">
 									<AvatarImage src={user.avatar} alt={user.username} />
@@ -71,11 +78,30 @@ export function NavUser({ user }: { user: User }) {
 								</div>
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
-						<DropdownMenuItem className="cursor-pointer" onSelect={() => setProfileOpen(true)}>
-							<UserRound />
-							Profile
-						</DropdownMenuItem>
-						<DropdownMenuItem className="cursor-pointer" onSelect={logout}>
+							<DropdownMenuItem
+								className="cursor-pointer"
+								onSelect={() => setProfileOpen(true)}
+							>
+								<UserRound />
+								Profile
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
+								Theme
+							</DropdownMenuLabel>
+							<DropdownMenuRadioGroup
+								value={selectedTheme}
+								onValueChange={(value) => setTheme(value)}
+							>
+								<DropdownMenuRadioItem value="dark" className="cursor-pointer">
+									Dark
+								</DropdownMenuRadioItem>
+								<DropdownMenuRadioItem value="light" className="cursor-pointer">
+									Light
+								</DropdownMenuRadioItem>
+							</DropdownMenuRadioGroup>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem className="cursor-pointer" onSelect={logout}>
 								<LogOut />
 								Log out
 							</DropdownMenuItem>

@@ -76,7 +76,7 @@ export const ModalNewQuery = ({
 								if (error) setError(false);
 							}}
 							disabled={isPending}
-							className="text-h4 w-full h-36 py-3 px-5 border border-gray rounded-md bg-terciary-gray focus:outline-none text-white placeholder:text-lighter-gray disabled:opacity-50 disabled:cursor-not-allowed"
+							className="text-h4 w-full h-36 py-3 px-5 border border-gray rounded-md bg-terciary-gray focus:ring-2 focus:ring-white dark:focus:ring-blue focus:outline-none text-white placeholder:text-lighter-gray disabled:opacity-50 disabled:cursor-not-allowed"
 						/>
 					</div>
 					{error && (

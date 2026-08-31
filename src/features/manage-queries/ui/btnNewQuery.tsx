@@ -12,9 +12,9 @@ export const BtnNewQuery = () => {
 			<button
 				type="button"
 				onClick={() => setOpen(true)}
-				className="w-full h-auto py-4 flex justify-center rounded-xl items-center border-2 border-dashed border-semilighter-gray bg-transparent text-lighter-gray"
+				className="w-full h-auto py-4 flex justify-center rounded-xl items-center border-2 border-dashed border-gray bg-transparent text-semilighter-gray"
 			>
-				<div className="py-1.5 px-5 border border-semilighter-gray bg-transparent rounded-lg text-h5 hover:bg-lighter-gray hover:text-gray cursor-pointer transition-all duration-500">
+				<div className="py-1.5 px-5 border border-gray bg-transparent rounded-lg text-h5 hover:bg-primary-gray hover:text-white cursor-pointer transition-all duration-500">
 					Add Query
 				</div>
 			</button>

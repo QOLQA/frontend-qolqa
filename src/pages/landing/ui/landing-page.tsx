@@ -11,7 +11,7 @@ import { LandingDonationWidget } from "@fsd/widgets/landing-donation";
 export function LandingPage() {
   return (
     <SmoothScrollProvider>
-      <div className="relative bg-[#0f0f0f] text-[#dfdfdf] min-h-screen overflow-x-hidden">
+      <div className="relative bg-background text-foreground min-h-screen overflow-x-hidden">
         {/* Header Fijo */}
         <LandingHeaderWidget />
 

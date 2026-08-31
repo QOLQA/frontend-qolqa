@@ -8,8 +8,11 @@ export function SquadStats({ data }: { data: StatType[] }) {
 			{data.map((stat, index) => (
 				<div
 					key={index}
-					className="flex flex-col items-center justify-center w-[158px] h-[100%] rounded-2xl py-4 px-5"
-					style={{ backgroundColor: stat.color }}
+					className="flex flex-col items-center justify-center w-[158px] h-[100%] rounded-2xl py-4 px-5 border border-border dark:border-transparent"
+					style={{
+						backgroundColor: stat.surface,
+						color: stat.foreground,
+					}}
 				>
 					<span className="text-h2 font-bold">{stat.value}</span>
 					<span className="text-center text-h5">{stat.name}</span>
