@@ -113,7 +113,7 @@ export function Modal({
 				<div className="w-full h-[2px] bg-gray shrink-0" />
 
 				{/* Content — explicit top/bottom gap from divider and actions */}
-				<div className="pt-16 pb-16">{children}</div>
+				<div className="pt-4 pb-4">{children}</div>
 
 				{/* Footer */}
 				<div className="flex justify-end gap-4">
