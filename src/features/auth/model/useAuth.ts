@@ -257,6 +257,7 @@ export const useAuth = () => {
 		loading,
 		error,
 		login,
+		googleLogin,
 		register,
 		logout,
 		isAuthenticated: !!user,
