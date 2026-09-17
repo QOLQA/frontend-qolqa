@@ -6,3 +6,4 @@ export { SubmitButton } from "./login/ui/SubmitButton";
 export { createLoginAction, createRegisterAction } from "./login/model/actions";
 export { useLoginFlow } from "./login/model/use-login-flow";
 export type { LoginFormData, RegisterFormData } from "./login/model/validation";
+export { GoogleLoginButton, useGoogleLogin } from "./google";

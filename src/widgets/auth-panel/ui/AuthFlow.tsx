@@ -1,6 +1,6 @@
 "use client";
 
-import { LoginForm, useLoginFlow } from "@fsd/features/auth";
+import { LoginForm, useLoginFlow, GoogleLoginButton } from "@fsd/features/auth";
 import { AuthToggle } from "./AuthToggle";
 import { StatusMessages } from "./StatusMessages";
 import { Logo } from "@fsd/shared/ui/logo";
@@ -33,6 +33,13 @@ export function AuthFlow() {
             onSubmit={handleFormSubmit}
             isSubmitting={optimisticState.status === "submitting"}
           />
+
+          {!isSignUp && (
+            <>
+              <div className="my-4 border-t border-gray" />
+              <GoogleLoginButton />
+            </>
+          )}
 
           <div className="mt-6 text-center transition-all duration-300">
             <p className="text-sm text-secondary-white transition-all duration-300">
