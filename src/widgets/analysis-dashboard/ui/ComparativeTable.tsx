@@ -3,8 +3,8 @@
 import type {
 	CompletudeChartRow,
 	MetricChartRow,
-} from "@fsd/features/analysis";
-import { useSchemaMetricsSelection } from "@fsd/features/analysis";
+} from "@fsd/features/version-comparison";
+import { useSchemaMetricsSelection } from "@fsd/features/version-comparison";
 import { ComparativeTableRow } from "./ComparativeTableRow";
 
 interface ComparativeTableProps {

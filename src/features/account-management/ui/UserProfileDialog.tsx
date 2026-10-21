@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { Modal } from "@fsd/shared/ui/modal";
-import { useUserProfile } from "@fsd/features/user-profile/model/use-user-profile";
+import { useUserProfile } from "@fsd/features/account-management/model/use-user-profile";
 import { AvatarUpload } from "./AvatarUpload";
 import { ProfileForm } from "./ProfileForm";
 import { DeleteAccountSection } from "./DeleteAccountSection";

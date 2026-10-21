@@ -6,7 +6,7 @@ import {
 	ModalAttributes,
 	ModalDocument,
 	useTableNodeContent,
-} from "@fsd/features/modeling-solution";
+} from "@fsd/features/schema-modeling";
 
 interface TableNodeContainerProps extends TableNodeProps {
 	isNested?: boolean;

@@ -7,7 +7,7 @@ import {
 	useDatabaseDiagram,
 	edgeTypes,
 	ModalAddCollection,
-} from "@fsd/features/modeling-solution";
+} from "@fsd/features/schema-modeling";
 import { nodeTypes } from "./TableNode";
 
 const DatabaseDiagram = () => {

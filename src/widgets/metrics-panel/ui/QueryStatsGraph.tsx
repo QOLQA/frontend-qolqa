@@ -1,6 +1,6 @@
 "use client";
 
-import { useHandledQueriesPercentage } from "@fsd/features/modeling-metrics";
+import { useHandledQueriesPercentage } from "@fsd/features/schema-metrics-calculation";
 import {
 	Label,
 	PolarGrid,

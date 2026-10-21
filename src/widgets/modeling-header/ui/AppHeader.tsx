@@ -10,7 +10,7 @@ import {
   ButtonDuplicateVersion,
   ButtonSave,
   VersionDropdown,
-} from "@fsd/features/solution-versioning";
+} from "@fsd/features/version-management";
 
 export const AppHeader = ({ title }: { title: string }) => {
   return (

@@ -13,7 +13,7 @@ import {
   EditProjectModal,
   DeleteProjectModal,
   useProjectsStore,
-} from "@fsd/features/manage-projects";
+} from "@fsd/features/project-management";
 import { SolutionCard, type SolutionListItem } from "@fsd/entities/solution";
 
 interface CreateSolutionResponse {

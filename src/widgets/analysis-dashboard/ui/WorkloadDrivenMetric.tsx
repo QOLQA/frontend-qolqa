@@ -4,7 +4,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@fsd/shared/ui/chart";
-import type { CompletudeChartRow } from "@fsd/features/analysis";
+import type { CompletudeChartRow } from "@fsd/features/version-comparison";
 import React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 

@@ -6,7 +6,7 @@ import { ChevronsUpDown, LogOut, UserRound } from "lucide-react";
 import type { User } from "@fsd/entities/user";
 import { useAuthContext } from "@fsd/features/auth";
 import { getInitials } from "@fsd/shared/lib/initials";
-import { UserProfileDialog } from "@fsd/features/user-profile";
+import { UserProfileDialog } from "@fsd/features/account-management";
 import { Avatar, AvatarFallback, AvatarImage } from "@fsd/shared/ui/avatar";
 import {
 	DropdownMenu,

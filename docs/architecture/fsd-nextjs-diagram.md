@@ -25,11 +25,11 @@ flowchart TB
   subgraph FSDFeatures ["Capa FSD: features (src/features) — acciones de usuario"]
     featAuth["auth\nuseAuth, login UI, actions"]
     featProjectMgmt["project-management\nAdd/Edit/Delete modals, useModelsStore"]
-    featModelingSolution["modeling-solution\ncanvaStore, LayoutDiagram, DataBaseDiagram, useDiagramSessionHydration"]
-    featSolutionVersioning["solution-versioning\nAppHeader, load/save/duplicate, versions"]
-    featQueries["queries\nAppQueries, useQueryOperations, useTableSelection"]
-    featModelingMetrics["modeling-metrics\nuseStatisticsSummary, QueryStatsGraph"]
-    featAnalysis["analysis\nhooks + chart types (model)"]
+    featModelingSolution["schema-modeling\ncanvaStore, LayoutDiagram, DataBaseDiagram, useDiagramSessionHydration"]
+    featSolutionVersioning["version-management\nAppHeader, load/save/duplicate, versions"]
+    featQueries["query-management\nAppQueries, useQueryOperations, useTableSelection"]
+    featModelingMetrics["schema-metrics-calculation\nuseStatisticsSummary, QueryStatsGraph"]
+    featAnalysis["version-comparison\nhooks + chart types (model)"]
   end
 
   subgraph FSDEntities ["Capa FSD: entities (src/entities) — dominio"]

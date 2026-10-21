@@ -24,7 +24,7 @@ src/
 ├── app/          # Next.js App Router pages and layouts
 ├── pages/        # Page-level components
 ├── widgets/      # Composite UI blocks (e.g. DiagramCanvas, JsonEditor)
-├── features/     # User-facing interactions (e.g. modeling-solution, table-connect)
+├── features/     # User-facing interactions (e.g. schema-modeling, version-management)
 ├── entities/     # Domain models and their UI (e.g. table, solution)
 └── shared/       # Utilities, UI primitives, design tokens
 ```
@@ -90,7 +90,7 @@ Centralized in `src/entities/table/lib/column-type-labels.ts`:
 ```
 src/entities/table/lib/column-type-labels.test.ts
 src/entities/table/ui/attribute-node.test.tsx
-src/features/modeling-solution/model/use-toggle-fk-array.test.ts
+src/features/schema-modeling/model/use-toggle-fk-array.test.ts
 src/widgets/json-editor/lib/canvas-schema.test.ts
 ```
 

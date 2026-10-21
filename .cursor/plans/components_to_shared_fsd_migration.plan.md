@@ -18,7 +18,7 @@ isProject: false
   - `@/lib/utils` — función `cn` (clsx + twMerge).
   - `@/contexts/dropdown-context` — DropdownProvider, useDropdownContext (usado por ManagedDropdownMenu).
   - `@/hooks/use-mobile` — useIsMobile (usado por sidebar).
-- **Consumidores:** features (analysis, modeling-solution, solution-versioning, queries, project-management), pages (projects, modeling), app/layout, y entre los propios componentes.
+- **Consumidores:** features (version-comparison, schema-modeling, version-management, query-management, project-management), pages (projects, modeling), app/layout, y entre los propios componentes.
 
 ## Objetivo FSD
 
@@ -124,9 +124,9 @@ O mantener imports directos por ruta: `@fsd/shared/ui/button`, `@fsd/shared/ui/i
 | Archivo                                   | Cambios                                                                                                                 |
 | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | `app/layout.tsx`                          | `@/components/ui/sonner` → `@fsd/shared/ui/sonner`; `@/contexts/dropdown-context` → `@fsd/shared/lib/dropdown-context`  |
-| `src/features/analysis/ui/*`              | `@/components/ui/chart` → `@fsd/shared/ui/chart`; `@/components/icons/HeaderIcons` → `@fsd/shared/ui/icons/HeaderIcons` |
-| `src/features/modeling-solution/ui/*`     | Actualizar todos los imports de `@/components/*` a `@fsd/shared/*`                                                      |
-| `src/features/solution-versioning/ui/*`   | Idem                                                                                                                    |
+| `src/features/version-comparison/ui/*`              | `@/components/ui/chart` → `@fsd/shared/ui/chart`; `@/components/icons/HeaderIcons` → `@fsd/shared/ui/icons/HeaderIcons` |
+| `src/features/schema-modeling/ui/*`     | Actualizar todos los imports de `@/components/*` a `@fsd/shared/*`                                                      |
+| `src/features/version-management/ui/*`   | Idem                                                                                                                    |
 | `src/features/queries/ui/*`               | Idem                                                                                                                    |
 | `src/features/project-management/*/ui/*`  | Idem                                                                                                                    |
 | `src/pages/*`                             | Idem                                                                                                                    |

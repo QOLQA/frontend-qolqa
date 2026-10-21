@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	ProfileFormSchema,
 	type ProfileFormValues,
-} from "@fsd/features/user-profile/model/profile.schema";
+} from "@fsd/features/account-management/model/profile.schema";
 import type { User, UserUpdateRequest } from "@fsd/entities/user";
 import { Input } from "@fsd/shared/ui/input";
 import { Label } from "@fsd/shared/ui/label";

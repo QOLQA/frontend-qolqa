@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryItem, useQueriesStore } from "@fsd/entities/query";
-import { BtnNewQuery } from "@fsd/features/manage-queries";
+import { BtnNewQuery } from "@fsd/features/query-management";
 import { DropdownQueries } from "./dropdownQueries";
 
 export const QueriesPanel = () => {

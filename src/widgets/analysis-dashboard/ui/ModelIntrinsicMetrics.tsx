@@ -4,7 +4,7 @@ import {
 	ChartTooltip,
 } from "@fsd/shared/ui/chart";
 import { ChartTooltipContent } from "@fsd/shared/ui/chart";
-import type { MetricChartRow } from "@fsd/features/analysis";
+import type { MetricChartRow } from "@fsd/features/version-comparison";
 import React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 

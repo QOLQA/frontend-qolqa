@@ -1,6 +1,6 @@
 "use client";
 
-import { useAnalysisChartData } from "@fsd/features/analysis";
+import { useAnalysisChartData } from "@fsd/features/version-comparison";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ComparativeTable } from "./ComparativeTable";

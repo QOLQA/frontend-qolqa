@@ -26,4 +26,4 @@ En conjunto, las tres capas forman una cadena de responsabilidades: los **widget
 
 ---
 
-*Contexto de referencia en este proyecto: el widget `metrics-panel`, la feature `modeling-metrics` y las entidades `solution` y `query` ilustran este patrón: la UI compone el panel, la feature expone hooks que leen estado y aplican métricas, y las entidades aportan stores y funciones puras.*
+*Contexto de referencia en este proyecto: el widget `metrics-panel`, la feature `schema-metrics-calculation` y las entidades `solution` y `query` ilustran este patrón: la UI compone el panel, la feature expone hooks que leen estado y aplican métricas, y las entidades aportan stores y funciones puras.*

@@ -61,11 +61,11 @@ flowchart TB
   subgraph featuresLayer [features]
     featAuth["auth\n(useAuth + login UI/actions)"]
     featProjectMgmt["project-management\n(Add/Edit/Delete + modelsStore)"]
-    featModelingSolution["modeling-solution\n(canvas store + LayoutDiagram + DiagramHydration)"]
-    featSolutionVersioning["solution-versioning\n(AppHeader + load/save/duplicate versions)"]
-    featQueries["queries\n(AppQueries + query ops + selection)"]
-    featModelingMetrics["modeling-metrics\n(hooks: summary + queries %)"]
-    featAnalysis["analysis\n(model: hooks + chart types)"]
+    featModelingSolution["schema-modeling\n(canvas store + LayoutDiagram + DiagramHydration)"]
+    featSolutionVersioning["version-management\n(AppHeader + load/save/duplicate versions)"]
+    featQueries["query-management\n(AppQueries + query ops + selection)"]
+    featModelingMetrics["schema-metrics-calculation\n(hooks: summary + queries %)"]
+    featAnalysis["version-comparison\n(model: hooks + chart types)"]
   end
 
   %% ======================
@@ -165,19 +165,19 @@ flowchart TB
   entUser --> sharedApi
 ```
 
-> Nota: `analysis` consume `modeling-solution` para hidratar/leer el estado del diagrama (store + types).
+> Nota: `version-comparison` consume `schema-modeling` para hidratar/leer el estado del diagrama (store + types).
 
 ---
 
 ## 3) Diagramas por feature (slice-by-slice)
 
-### 3.1 Feature `analysis`
+### 3.1 Feature `version-comparison`
 
 ```mermaid
 flowchart TB
-  pageAnalysis["pages/analysis\n(AnalysisPage composes layout)"] --> featAnalysis["features/analysis\n(hooks + types)"]
+  pageAnalysis["pages/analysis\n(AnalysisPage composes layout)"] --> featAnalysis["features/version-comparison\n(hooks + types)"]
   pageAnalysis --> widgetAnalysisDash["widgets/analysis-dashboard\n(AnalysisDashboard)"]
-  pageAnalysis --> featModelingSolution["features/modeling-solution\n(useDiagramSessionHydration + store)"]
+  pageAnalysis --> featModelingSolution["features/schema-modeling\n(useDiagramSessionHydration + store)"]
   pageAnalysis --> sharedApiServer["@fsd/shared/api/server\n(getAuthenticatedSolution)"]
 
   featAnalysis --> entSolutionLibMetrics["@fsd/entities/solution/lib/metrics"]
@@ -185,22 +185,22 @@ flowchart TB
   featModelingSolution --> entSolution["@fsd/entities/solution"]
 ```
 
-### 3.2 Feature `modeling-solution`
+### 3.2 Feature `schema-modeling`
 
 ```mermaid
 flowchart TB
-  pageCanva["pages/modeling\n(ModelingPage)"] --> featModelingSolution["features/modeling-solution\n(LayoutDiagram + DataBaseDiagram + store)"]
+  pageCanva["pages/modeling\n(ModelingPage)"] --> featModelingSolution["features/schema-modeling\n(LayoutDiagram + DataBaseDiagram + store)"]
   featModelingSolution --> sharedUi["@fsd/shared/ui\n(sidebar, modal, dropdown, button, chart, ...)"]
   featModelingSolution --> sharedLibUtils["@fsd/shared/lib/utils\n(edges/colors/keys)"]
   featModelingSolution --> sharedLibI18n["@fsd/shared/lib/i18n\n(use-translation)"]
   featModelingSolution --> entSolution["@fsd/entities/solution"]
 ```
 
-### 3.3 Feature `solution-versioning`
+### 3.3 Feature `version-management`
 
 ```mermaid
 flowchart TB
-  pageCanva["pages/modeling"] --> featSolutionVersioning["features/solution-versioning\n(AppHeader + load/save/duplicate)"]
+  pageCanva["pages/modeling"] --> featSolutionVersioning["features/version-management\n(AppHeader + load/save/duplicate)"]
   featSolutionVersioning --> sharedApi["@fsd/shared/api\n(api client)"]
   featSolutionVersioning --> sharedLibConversions["@fsd/shared/lib/conversions"]
   featSolutionVersioning --> sharedLibImage["@fsd/shared/lib/image\n(uploadImage)"]
@@ -208,7 +208,7 @@ flowchart TB
   featSolutionVersioning --> entSolution["@fsd/entities/solution"]
 ```
 
-### 3.4 Feature `queries`
+### 3.4 Feature `query-management`
 
 ```mermaid
 flowchart TB
@@ -220,11 +220,11 @@ flowchart TB
   featQueries --> entSolution["@fsd/entities/solution"]
 ```
 
-### 3.5 Feature `modeling-metrics`
+### 3.5 Feature `schema-metrics-calculation`
 
 ```mermaid
 flowchart TB
-  pageCanva["pages/modeling"] --> featModelingMetrics["features/modeling-metrics\n(useStatisticsSummary + useHandledQueriesPercentage)"]
+  pageCanva["pages/modeling"] --> featModelingMetrics["features/schema-metrics-calculation\n(useStatisticsSummary + useHandledQueriesPercentage)"]
   featModelingMetrics --> entSolutionLibMetrics["@fsd/entities/solution/lib/metrics"]
   featModelingMetrics --> sharedUi["@fsd/shared/ui\n(chart)"]
   featModelingMetrics --> entSolution["@fsd/entities/solution"]

@@ -5,7 +5,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import type {
 	CompletudeChartRow,
 	MetricChartRow,
-} from "@fsd/features/analysis";
+} from "@fsd/features/version-comparison";
 import { SubmodelRow } from "./SubmodelRow";
 
 interface ComparativeTableRowProps {

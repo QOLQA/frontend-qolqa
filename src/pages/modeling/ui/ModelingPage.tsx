@@ -1,7 +1,7 @@
 "use client";
 
-import { useInitializeDiagram } from "@fsd/features/modeling-solution";
-import { useSyncQueriesForSolution } from "@fsd/features/manage-queries";
+import { useInitializeDiagram } from "@fsd/features/schema-modeling";
+import { useSyncQueriesForSolution } from "@fsd/features/query-management";
 import { AppHeader } from "@fsd/widgets/modeling-header";
 import { QueriesPanel } from "@fsd/widgets/queries-panel";
 import { DataBaseDiagram } from "@fsd/widgets/diagram-canvas";

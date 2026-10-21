@@ -8,7 +8,7 @@ import {
 	DropdownMenuTrigger,
 } from "@fsd/shared/ui/dropdown-menu";
 import { MoreButton } from "@fsd/shared/ui/MoreButton";
-import { ModalNewQuery, useQueryOperations } from "@fsd/features/manage-queries";
+import { ModalNewQuery, useQueryOperations } from "@fsd/features/query-management";
 import type { Query } from "@fsd/entities/solution";
 import { useState } from "react";
 

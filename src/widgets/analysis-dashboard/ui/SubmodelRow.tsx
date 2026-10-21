@@ -1,5 +1,5 @@
 import { getSubmodelColor } from "@fsd/shared/lib/xyflow/colors";
-import type { MetricChartRow } from "@fsd/features/analysis";
+import type { MetricChartRow } from "@fsd/features/version-comparison";
 
 interface SubmodelRowProps {
 	metric: MetricChartRow;

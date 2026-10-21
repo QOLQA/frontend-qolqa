@@ -276,11 +276,11 @@ dbcapibara-next/
 │   ├── pages/              # Pages layer (route composition)
 │   ├── widgets/            # Widgets layer (high-level UI blocks)
 │   ├── features/           # Features layer (use cases)
-│   │   ├── modeling-solution/
-│   │   ├── solution-versioning/
-│   │   ├── queries/
-│   │   ├── modeling-metrics/
-│   │   └── analysis/
+│   │   ├── schema-modeling/
+│   │   ├── version-management/
+│   │   ├── query-management/
+│   │   ├── schema-metrics-calculation/
+│   │   └── version-comparison/
 │   ├── entities/           # Entities layer (domain logic)
 │   │   ├── solution/
 │   │   │   ├── model/      # Zustand stores
