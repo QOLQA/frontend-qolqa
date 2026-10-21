@@ -12,7 +12,7 @@ interface Node {
   radius: number;
 }
 
-export const ElectricBackgroundWidget = () => {
+export const LandingElectricBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { resolvedTheme } = useTheme();
 

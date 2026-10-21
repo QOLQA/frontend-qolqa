@@ -3,7 +3,7 @@
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
 import { useDonationAnimation } from "../model/use-donation-animation";
 
-export const LandingDonationWidget = () => {
+export const LandingDonation = () => {
   const { t } = useTranslation();
   const { containerRef, buttonRef } = useDonationAnimation();
 

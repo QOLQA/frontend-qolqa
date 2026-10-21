@@ -3,7 +3,7 @@
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
 import { useMetricsAnimation } from "../model/use-metrics-animation";
 
-export const LandingMetricsWidget = () => {
+export const LandingMetrics = () => {
   const { t } = useTranslation();
   const { containerRef, gridRef } = useMetricsAnimation();
 

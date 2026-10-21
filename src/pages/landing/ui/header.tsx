@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Logo as LogoSvg } from "@fsd/shared/ui/icons/HeaderIcons";
 import { ThemeToggle } from "@fsd/shared/ui/theme-toggle";
 
-export const LandingHeaderWidget = () => {
+export const LandingHeader = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-background/60 backdrop-blur-md border-b border-gray/40 transition-all duration-300">
       <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">

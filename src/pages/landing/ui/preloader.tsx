@@ -3,7 +3,7 @@
 import { Logo as LogoSvg } from "@fsd/shared/ui/icons/HeaderIcons";
 import { usePreloaderAnimation } from "../model/use-preloader-animation";
 
-export const PreloaderWidget = () => {
+export const LandingPreloader = () => {
   const { containerRef, logoRef, ringRef, numberRef, isFinished } =
     usePreloaderAnimation();
 

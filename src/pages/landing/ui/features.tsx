@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
 import { useFeaturesAnimation } from "../model/use-features-animation";
 
-export const LandingFeaturesWidget = () => {
+export const LandingFeatures = () => {
   const { t } = useTranslation();
   const { containerRef, addToRefs } = useFeaturesAnimation();
 

@@ -28,7 +28,7 @@ const TEAM_MEMBERS: Member[] = [
   },
 ];
 
-export const LandingTeamWidget = () => {
+export const LandingTeam = () => {
   const { t } = useTranslation();
   const { containerRef } = useTeamAnimation();
 

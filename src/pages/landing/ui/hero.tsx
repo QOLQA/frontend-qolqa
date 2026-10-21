@@ -5,7 +5,7 @@ import { useTranslation } from "@fsd/shared/i18n/use-translation";
 import { useHeroAnimation } from "../model/use-hero-animation";
 import Link from "next/link";
 
-export const LandingHeroWidget = () => {
+export const LandingHero = () => {
   const { t } = useTranslation();
   const { containerRef, badgeRef, titleRef, subtitleRef, ctaRef, cardRef } =
     useHeroAnimation();
