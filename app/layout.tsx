@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import { DropdownProvider } from "@fsd/shared/lib/dropdown-context";
-import { AuthProvider, AuthTokenSync } from "@fsd/app/providers";
+import { AuthProvider, AuthTokenSync, GoogleProvider } from "@fsd/app/providers";
 import { Toaster } from "@fsd/shared/ui/sonner";
 
 export const metadata: Metadata = {
@@ -25,8 +25,10 @@ export default function RootLayout({
 				<ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
 					<Toaster position="top-center" />
 					<AuthProvider>
-						<AuthTokenSync />
-						<DropdownProvider>{children}</DropdownProvider>
+						<GoogleProvider>
+							<AuthTokenSync />
+							<DropdownProvider>{children}</DropdownProvider>
+						</GoogleProvider>
 					</AuthProvider>
 				</ThemeProvider>
 			</body>

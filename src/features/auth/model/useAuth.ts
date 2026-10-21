@@ -94,6 +94,71 @@ export const useAuth = () => {
 		[checkAuth, t]
 	);
 
+	// React Compiler cannot optimize: async callback exposed through AuthContext (stable ref for consumers)
+	const googleLogin = useCallback(
+		async (credential: string): Promise<LoginResult> => {
+			if (!credential) {
+				throw new Error("Credencial de Google vacía");
+			}
+
+			setError(null);
+			setLoading(true);
+
+			try {
+				const response = await fetch(`${API_URL}/auth/google`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ credential }),
+				});
+
+				if (!response.ok) {
+					const statusMessages: Record<number, string> = {
+						401: "Token de Google inválido. Intentá de nuevo.",
+						403: "Esta cuenta usa login con contraseña. Usá el formulario de email/password.",
+						429: "Demasiados intentos. Esperá un momento.",
+						503: "Login con Google no disponible temporalmente.",
+					};
+
+					const message =
+						statusMessages[response.status] || "Error al iniciar sesión con Google";
+					throw new Error(message);
+				}
+
+				const data: LoginResult = await response.json();
+				localStorage.setItem("access_token", data.access_token);
+
+				if (typeof document !== "undefined") {
+					const isProduction = process.env.NODE_ENV === "production";
+					const cookieOptions = [
+						`access_token=${data.access_token}`,
+						"path=/",
+						"max-age=1800",
+						"SameSite=Lax",
+						isProduction ? "Secure" : "",
+					]
+						.filter(Boolean)
+						.join("; ");
+
+					document.cookie = cookieOptions;
+				}
+
+				await checkAuth();
+
+				return data;
+			} catch (err) {
+				const errorMessage =
+					err instanceof Error ? err.message : "Error al iniciar sesión con Google";
+				setError(errorMessage);
+				throw err;
+			} finally {
+				setLoading(false);
+			}
+		},
+		[checkAuth]
+	);
+
 	// React Compiler cannot optimize: depends on login (stable ref needed to avoid stale closure)
 	const register = useCallback(
 		async (data: RegisterData): Promise<UserResponse> => {
@@ -179,6 +244,7 @@ export const useAuth = () => {
 		loading,
 		error,
 		login,
+		googleLogin,
 		register,
 		logout,
 		isAuthenticated: !!user,
