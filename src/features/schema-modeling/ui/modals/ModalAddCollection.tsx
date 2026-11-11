@@ -29,6 +29,7 @@ export function ModalAddCollection({ onSubmit, open, setOpen }: ModalAddCollecti
 		reset,
 	} = useForm<FormValues>({
 		resolver: zodResolver(schema),
+		defaultValues: { name: "" },
 	});
 
 	useEffect(() => {

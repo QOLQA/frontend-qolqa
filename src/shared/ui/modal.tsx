@@ -1,12 +1,14 @@
 "use client";
 
 import type { ReactNode, MouseEvent } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { cn } from "@fsd/shared/lib/classnames";
 import { createPortal } from "react-dom";
 import { Button } from "./button";
 import { ArrowLeft, X } from "lucide-react";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
+
+const subscribe = () => () => {};
 
 interface ModalProps {
 	title: string;
@@ -33,6 +35,7 @@ export function Modal({
 }: ModalProps) {
 	const { t } = useTranslation();
 	const dialogRef = useRef<HTMLDialogElement>(null);
+	const isMounted = useSyncExternalStore(subscribe, () => true, () => false);
 
 	useEffect(() => {
 		const dialog = dialogRef.current;
@@ -43,7 +46,7 @@ export function Modal({
 		} else {
 			dialog.close();
 		}
-	}, [open]);
+	}, [open, isMounted]);
 
 	const handleClose = () => {
 		setOpen(false);
@@ -67,6 +70,8 @@ export function Modal({
 			handleClose();
 		}
 	};
+
+	if (!isMounted) return null;
 
 	return createPortal(
 		<dialog
