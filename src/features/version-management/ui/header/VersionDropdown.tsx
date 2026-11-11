@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Check, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@fsd/shared/ui/tooltip";
 import { useVersionDropdown } from "../../model/use-version-dropdown";
 import { DeleteVersionModal } from "./DeleteVersionModal";
 
@@ -51,24 +52,31 @@ export function VersionDropdown() {
 	return (
 		<div ref={dropdownRef} className="relative">
 			{/* Trigger button */}
-			<button
-				type="button"
-				onClick={toggle}
-				className="cursor-pointer border border-gray rounded-full !text-white text-h6 w-[200px] py-[7px] px-[20px] flex items-center justify-between gap-2 bg-terciary-gray dark:bg-transparent hover:bg-primary-gray dark:hover:bg-gray/20 transition-colors"
-				aria-haspopup="listbox"
-				aria-expanded={isOpen}
-			>
-				<span className="truncate">
+			<Tooltip delayDuration={300} disableHoverableContent>
+				<TooltipTrigger asChild>
+					<button
+						type="button"
+						onClick={toggle}
+						className="cursor-pointer border border-gray rounded-full !text-white text-h6 w-[200px] py-[7px] px-[20px] flex items-center justify-between gap-2 bg-terciary-gray dark:bg-transparent hover:bg-primary-gray dark:hover:bg-gray/20 transition-colors"
+						aria-haspopup="listbox"
+						aria-expanded={isOpen}
+					>
+						<span className="truncate">
+							{formatDisplayName(selectedVersionDescription)}
+						</span>
+						<ChevronDown
+							className={`shrink-0 size-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+						/>
+					</button>
+				</TooltipTrigger>
+				<TooltipContent side="bottom" sideOffset={6} className="max-w-xs break-words">
 					{formatDisplayName(selectedVersionDescription)}
-				</span>
-				<ChevronDown
-					className={`shrink-0 size-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-				/>
-			</button>
+				</TooltipContent>
+			</Tooltip>
 
 			{/* Dropdown panel */}
 			{isOpen && (
-				<div className="absolute left-0 top-full mt-1 z-50 w-[240px] bg-terciary-gray border border-gray rounded-lg p-[10px] shadow-lg">
+				<div className="absolute left-0 top-full mt-1 z-50 w-[360px] max-w-[calc(100vw-2rem)] bg-terciary-gray border border-gray rounded-lg p-[10px] shadow-lg">
 					{/* Version list */}
 					<ul role="listbox" className="flex flex-col gap-1">
 						{versions.map((version) => {
@@ -114,17 +122,24 @@ export function VersionDropdown() {
 												aria-label={t("header.editVersionName")}
 											/>
 										) : (
-											<button
-												type="button"
-												onClick={() => onVersionChange(version._id)}
-												className={`cursor-pointer w-full text-left text-h6 rounded-md px-2 py-2 transition-colors hover:bg-primary-gray dark:hover:bg-gray hover:text-white focus:outline-none focus:bg-primary-gray dark:focus:bg-gray focus:text-white ${
-													isSelected ? "text-white" : "text-lighter-gray"
-												}`}
-											>
-												<span className="truncate block">
+											<Tooltip delayDuration={300} disableHoverableContent>
+												<TooltipTrigger asChild>
+													<button
+														type="button"
+														onClick={() => onVersionChange(version._id)}
+														className={`cursor-pointer w-full text-left text-h6 rounded-md px-2 py-2 transition-colors hover:bg-primary-gray dark:hover:bg-gray hover:text-white focus:outline-none focus:bg-primary-gray dark:focus:bg-gray focus:text-white ${
+															isSelected ? "text-white" : "text-lighter-gray"
+														}`}
+													>
+														<span className="truncate block">
+															{formatDisplayName(version.description)}
+														</span>
+													</button>
+												</TooltipTrigger>
+												<TooltipContent side="right" sideOffset={6} className="max-w-xs break-words">
 													{formatDisplayName(version.description)}
-												</span>
-											</button>
+												</TooltipContent>
+											</Tooltip>
 										)}
 									</div>
 
