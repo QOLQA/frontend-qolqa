@@ -391,7 +391,7 @@ export const en = {
       versionRenameFill: {
         title: "Name it",
         body: "Type the new name and press Enter.",
-        hint: "Type \"version 2\": it will be shown as \"project version 2\", so in the comparison you'll tell both versions apart at a glance.",
+        hint: "Try \"project version 2\": in the comparison you'll tell both versions apart at a glance.",
       },
       embedMenu: {
         title: "Experiment: embed the orders",

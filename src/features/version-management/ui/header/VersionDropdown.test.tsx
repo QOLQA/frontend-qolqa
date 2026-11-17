@@ -42,11 +42,11 @@ beforeEach(() => {
 	vi.clearAllMocks();
 	vi.mocked(api.patch).mockResolvedValue({});
 	const version: VersionFrontend = {
-		_id: "v1", solution_id: "project", description: "v1.0", nodes: [makeNode()], edges: [],
+		_id: "v1", solution_id: "project", description: "project v1.0", nodes: [makeNode()], edges: [],
 	};
 	const state = useSolutionStore.getState();
 	state.setId("project");
-	state.setVersions([version, { ...version, _id: "v2", description: "v2.0", nodes: [] }]);
+	state.setVersions([version, { ...version, _id: "v2", description: "project v2.0", nodes: [] }]);
 	state.setNodes(structuredClone(version.nodes));
 	state.setEdges([]);
 	state.setSelectedVersionId("v1");
@@ -163,7 +163,7 @@ describe("version changes with pending edits", () => {
 	it("saves before creating and selecting a new version after confirmation", async () => {
 		editColumn();
 		vi.mocked(api.post).mockResolvedValueOnce({
-			_id: "v3", solution_id: "project", description: "v3.0", submodels: [],
+			_id: "v3", solution_id: "project", description: "project v3.0", submodels: [],
 		});
 		render(<VersionDropdown />);
 		await userEvent.click(screen.getByRole("button", { name: "project v1.0" }));

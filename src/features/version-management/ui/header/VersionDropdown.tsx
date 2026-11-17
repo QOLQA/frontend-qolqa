@@ -8,9 +8,6 @@ import { Modal } from "@fsd/shared/ui/modal";
 import { useVersionDropdown } from "../../model/use-version-dropdown";
 import { DeleteVersionModal } from "./DeleteVersionModal";
 
-/** Prefix shown in UI only (not sent to backend) */
-const PROJECT_PREFIX = "project";
-
 export function VersionDropdown() {
 	const { t } = useTranslation();
 	const editInputRef = useRef<HTMLInputElement>(null);
@@ -49,11 +46,6 @@ export function VersionDropdown() {
 		}
 	}, [editingVersionId]);
 
-	/** Adds "project " prefix for display */
-	const formatDisplayName = (description: string) => {
-		return `${PROJECT_PREFIX} ${description}`;
-	};
-
 	return (
 		<div ref={dropdownRef} className="relative">
 			{/* Trigger button */}
@@ -67,7 +59,7 @@ export function VersionDropdown() {
 						aria-expanded={isOpen}
 					>
 						<span className="truncate">
-							{formatDisplayName(selectedVersionDescription)}
+							{selectedVersionDescription}
 						</span>
 						<ChevronDown
 							className={`shrink-0 size-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -75,7 +67,7 @@ export function VersionDropdown() {
 					</button>
 				</TooltipTrigger>
 				<TooltipContent side="bottom" sideOffset={6} className="max-w-xs break-words">
-					{formatDisplayName(selectedVersionDescription)}
+					{selectedVersionDescription}
 				</TooltipContent>
 			</Tooltip>
 
@@ -140,12 +132,12 @@ export function VersionDropdown() {
 														}`}
 													>
 														<span className="truncate block">
-															{formatDisplayName(version.description)}
+															{version.description}
 														</span>
 													</button>
 												</TooltipTrigger>
 												<TooltipContent side="right" sideOffset={6} className="max-w-xs break-words">
-													{formatDisplayName(version.description)}
+													{version.description}
 												</TooltipContent>
 											</Tooltip>
 										)}

@@ -395,7 +395,7 @@ export const es = {
       versionRenameFill: {
         title: "Ponle nombre",
         body: "Escribe el nuevo nombre y presiona Enter.",
-        hint: "Escribe \"version 2\": se mostrará como \"project version 2\", así en la comparación distinguirás ambas versiones de un vistazo.",
+        hint: "Prueba con \"project version 2\": en la comparación distinguirás ambas versiones de un vistazo.",
       },
       embedMenu: {
         title: "Experimento: embebe los pedidos",

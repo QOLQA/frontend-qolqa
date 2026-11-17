@@ -26,6 +26,9 @@ export interface ParsedVersion {
 
 const VERSION_REGEX = /^(.*?)\s*v(\d+)\.(\d+)$/;
 
+/** Base given to versions created with "Add new version" when none is in use. */
+export const DEFAULT_VERSION_BASE = "project";
+
 /**
  * Parses "project v1.2" → { base: "project", major: 1, minor: 2 }
  * Returns null if the description doesn't match the vX.Y pattern.
@@ -41,8 +44,9 @@ export function parseVersion(description: string): ParsedVersion | null {
 }
 
 /**
- * Finds the highest major version across all versions and returns "base vN+1.0".
- * If no versions match the pattern, returns "v1.0" (bootstrap case).
+ * Finds the highest major version across all versions and returns "base vN+1.0",
+ * using the most common base or `DEFAULT_VERSION_BASE`.
+ * If no versions match the pattern, returns "project v1.0" (bootstrap case).
  */
 export function generateNextMajorVersion(versions: VersionFrontend[]): string {
 	const parsed = versions
@@ -50,7 +54,7 @@ export function generateNextMajorVersion(versions: VersionFrontend[]): string {
 		.filter((p): p is ParsedVersion => p !== null);
 
 	if (parsed.length === 0) {
-		return "v1.0";
+		return `${DEFAULT_VERSION_BASE} v1.0`;
 	}
 
 	// Find the most common base string
@@ -65,8 +69,7 @@ export function generateNextMajorVersion(versions: VersionFrontend[]): string {
 	).base;
 
 	const maxMajor = Math.max(...parsed.map((p) => p.major));
-	const prefix = mostCommonBase ? `${mostCommonBase} ` : "";
-	return `${prefix}v${maxMajor + 1}.0`;
+	return `${mostCommonBase || DEFAULT_VERSION_BASE} v${maxMajor + 1}.0`;
 }
 
 /**
