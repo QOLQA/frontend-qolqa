@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  ArrowLeft,
-  ArrowRight,
-  Chevron,
-} from "@fsd/shared/ui/icons/HeaderIcons";
+import { Chevron } from "@fsd/shared/ui/icons/HeaderIcons";
 import { Logo } from "@fsd/shared/ui/logo";
 import {
   ButtonDuplicateVersion,
@@ -27,10 +23,12 @@ export const AppHeader = ({ title }: { title: string }) => {
 
       <div className="flex-1 flex items-center justify-center absolute left-1/2 transform -translate-x-1/2">
         <div className="flex items-center gap-8">
+          {/* Undo / redo arrows: hidden until they have a behaviour.
           <div className="flex items-center gap-4">
             <ArrowLeft className="text-white" />
             <ArrowRight className="text-white" />
           </div>
+          */}
           <div className="flex items-center gap-3">
             <h1 className="text-h4 text-white">{title}</h1>
             <Chevron className="text-white" />
