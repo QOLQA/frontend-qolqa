@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { hydrateRoot } from "react-dom/client";
@@ -8,29 +8,7 @@ vi.mock("@fsd/shared/i18n/use-translation", () => ({
 	useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-const dialogPrototype = HTMLDialogElement.prototype;
-const originalShowModal = Object.getOwnPropertyDescriptor(dialogPrototype, "showModal");
-const originalClose = Object.getOwnPropertyDescriptor(dialogPrototype, "close");
-
-beforeAll(() => {
-	Object.defineProperty(dialogPrototype, "showModal", {
-		configurable: true,
-		value(this: HTMLDialogElement) { this.setAttribute("open", ""); },
-	});
-	Object.defineProperty(dialogPrototype, "close", {
-		configurable: true,
-		value(this: HTMLDialogElement) { this.removeAttribute("open"); },
-	});
-});
-
 afterEach(cleanup);
-
-afterAll(() => {
-	if (originalShowModal) Object.defineProperty(dialogPrototype, "showModal", originalShowModal);
-	else Reflect.deleteProperty(dialogPrototype, "showModal");
-	if (originalClose) Object.defineProperty(dialogPrototype, "close", originalClose);
-	else Reflect.deleteProperty(dialogPrototype, "close");
-});
 
 describe("Modal", () => {
 	it.each([false, true])("omits the portal during server rendering with open=%s", (open) => {
@@ -79,6 +57,7 @@ describe("Modal", () => {
 		rerender(modal(true));
 		expect(screen.getByLabelText("Collection name")).toBe(input);
 	});
+
 	describe("Enter key", () => {
 		const renderWithField = (field: "input" | "textarea") => {
 			const onSubmit = vi.fn();

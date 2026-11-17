@@ -1,13 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Check, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Check, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@fsd/shared/ui/tooltip";
-import {
-	AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-	AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@fsd/shared/ui/alert-dialog";
+import { Modal } from "@fsd/shared/ui/modal";
 import { useVersionDropdown } from "../../model/use-version-dropdown";
 import { DeleteVersionModal } from "./DeleteVersionModal";
 
@@ -200,27 +197,30 @@ export function VersionDropdown() {
 				</div>
 			)}
 
-			<AlertDialog open={unsavedChangesDialogOpen} onOpenChange={(open) => {
-				if (!open) cancelVersionChange();
-			}}>
-				<AlertDialogContent aria-busy={isSavingBeforeChange}>
-					<AlertDialogHeader>
-						<AlertDialogTitle>{t("modals.unsavedChanges.title")}</AlertDialogTitle>
-						<AlertDialogDescription>{t("modals.unsavedChanges.description")}</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel disabled={isSavingBeforeChange}>
-							{t("modals.unsavedChanges.keepEditing")}
-						</AlertDialogCancel>
-						<AlertDialogAction disabled={isSavingBeforeChange} onClick={(event) => {
-							event.preventDefault();
-							void saveAndContinue();
-						}}>
-							{t(isSavingBeforeChange ? "modals.unsavedChanges.saving" : "modals.unsavedChanges.saveAndContinue")}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<Modal
+				title={t("modals.unsavedChanges.title")}
+				open={unsavedChangesDialogOpen}
+				setOpen={(open) => {
+					if (!open) cancelVersionChange();
+				}}
+				onSubmit={async () => {
+					await saveAndContinue();
+					// The dialog closes by itself once the version changes; keep it open on failure.
+					return false;
+				}}
+				type="save"
+				role="alertdialog"
+				showCloseButton={false}
+				isSubmitting={isSavingBeforeChange}
+				cancelLabel={t("modals.unsavedChanges.keepEditing")}
+				submitLabel={t(isSavingBeforeChange ? "modals.unsavedChanges.saving" : "modals.unsavedChanges.saveAndContinue")}
+				contentClassName="w-[560px] max-w-[calc(100vw-2rem)]"
+			>
+				<div className="flex items-start gap-4">
+					<AlertTriangle className="mt-0.5 size-8 shrink-0 text-blue" />
+					<p className="text-h5 text-secondary-white">{t("modals.unsavedChanges.description")}</p>
+				</div>
+			</Modal>
 
 			{/* Delete confirmation modal */}
 			{deleteModalOpen && (

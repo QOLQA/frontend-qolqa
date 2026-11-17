@@ -20,6 +20,13 @@ interface ModalProps {
 	showCloseButton?: boolean;
 	onReturnPreviewsStep?: () => void;
 	contentClassName?: string;
+	/** Overrides the label derived from `type`. */
+	submitLabel?: string;
+	cancelLabel?: string;
+	/** Disables both actions while an async submit is running. */
+	isSubmitting?: boolean;
+	/** Use "alertdialog" for confirmations that interrupt the user's flow. */
+	role?: "dialog" | "alertdialog";
 }
 
 export function Modal({
@@ -32,6 +39,10 @@ export function Modal({
 	showCloseButton = true,
 	onReturnPreviewsStep,
 	contentClassName,
+	submitLabel,
+	cancelLabel,
+	isSubmitting = false,
+	role,
 }: ModalProps) {
 	const { t } = useTranslation();
 	const dialogRef = useRef<HTMLDialogElement>(null);
@@ -88,6 +99,8 @@ export function Modal({
 			ref={dialogRef}
 			onClick={handleBackdropClick}
 			onKeyDown={handleKeyDown}
+			role={role}
+			aria-busy={isSubmitting || undefined}
 			className="backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-transparent p-0 max-w-none max-h-none m-auto"
 		>
 			<div
@@ -137,26 +150,27 @@ export function Modal({
 						variant="danger"
 						type="button"
 						onClick={handleClose}
-						className="w-[6rem] cursor-pointer !text-h3"
+						disabled={isSubmitting}
+						className="min-w-[6rem] cursor-pointer !text-h3"
 					>
-						{t("common.cancel")}
+						{cancelLabel ?? t("common.cancel")}
 					</Button>
 
 					<Button
 						variant="success"
 						type="button"
 						onClick={handleSubmit}
-						className="w-[6rem] cursor-pointer !text-h3"
+						disabled={isSubmitting}
+						className="min-w-[6rem] cursor-pointer !text-h3"
 					>
-						{
+						{submitLabel ??
 							{
 								create: t("common.create"),
 								update: t("common.update"),
 								next: t("common.next"),
 								delete: t("common.delete"),
 								save: t("common.save"),
-							}[type]
-						}
+							}[type]}
 					</Button>
 				</div>
 			</div>
