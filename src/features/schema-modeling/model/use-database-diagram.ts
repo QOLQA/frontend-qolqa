@@ -4,12 +4,18 @@ import type { TableData } from "@fsd/entities/solution";
 import { useShallow } from "zustand/shallow";
 import { useSolutionStore, solutionSelector } from "@fsd/entities/solution";
 import { useDiagramConnectionUiStore } from "@fsd/entities/solution";
-import { getNextAvailableSubmodelIndex } from "@fsd/entities/table/lib";
+import {
+	findFreeNodePosition,
+	getNextAvailableSubmodelIndex,
+} from "@fsd/entities/table/lib";
 import { generateRandomId } from "@fsd/shared/lib/ids";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
 import { toast } from "sonner";
 import { MarkerType } from "@xyflow/react";
 import { useTableConnect } from "./use-table-connect";
+
+/** Keeps a single new collection from filling the whole canvas. */
+const fitViewOptions = { maxZoom: 1, padding: 0.4 };
 
 const connectionLineStyle = {
 	stroke: "#4E4E4E",
@@ -65,7 +71,7 @@ export const useDatabaseDiagram = () => {
 
 			const newNode: Node<TableData> = {
 				id: newIdNode,
-				position: { x: Math.random() * 400, y: Math.random() * 400 },
+				position: findFreeNodePosition(nodes),
 				data: {
 					id: newIdNode,
 					label: name,
@@ -156,6 +162,7 @@ export const useDatabaseDiagram = () => {
 				},
 			},
 			fitView: true,
+			fitViewOptions,
 		}),
 		[
 			nodes,
