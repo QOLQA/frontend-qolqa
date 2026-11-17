@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode, MouseEvent } from "react";
+import type { ReactNode, MouseEvent, KeyboardEvent } from "react";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { cn } from "@fsd/shared/lib/classnames";
 import { createPortal } from "react-dom";
@@ -71,12 +71,23 @@ export function Modal({
 		}
 	};
 
+	/** Enter in a text field triggers the primary action (Shift+Enter keeps new lines in textareas). */
+	const handleKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
+		const isTextField =
+			e.target instanceof HTMLInputElement ||
+			(e.target instanceof HTMLTextAreaElement && !e.shiftKey);
+		if (e.key !== "Enter" || !isTextField || e.defaultPrevented || e.nativeEvent.isComposing) return;
+		e.preventDefault();
+		void handleSubmit();
+	};
+
 	if (!isMounted) return null;
 
 	return createPortal(
 		<dialog
 			ref={dialogRef}
 			onClick={handleBackdropClick}
+			onKeyDown={handleKeyDown}
 			className="backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-transparent p-0 max-w-none max-h-none m-auto"
 		>
 			<div

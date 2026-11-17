@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { hydrateRoot } from "react-dom/client";
 import { Modal } from "./modal";
@@ -78,5 +78,39 @@ describe("Modal", () => {
 		expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 		rerender(modal(true));
 		expect(screen.getByLabelText("Collection name")).toBe(input);
+	});
+	describe("Enter key", () => {
+		const renderWithField = (field: "input" | "textarea") => {
+			const onSubmit = vi.fn();
+			render(
+				<Modal title="New collection" open setOpen={vi.fn()} onSubmit={onSubmit}>
+					{field === "input" ? <input aria-label="name" /> : <textarea aria-label="name" />}
+				</Modal>,
+			);
+			return { onSubmit, field: screen.getByLabelText("name") };
+		};
+
+		it("submits from a text input", () => {
+			const { onSubmit, field } = renderWithField("input");
+			fireEvent.keyDown(field, { key: "Enter" });
+			expect(onSubmit).toHaveBeenCalledTimes(1);
+		});
+
+		it("keeps Shift+Enter as a new line in textareas", () => {
+			const { onSubmit, field } = renderWithField("textarea");
+			fireEvent.keyDown(field, { key: "Enter", shiftKey: true });
+			expect(onSubmit).not.toHaveBeenCalled();
+		});
+
+		it("ignores Enter already handled by the field", () => {
+			const onSubmit = vi.fn();
+			render(
+				<Modal title="New collection" open setOpen={vi.fn()} onSubmit={onSubmit}>
+					<input aria-label="name" onKeyDown={(event) => event.preventDefault()} />
+				</Modal>,
+			);
+			fireEvent.keyDown(screen.getByLabelText("name"), { key: "Enter" });
+			expect(onSubmit).not.toHaveBeenCalled();
+		});
 	});
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { type KeyboardEvent, useEffect, useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -48,14 +48,6 @@ export function ModalAddCollection({ onSubmit, open, setOpen }: ModalAddCollecti
 		return submitted;
 	};
 
-	const handleKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === "Enter" && !isPending) {
-			e.preventDefault();
-			const isValid = await handleSubmit();
-			if (isValid) setOpen(false);
-		}
-	};
-
 	return (
 		<Modal
 			title={t("modals.createCollection.title")}
@@ -73,7 +65,6 @@ export function ModalAddCollection({ onSubmit, open, setOpen }: ModalAddCollecti
 							type="text"
 							id="collection-name"
 							{...register("name")}
-							onKeyDown={handleKeyDown}
 							disabled={isPending}
 							aria-describedby={errors.name ? "collection-name-error" : undefined}
 							className="w-full py-2 px-5 border border-gray rounded-md bg-terciary-gray focus:ring-2 focus:ring-white dark:focus:ring-blue focus:outline-none text-white disabled:opacity-50 disabled:cursor-not-allowed"
