@@ -8,7 +8,6 @@ import {
   VersionDropdown,
 } from "@fsd/features/version-management";
 import { ProjectSwitcher } from "@fsd/features/project-management";
-import { TourLauncher } from "@fsd/features/onboarding-tour";
 
 type AppHeaderProps = {
   title: string;
@@ -48,13 +47,8 @@ export const AppHeader = ({ title, projectId, projects }: AppHeaderProps) => {
         </div>
       </div>
 
-      <div className="flex-shrink-0 ml-auto">
-        <div className="flex items-center gap-4">
-          <TourLauncher />
-          <div data-tour="save-btn" className="flex">
-            <ButtonSave />
-          </div>
-        </div>
+      <div data-tour="save-btn" className="flex flex-shrink-0 ml-auto">
+        <ButtonSave />
       </div>
     </header>
   );

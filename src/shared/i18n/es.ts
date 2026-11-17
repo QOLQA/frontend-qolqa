@@ -255,6 +255,7 @@ export const es = {
       restart: "Repetir tutorial",
       finish: "Seguir diseñando",
       launcher: "Tutorial guiado",
+      continueTutorial: "Continuar tutorial",
       bannerTitle: "¿Nuevo en QOLQA?",
       bannerBody: "Crea un proyecto de práctica y aprende todo el flujo en unos 5 minutos: colecciones, consultas, métricas y versiones.",
       bannerCta: "Empezar tutorial",
