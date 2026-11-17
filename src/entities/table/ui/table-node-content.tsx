@@ -137,7 +137,10 @@ export const TableNodeContent = React.memo(
 
             <ManagedDropdownMenu>
               <DropdownMenuTrigger asChild>
-                <MoreButton className="text-black hover:text-lighter-gray" />
+                <MoreButton
+                  className="text-black hover:text-lighter-gray"
+                  data-tour={isNested ? "nested-more-btn" : "node-more-btn"}
+                />
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="z-50"
@@ -156,6 +159,7 @@ export const TableNodeContent = React.memo(
                 <DropdownMenuItem
                   type="normal"
                   onClick={() => onAddAttributes(data.id)}
+                  data-tour="menu-add-attributes"
                 >
                   <Plus className="text-white" />
                   {t("other.addAttributes")}
@@ -164,6 +168,7 @@ export const TableNodeContent = React.memo(
                 <DropdownMenuItem
                   type="normal"
                   onClick={() => onAddDocuments(data.id)}
+                  data-tour="menu-add-documents"
                 >
                   <AddDocument className="text-white" />
                   {t("other.addDocuments")}
@@ -174,6 +179,7 @@ export const TableNodeContent = React.memo(
                   type="delete"
                   className="text-red"
                   onClick={() => onDeleteTable(data.id)}
+                  data-tour="menu-delete"
                 >
                   <Delete className="text-red" />
                   {t("common.delete")}

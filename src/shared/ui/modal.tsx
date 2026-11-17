@@ -1,12 +1,14 @@
 "use client";
 
-import type { ReactNode, MouseEvent } from "react";
-import { useEffect, useRef } from "react";
+import type { ReactNode, MouseEvent, KeyboardEvent } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { cn } from "@fsd/shared/lib/classnames";
 import { createPortal } from "react-dom";
 import { Button } from "./button";
 import { ArrowLeft, X } from "lucide-react";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
+
+const subscribe = () => () => {};
 
 interface ModalProps {
 	title: string;
@@ -18,6 +20,15 @@ interface ModalProps {
 	showCloseButton?: boolean;
 	onReturnPreviewsStep?: () => void;
 	contentClassName?: string;
+	/** Anchor used by the guided tutorial (`data-tour`). */
+	tourId?: string;
+	/** Overrides the label derived from `type`. */
+	submitLabel?: string;
+	cancelLabel?: string;
+	/** Disables both actions while an async submit is running. */
+	isSubmitting?: boolean;
+	/** Use "alertdialog" for confirmations that interrupt the user's flow. */
+	role?: "dialog" | "alertdialog";
 }
 
 export function Modal({
@@ -30,9 +41,15 @@ export function Modal({
 	showCloseButton = true,
 	onReturnPreviewsStep,
 	contentClassName,
+	tourId,
+	submitLabel,
+	cancelLabel,
+	isSubmitting = false,
+	role,
 }: ModalProps) {
 	const { t } = useTranslation();
 	const dialogRef = useRef<HTMLDialogElement>(null);
+	const isMounted = useSyncExternalStore(subscribe, () => true, () => false);
 
 	useEffect(() => {
 		const dialog = dialogRef.current;
@@ -43,7 +60,7 @@ export function Modal({
 		} else {
 			dialog.close();
 		}
-	}, [open]);
+	}, [open, isMounted]);
 
 	const handleClose = () => {
 		setOpen(false);
@@ -68,14 +85,30 @@ export function Modal({
 		}
 	};
 
+	/** Enter in a text field triggers the primary action (Shift+Enter keeps new lines in textareas). */
+	const handleKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
+		const isTextField =
+			e.target instanceof HTMLInputElement ||
+			(e.target instanceof HTMLTextAreaElement && !e.shiftKey);
+		if (e.key !== "Enter" || !isTextField || e.defaultPrevented || e.nativeEvent.isComposing) return;
+		e.preventDefault();
+		void handleSubmit();
+	};
+
+	if (!isMounted) return null;
+
 	return createPortal(
 		<dialog
 			ref={dialogRef}
 			onClick={handleBackdropClick}
+			onKeyDown={handleKeyDown}
+			role={role}
+			aria-busy={isSubmitting || undefined}
 			className="backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-transparent p-0 max-w-none max-h-none m-auto"
 		>
 			<div
 				onClick={(e) => e.stopPropagation()}
+				data-tour={tourId}
 				className={cn(
 					"w-[730px] bg-secondary-gray border-2 border-gray rounded-lg p-6 relative flex flex-col",
 					contentClassName,
@@ -121,26 +154,27 @@ export function Modal({
 						variant="danger"
 						type="button"
 						onClick={handleClose}
-						className="w-[6rem] cursor-pointer !text-h3"
+						disabled={isSubmitting}
+						className="min-w-[6rem] cursor-pointer !text-h3"
 					>
-						{t("common.cancel")}
+						{cancelLabel ?? t("common.cancel")}
 					</Button>
 
 					<Button
 						variant="success"
 						type="button"
 						onClick={handleSubmit}
-						className="w-[6rem] cursor-pointer !text-h3"
+						disabled={isSubmitting}
+						className="min-w-[6rem] cursor-pointer !text-h3"
 					>
-						{
+						{submitLabel ??
 							{
 								create: t("common.create"),
 								update: t("common.update"),
 								next: t("common.next"),
 								delete: t("common.delete"),
 								save: t("common.save"),
-							}[type]
-						}
+							}[type]}
 					</Button>
 				</div>
 			</div>

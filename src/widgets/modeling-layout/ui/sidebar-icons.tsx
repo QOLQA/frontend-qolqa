@@ -44,6 +44,7 @@ export const SidebarIcons = ({
 											children: item.title,
 											hidden: false,
 										}}
+										data-tour={`sidebar-${item.title.toLowerCase()}`}
 										onClick={() => {
 											if (item.title !== databaseItem) {
 												setActiveItem(item);

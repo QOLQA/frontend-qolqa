@@ -51,6 +51,7 @@ export function ModalDocument({ onSubmit, open, setOpen }: ModalDocumentProps) {
 	return (
 		<Modal
 			title={t("modals.document.createTitle")}
+			tourId="modal-document"
 			onSubmit={handleSubmit}
 			open={open}
 			setOpen={setOpen}

@@ -7,6 +7,7 @@ import type { User } from "@fsd/entities/user";
 import { useAuthContext } from "@fsd/features/auth";
 import { getInitials } from "@fsd/shared/lib/initials";
 import { UserProfileDialog } from "@fsd/features/account-management";
+import { TourMenuItem } from "@fsd/features/onboarding-tour";
 import { Avatar, AvatarFallback, AvatarImage } from "@fsd/shared/ui/avatar";
 import {
 	DropdownMenu,
@@ -85,6 +86,7 @@ export function NavUser({ user }: { user: User }) {
 								<UserRound />
 								Profile
 							</DropdownMenuItem>
+							<TourMenuItem />
 							<DropdownMenuSeparator />
 							<DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
 								Theme

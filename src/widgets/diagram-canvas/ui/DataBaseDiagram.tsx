@@ -37,6 +37,7 @@ const DatabaseDiagram = () => {
 			<Button
 				type="button"
 				onClick={openAddCollectionModal}
+				data-tour="new-collection-btn"
 				className="absolute top-5 right-10 bg-green text-[#ffffff] dark:text-white hover:bg-green-dark z-10 cursor-pointer"
 			>
 				<span className="text-xl">+</span> {t("databaseDiagram.newCollection")}

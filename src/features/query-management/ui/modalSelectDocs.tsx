@@ -107,6 +107,7 @@ export const ModalSelectDocs = ({
 			onSubmit={handleSubmitQuery}
 			type={mode === "edit" ? "update" : "create"}
 			onReturnPreviewsStep={handleReturnModal}
+			tourId="modal-select-docs"
 		>
 			<>
 				<div className="my-13 gap-5 w-160 flex justify-between items-start flex-col relative">

@@ -11,7 +11,7 @@ import {
 	type NavItem,
 } from "@fsd/widgets/modeling-layout";
 import { MetricsPanel } from "@fsd/widgets/metrics-panel";
-import type { VersionFrontend } from "@fsd/entities/solution";
+import type { SolutionListItem, VersionFrontend } from "@fsd/entities/solution";
 import {
 	Calendar,
 	Database,
@@ -26,6 +26,7 @@ interface ModelingPageProps {
 		versions: VersionFrontend[];
 		solutionId: string;
 		last_version_saved: string;
+		projects: SolutionListItem[];
 	};
 }
 
@@ -73,7 +74,13 @@ export function ModelingPage({ loaderData }: ModelingPageProps) {
 	return (
 		<LayoutDiagram
 			title={loaderData.name}
-			headerSlot={<AppHeader title={loaderData.name} />}
+			headerSlot={
+				<AppHeader
+					title={loaderData.name}
+					projectId={loaderData.solutionId}
+					projects={loaderData.projects}
+				/>
+			}
 			sidebarNavItems={sidebarNavItems}
 		>
 			{isHydrated ? <DataBaseDiagram /> : <div className="h-full w-full" />}

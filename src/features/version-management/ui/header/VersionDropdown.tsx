@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Check, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Check, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@fsd/shared/ui/tooltip";
+import { Modal } from "@fsd/shared/ui/modal";
 import { useVersionDropdown } from "../../model/use-version-dropdown";
 import { DeleteVersionModal } from "./DeleteVersionModal";
-
-/** Prefix shown in UI only (not sent to backend) */
-const PROJECT_PREFIX = "project";
 
 export function VersionDropdown() {
 	const { t } = useTranslation();
@@ -21,6 +20,10 @@ export function VersionDropdown() {
 		dropdownRef,
 		onVersionChange,
 		onAddEmptyVersion,
+		unsavedChangesDialogOpen,
+		isSavingBeforeChange,
+		cancelVersionChange,
+		saveAndContinue,
 		deleteModalOpen,
 		versionToDelete,
 		openDeleteModal,
@@ -43,32 +46,36 @@ export function VersionDropdown() {
 		}
 	}, [editingVersionId]);
 
-	/** Adds "project " prefix for display */
-	const formatDisplayName = (description: string) => {
-		return `${PROJECT_PREFIX} ${description}`;
-	};
-
 	return (
 		<div ref={dropdownRef} className="relative">
 			{/* Trigger button */}
-			<button
-				type="button"
-				onClick={toggle}
-				className="cursor-pointer border border-gray rounded-full !text-white text-h6 w-[200px] py-[7px] px-[20px] flex items-center justify-between gap-2 bg-terciary-gray dark:bg-transparent hover:bg-primary-gray dark:hover:bg-gray/20 transition-colors"
-				aria-haspopup="listbox"
-				aria-expanded={isOpen}
-			>
-				<span className="truncate">
-					{formatDisplayName(selectedVersionDescription)}
-				</span>
-				<ChevronDown
-					className={`shrink-0 size-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-				/>
-			</button>
+			<Tooltip delayDuration={300} disableHoverableContent>
+				<TooltipTrigger asChild>
+					<button
+						type="button"
+						onClick={toggle}
+						className="cursor-pointer border border-gray rounded-full !text-white text-h6 w-[200px] py-[7px] px-[20px] flex items-center justify-between gap-2 bg-terciary-gray dark:bg-transparent hover:bg-primary-gray dark:hover:bg-gray/20 transition-colors"
+						aria-haspopup="listbox"
+						aria-expanded={isOpen}
+					>
+						<span className="truncate">
+							{selectedVersionDescription}
+						</span>
+						<ChevronDown
+							className={`shrink-0 size-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+						/>
+					</button>
+				</TooltipTrigger>
+				<TooltipContent side="bottom" sideOffset={6} className="max-w-xs break-words">
+					{selectedVersionDescription}
+				</TooltipContent>
+			</Tooltip>
 
 			{/* Dropdown panel */}
 			{isOpen && (
-				<div className="absolute left-0 top-full mt-1 z-50 w-[240px] bg-terciary-gray border border-gray rounded-lg p-[10px] shadow-lg">
+				<div
+					data-tour="version-dropdown-panel"
+					className="absolute left-0 top-full mt-1 z-50 w-[360px] max-w-[calc(100vw-2rem)] bg-terciary-gray border border-gray rounded-lg p-[10px] shadow-lg">
 					{/* Version list */}
 					<ul role="listbox" className="flex flex-col gap-1">
 						{versions.map((version) => {
@@ -112,19 +119,27 @@ export function VersionDropdown() {
 												}}
 												className="w-full bg-gray/40 text-white text-h6 rounded-md px-2 py-2 border border-semilighter-gray outline-none focus:ring-1 focus:ring-blue disabled:opacity-50"
 												aria-label={t("header.editVersionName")}
+												data-tour="version-rename-input"
 											/>
 										) : (
-											<button
-												type="button"
-												onClick={() => onVersionChange(version._id)}
-												className={`cursor-pointer w-full text-left text-h6 rounded-md px-2 py-2 transition-colors hover:bg-primary-gray dark:hover:bg-gray hover:text-white focus:outline-none focus:bg-primary-gray dark:focus:bg-gray focus:text-white ${
-													isSelected ? "text-white" : "text-lighter-gray"
-												}`}
-											>
-												<span className="truncate block">
-													{formatDisplayName(version.description)}
-												</span>
-											</button>
+											<Tooltip delayDuration={300} disableHoverableContent>
+												<TooltipTrigger asChild>
+													<button
+														type="button"
+														onClick={() => onVersionChange(version._id)}
+														className={`cursor-pointer w-full text-left text-h6 rounded-md px-2 py-2 transition-colors hover:bg-primary-gray dark:hover:bg-gray hover:text-white focus:outline-none focus:bg-primary-gray dark:focus:bg-gray focus:text-white ${
+															isSelected ? "text-white" : "text-lighter-gray"
+														}`}
+													>
+														<span className="truncate block">
+															{version.description}
+														</span>
+													</button>
+												</TooltipTrigger>
+												<TooltipContent side="right" sideOffset={6} className="max-w-xs break-words">
+													{version.description}
+												</TooltipContent>
+											</Tooltip>
 										)}
 									</div>
 
@@ -135,7 +150,10 @@ export function VersionDropdown() {
 												e.stopPropagation();
 												startEditVersion(version);
 											}}
-											className="cursor-pointer invisible group-hover:visible shrink-0 p-1 text-lighter-gray hover:text-blue transition-colors rounded focus:outline-none focus:visible"
+											data-tour={isSelected ? "version-rename-btn" : undefined}
+											className={`cursor-pointer shrink-0 p-1 text-lighter-gray hover:text-blue transition-colors rounded focus:outline-none focus:visible ${
+												isSelected ? "visible" : "invisible group-hover:visible"
+											}`}
 											title={t("header.editVersionName")}
 											aria-label={t("header.editVersionName")}
 										>
@@ -176,6 +194,31 @@ export function VersionDropdown() {
 					</button>
 				</div>
 			)}
+
+			<Modal
+				title={t("modals.unsavedChanges.title")}
+				open={unsavedChangesDialogOpen}
+				setOpen={(open) => {
+					if (!open) cancelVersionChange();
+				}}
+				onSubmit={async () => {
+					await saveAndContinue();
+					// The dialog closes by itself once the version changes; keep it open on failure.
+					return false;
+				}}
+				type="save"
+				role="alertdialog"
+				showCloseButton={false}
+				isSubmitting={isSavingBeforeChange}
+				cancelLabel={t("modals.unsavedChanges.keepEditing")}
+				submitLabel={t(isSavingBeforeChange ? "modals.unsavedChanges.saving" : "modals.unsavedChanges.saveAndContinue")}
+				contentClassName="w-[560px] max-w-[calc(100vw-2rem)]"
+			>
+				<div className="flex items-start gap-4">
+					<AlertTriangle className="mt-0.5 size-8 shrink-0 text-blue" />
+					<p className="text-h5 text-secondary-white">{t("modals.unsavedChanges.description")}</p>
+				</div>
+			</Modal>
 
 			{/* Delete confirmation modal */}
 			{deleteModalOpen && (

@@ -103,6 +103,7 @@ export function ModalAttributes({
 			open={open}
 			setOpen={setOpen}
 			type={type}
+			tourId="modal-attributes"
 		>
 			<div className="flex flex-col gap-2">
 				{fields.map((field, index) => {

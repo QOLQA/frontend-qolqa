@@ -14,6 +14,7 @@ export type {
 	NestedContentLayout,
 	NestedGridLayout,
 } from "./nested-layout";
+export { findFreeNodePosition, DEFAULT_NODE_SIZE } from "./node-placement";
 export { getColumnTypeLabel, COLUMN_TYPE_LABELS, type KnownColumnType } from "./column-type-labels";
 export {
 	existsConnection,

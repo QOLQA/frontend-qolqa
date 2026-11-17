@@ -1,5 +1,4 @@
 import { Save } from "@fsd/shared/ui/icons/HeaderIcons";
-import { transformVersionToBackend } from "@fsd/entities/solution/lib/conversions";
 import { saveCanvas, saveSolution } from "../../lib";
 import { useSolutionStore } from "@fsd/entities/solution";
 import { useQueriesStore } from "@fsd/entities/query";
@@ -8,6 +7,7 @@ import { toPng } from "html-to-image";
 import { uploadImage } from "@fsd/shared/lib/image";
 import { toast } from "sonner";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@fsd/shared/ui/tooltip";
 
 const imageWidth = 1024;
 const imageHeight = 768;
@@ -16,33 +16,23 @@ export const ButtonSave = () => {
 	const { t } = useTranslation();
 	const Id = useSolutionStore((state) => state.id);
 	const versionId = useSolutionStore((state) => state.selectedVersionId);
-	const versions = useSolutionStore((state) => state.versions);
 	const nodes = useSolutionStore((state) => state.nodes);
-	const edges = useSolutionStore((state) => state.edges);
 	const queries = useQueriesStore((state) => state.queries);
 
 	const handleSave = async () => {
 		try {
-			const versionActual = versions.filter(
-				(version) => version._id === versionId
-			);
-			const diagram = transformVersionToBackend(
-				versionActual[0],
-				nodes,
-				edges
-			);
-
-			let secureUrl: string;
-			try {
-				secureUrl = await generateImage();
-			} catch (imageError) {
-				console.error("Error generating image:", imageError);
-				secureUrl = "";
-			}
-
 			await Promise.all([
-				secureUrl ? saveSolution(Id, queries, secureUrl) : Promise.resolve(),
-				saveCanvas(Id, versionId, diagram),
+				saveCanvas(Id, versionId, undefined, false),
+				(async () => {
+					let secureUrl: string;
+					try {
+						secureUrl = await generateImage();
+					} catch (imageError) {
+						console.error("Error generating image:", imageError);
+						return;
+					}
+					await saveSolution(Id, queries, secureUrl);
+				})(),
 			]);
 
 			toast.success(t("toasts.canvasSaved"));
@@ -95,8 +85,20 @@ export const ButtonSave = () => {
 	};
 
 	return (
-		<button type="button" className="group cursor-pointer" onClick={handleSave}>
-			<Save className="text-icon-muted cursor-pointer group-hover:text-icon-intense transition-colors duration-300" />
-		</button>
+		<Tooltip delayDuration={300}>
+			<TooltipTrigger asChild>
+				<button
+					type="button"
+					className="group cursor-pointer"
+					onClick={handleSave}
+					aria-label={t("header.saveChanges")}
+				>
+					<Save className="text-icon-muted cursor-pointer group-hover:text-icon-intense transition-colors duration-300" />
+				</button>
+			</TooltipTrigger>
+			<TooltipContent side="bottom" sideOffset={6}>
+				{t("header.saveChanges")}
+			</TooltipContent>
+		</Tooltip>
 	);
 };

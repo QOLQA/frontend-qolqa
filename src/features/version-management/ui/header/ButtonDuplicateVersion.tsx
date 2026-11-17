@@ -3,6 +3,7 @@ import { duplicateVersion, saveCanvas } from "../../lib";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@fsd/shared/ui/tooltip";
 
 const DuplicateIcon = ({ className }: { className?: string }) => {
 	return (
@@ -63,13 +64,20 @@ export const ButtonDuplicateVersion = () => {
 	};
 
 	return (
-		<button
-			type="button"
-			className="group cursor-pointer"
-			onClick={handleDuplicate}
-			title={t("header.duplicateVersion") || "Duplicate version"}
-		>
-			<DuplicateIcon className="text-icon-muted cursor-pointer group-hover:text-icon-intense transition-colors duration-300" />
-		</button>
+		<Tooltip delayDuration={300}>
+			<TooltipTrigger asChild>
+				<button
+					type="button"
+					className="group cursor-pointer"
+					onClick={handleDuplicate}
+					aria-label={t("header.duplicateVersion")}
+				>
+					<DuplicateIcon className="text-icon-muted cursor-pointer group-hover:text-icon-intense transition-colors duration-300" />
+				</button>
+			</TooltipTrigger>
+			<TooltipContent side="bottom" sideOffset={6}>
+				{t("header.duplicateVersion")}
+			</TooltipContent>
+		</Tooltip>
 	);
 };

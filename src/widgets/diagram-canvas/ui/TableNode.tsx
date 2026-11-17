@@ -51,12 +51,12 @@ export const TableNode = ({ data, id }: TableNodeProps) => {
 				position={Position.Right}
 				className="group"
 				style={{
-					width: "64px",
-					height: "64px",
+					width: "28px",
+					height: "28px",
 					background: "transparent",
 					border: "none",
 					borderRadius: 0,
-					right: "-32px",
+					right: "-14px",
 					top: "50%",
 					transform: "translateY(-50%)",
 					cursor: "crosshair",

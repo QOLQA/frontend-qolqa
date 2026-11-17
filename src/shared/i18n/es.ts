@@ -99,6 +99,13 @@ export const es = {
 
   // Modals
   modals: {
+    unsavedChanges: {
+      title: "Cambios sin guardar",
+      description: "Guarda los cambios de la versión actual antes de continuar o sigue editando.",
+      keepEditing: "Seguir editando",
+      saveAndContinue: "Guardar y continuar",
+      saving: "Guardando...",
+    },
     createCollection: {
       title: "Crear colección",
       nameLabel: "Nombre",
@@ -194,7 +201,10 @@ export const es = {
 
   // Header
   header: {
-    duplicateVersion: "Duplicar versión",
+    duplicateVersion: "Duplicar esta versión",
+    saveChanges: "Guardar cambios",
+    switchProject: "Cambiar de proyecto",
+    noOtherProjects: "No tienes otros proyectos",
     addNewVersion: "Agregar nueva versión",
     editVersionName: "Editar nombre de la versión",
   },
@@ -214,6 +224,222 @@ export const es = {
     versionNameEmpty: "El nombre de la versión no puede estar vacío.",
     versionNameTooLong:
       "El nombre de la versión es demasiado largo (máx. 500 caracteres).",
+  },
+
+  tour: {
+    chapters: {
+      collection: "Primera colección",
+      attributes: "Atributos",
+      nested: "Colección anidada",
+      another: "Otra colección",
+      query: "Consultas",
+      metrics: "Métricas",
+      version: "Versiones",
+      experiment: "Experimenta en la copia",
+      compare: "Comparación",
+    },
+    ui: {
+      stepOf: "Paso {current} de {total}",
+      start: "¡Empecemos!",
+      notNow: "Ahora no",
+      next: "Siguiente",
+      back: "Atrás",
+      skipStep: "Omitir este paso",
+      minimize: "Minimizar tutorial",
+      close: "Cerrar tutorial",
+      resume: "Tutorial en pausa · Continuar",
+      continueInProject: "Continuar el tutorial en tu proyecto",
+      doIt: "Tu turno: hazlo en el elemento resaltado y continuaré automáticamente.",
+      lost: "No encuentro ese elemento ahora. Verifica que el panel esté abierto o vuelve un paso atrás.",
+      chapterDone: "¡Bien! \"{name}\" completado",
+      restart: "Repetir tutorial",
+      finish: "Seguir diseñando",
+      launcher: "Tutorial guiado",
+      continueTutorial: "Continuar tutorial",
+      bannerTitle: "¿Nuevo en QOLQA?",
+      bannerBody: "Crea un proyecto de práctica y aprende todo el flujo en unos 5 minutos: colecciones, consultas, métricas y versiones.",
+      bannerCta: "Empezar tutorial",
+      bannerDismiss: "Descartar",
+      practiceProjectName: "Mi primer diseño (tutorial)",
+    },
+    verdict: {
+      metrics: {
+        accessPattern: {
+          name: "Patrón de acceso",
+          meaning: "menos significa que cada consulta visita menos colecciones: lecturas más simples y rápidas.",
+        },
+        recoveryCost: {
+          name: "Costo de recuperación",
+          meaning: "menos significa menos trabajo para armar los datos que pide una consulta.",
+        },
+        redundancy: {
+          name: "Redundancia",
+          meaning: "menos significa menos datos duplicados: actualizar es más barato y todo se mantiene consistente.",
+        },
+        completude: {
+          name: "Consultas cubiertas",
+          meaning: "más es mejor: el esquema puede responder más de tus consultas.",
+        },
+        total: {
+          name: "Costo total",
+        },
+      },
+      winner: "Ganador: {name}",
+      reasonQueries: "Gana porque responde más de tus consultas: {winner} frente a {other}. Un esquema que no puede responder una consulta no sirve, por barato que sea.",
+      reasonCost: "Ambas responden {queries} de tus consultas, así que desempata el costo: su total (acceso + recuperación + redundancia) es menor, {winner} frente a {other}.",
+      metric: "Métrica",
+      legend: "Verde: mejor que la otra versión. Rojo: el precio que se paga por esta estructura.",
+      needVersions: "Crea al menos dos versiones para ver un ganador.",
+    },
+    steps: {
+      welcome: {
+        title: "¡Bienvenido a QOLQA!",
+        body: "En unos minutos diseñarás el esquema de una pequeña tienda online: usuarios con su dirección embebida y sus pedidos.\n\nAprenderás a modelar colecciones, describir cómo tu app lee los datos con consultas, medir el diseño y comparar versiones.",
+      },
+      collectionOpen: {
+        title: "Crea tu primera colección",
+        body: "Una colección agrupa documentos del mismo tipo, como una tabla en SQL. Haz clic en \"New Collection\".",
+      },
+      collectionFill: {
+        title: "Ponle un nombre",
+        body: "Escribe el nombre de la colección y presiona \"Create\".",
+        hint: "Prueba con \"usuarios\". El nombre necesita al menos 4 caracteres.",
+      },
+      collectionCreated: {
+        title: "¡Tu primera colección!",
+        body: "QOLQA agregó automáticamente una clave primaria (usuarios_id). El color del encabezado indica a qué submodelo pertenece.\n\nTip: puedes arrastrar la tarjeta por el lienzo.",
+      },
+      attributesMenu: {
+        title: "Abre el menú de la colección",
+        body: "Cada colección tiene un menú ⋯ con sus acciones. Ábrelo.",
+      },
+      attributesOption: {
+        title: "Agrega atributos",
+        body: "Elige \"Add attributes\".",
+      },
+      attributesFill: {
+        title: "Describe tus datos",
+        body: "Cada atributo tiene nombre y tipo (string, integer, double, boolean, date, array). Usa \"New attribute\" para agregar más filas y presiona \"Create\".",
+        hint: "Prueba con nombre (string), email (string) y fecha_registro (date).",
+      },
+      nestedMenu: {
+        title: "Ahora, un documento embebido",
+        body: "En bases documentales puedes guardar datos relacionados dentro del documento padre en lugar de otra colección. Así evitas joins cuando siempre los lees juntos. Abre otra vez el menú ⋯.",
+      },
+      nestedOption: {
+        title: "Agrega un documento",
+        body: "Elige \"Add documents\" para crear una colección anidada.",
+      },
+      nestedFill: {
+        title: "Nombra la colección anidada",
+        body: "Escribe un nombre y presiona \"Create\". Aparecerá dentro de la colección padre.",
+        hint: "Prueba con \"direccion\": la dirección de un usuario casi siempre se lee junto al usuario.",
+      },
+      nestedCardinality: {
+        title: "Cardinalidad",
+        body: "Este selector indica cuántos documentos embebidos tiene cada padre: uno (1...1) o muchos (1...n). Afecta a las métricas, así que elige el que refleje la realidad.",
+      },
+      secondOpen: {
+        title: "Una colección más",
+        body: "Los pedidos crecen sin límite, por eso es mejor tenerlos en su propia colección. Haz clic otra vez en \"New Collection\".",
+      },
+      secondFill: {
+        title: "Ponle nombre",
+        body: "Escribe el nombre y presiona \"Create\".",
+        hint: "Prueba con \"pedidos\".",
+      },
+      connect: {
+        title: "Conéctalas (opcional)",
+        body: "Arrastra desde el punto del lado derecho de una colección hacia la otra para crear una referencia (clave foránea). Las colecciones conectadas comparten submodelo y color.",
+      },
+      queriesOpen: {
+        title: "¿Cómo leerá tu app los datos?",
+        body: "Un buen diseño NoSQL parte de sus consultas. Abre el panel \"Queries\".",
+      },
+      queryAdd: {
+        title: "Agrega una consulta",
+        body: "Haz clic en \"Add Query\".",
+      },
+      queryText: {
+        title: "Escríbela en lenguaje natural",
+        body: "Describe lo que tu app necesita leer y presiona \"Next\".",
+        hint: "Prueba con \"Obtener los pedidos de un usuario\". Las palabras que coinciden con tus colecciones se detectan automáticamente.",
+      },
+      queryDocs: {
+        title: "Elige las colecciones involucradas",
+        body: "Selecciona las colecciones que toca esta consulta (las palabras detectadas aparecen como botones) y presiona \"Create\".",
+      },
+      metricsOpen: {
+        title: "Mide tu diseño",
+        body: "Abre el panel \"Statistics\" para ver qué tan bueno es este esquema.",
+      },
+      metricsQueries: {
+        title: "Consultas cubiertas",
+        body: "Este gráfico muestra cuántas de tus consultas puede responder el esquema. Apunta al 100%.",
+      },
+      metricsScores: {
+        title: "Métricas del diseño",
+        body: "Patrón de acceso: cuántas colecciones debe visitar una consulta.\nCosto de recuperación: qué tan caro es leer los datos.\nRedundancia: cuántos datos están duplicados.\n\nMenor suele ser mejor, pero hay un equilibrio: embeber baja el costo y sube la redundancia.",
+      },
+      versionDuplicate: {
+        title: "Crea una versión",
+        body: "Una versión es una foto de tu diseño para probar una alternativa sin perder esta. Haz clic en \"Duplicar versión\" (primero guarda).",
+      },
+      versionRenameOpen: {
+        title: "Ahora estás en la copia",
+        body: "La versión original está a salvo. Ponle a esta copia un nombre que diga qué vas a probar en ella: abre el selector de versiones.",
+      },
+      versionRenameEdit: {
+        title: "Renombra la copia",
+        body: "El check marca la versión que estás editando. Haz clic en el lápiz que está a su lado para renombrarla (si haces clic en el nombre, cambias de versión y se cierra esta lista).",
+      },
+      versionRenameFill: {
+        title: "Ponle nombre",
+        body: "Escribe el nuevo nombre y presiona Enter.",
+        hint: "Prueba con \"project version 2\": en la comparación distinguirás ambas versiones de un vistazo.",
+      },
+      embedMenu: {
+        title: "Experimento: embebe los pedidos",
+        body: "En lugar de tener los pedidos en su propia colección, los guardaremos dentro de cada usuario. Abre el menú ⋯ de la primera colección.",
+      },
+      embedOption: {
+        title: "Agrega un documento",
+        body: "Elige \"Add documents\".",
+      },
+      embedFill: {
+        title: "Embebe los pedidos",
+        body: "Ponle nombre a la colección anidada y presiona \"Create\".",
+        hint: "Usa el mismo nombre que tu segunda colección, por ejemplo \"pedidos\".",
+      },
+      embedDeleteMenu: {
+        title: "Elimina la colección separada",
+        body: "Los pedidos ahora viven dentro de usuarios, así que la colección separada sobra. Abre su menú ⋯.",
+      },
+      embedDeleteOption: {
+        title: "Elimínala",
+        body: "Elige \"Delete\".",
+      },
+      embedSave: {
+        title: "Guarda esta versión",
+        body: "La comparación usa las versiones guardadas. Haz clic en el botón de guardar para registrar los cambios de esta copia.",
+      },
+      compareOpen: {
+        title: "Compara tus versiones",
+        body: "Haz clic en \"Compare schemas\" para ver todas las versiones lado a lado.",
+      },
+      analysisCharts: {
+        title: "Métricas por versión",
+        body: "Compara tu original (pedidos referenciados) con la copia (pedidos embebidos). Embeber suele bajar el patrón de acceso y el costo de recuperación, pero sube la redundancia.\n\nA la izquierda, las métricas intrínsecas; a la derecha, qué tan bien atiende cada versión a tus consultas.",
+      },
+      analysisTable: {
+        title: "Tabla comparativa",
+        body: "Cada fila es una versión (despliégala para ver sus submodelos). Marca una fila para filtrar los gráficos y comparar solo las que te interesan.",
+      },
+      finish: {
+        title: "¡Lo lograste! 🎉",
+        body: "Modelaste colecciones, documentos embebidos y consultas, creaste una versión con otra estructura y comparaste ambas. Así se lee el resultado:",
+      },
+    },
   },
 
   errors: {

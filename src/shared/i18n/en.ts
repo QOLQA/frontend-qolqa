@@ -97,6 +97,13 @@ export const en = {
 
   // Modals
   modals: {
+    unsavedChanges: {
+      title: "Unsaved changes",
+      description: "Save your changes to the current version before continuing, or keep editing.",
+      keepEditing: "Keep editing",
+      saveAndContinue: "Save and continue",
+      saving: "Saving...",
+    },
     createCollection: {
       title: "Create collection",
       nameLabel: "Name",
@@ -191,7 +198,10 @@ export const en = {
 
   // Header
   header: {
-    duplicateVersion: "Duplicate version",
+    duplicateVersion: "Duplicate this version",
+    saveChanges: "Save changes",
+    switchProject: "Switch project",
+    noOtherProjects: "You have no other projects",
     addNewVersion: "Add new version",
     editVersionName: "Edit version name",
   },
@@ -210,6 +220,222 @@ export const en = {
     errorRenamingVersion: "Error updating version name.",
     versionNameEmpty: "Version name cannot be empty.",
     versionNameTooLong: "Version name is too long (max 500 characters).",
+  },
+
+  tour: {
+    chapters: {
+      collection: "First collection",
+      attributes: "Attributes",
+      nested: "Nested collection",
+      another: "Another collection",
+      query: "Queries",
+      metrics: "Metrics",
+      version: "Versions",
+      experiment: "Experiment in the copy",
+      compare: "Comparison",
+    },
+    ui: {
+      stepOf: "Step {current} of {total}",
+      start: "Let's go",
+      notNow: "Not now",
+      next: "Next",
+      back: "Back",
+      skipStep: "Skip this step",
+      minimize: "Minimize tutorial",
+      close: "Close tutorial",
+      resume: "Tutorial paused · Continue",
+      continueInProject: "Continue the tutorial in your project",
+      doIt: "Your turn: do it on the highlighted element and I'll continue automatically.",
+      lost: "I can't find that element right now. Make sure the panel is open or go back one step.",
+      chapterDone: "Nice! \"{name}\" completed",
+      restart: "Repeat tutorial",
+      finish: "Keep designing",
+      launcher: "Guided tutorial",
+      continueTutorial: "Continue tutorial",
+      bannerTitle: "New to QOLQA?",
+      bannerBody: "Create a practice project and learn the whole flow in about 5 minutes: collections, queries, metrics and versions.",
+      bannerCta: "Start tutorial",
+      bannerDismiss: "Dismiss",
+      practiceProjectName: "My first design (tutorial)",
+    },
+    verdict: {
+      metrics: {
+        accessPattern: {
+          name: "Access pattern",
+          meaning: "less means each query visits fewer collections, so reads are simpler and faster.",
+        },
+        recoveryCost: {
+          name: "Recovery cost",
+          meaning: "less means less work to assemble the data a query needs.",
+        },
+        redundancy: {
+          name: "Redundancy",
+          meaning: "less means less duplicated data, so updates are cheaper and stay consistent.",
+        },
+        completude: {
+          name: "Queries covered",
+          meaning: "more is better: the schema can answer more of your queries.",
+        },
+        total: {
+          name: "Total cost",
+        },
+      },
+      winner: "Winner: {name}",
+      reasonQueries: "It wins because it answers more of your queries: {winner} vs {other}. A schema that can't answer a query is not useful, however cheap it is.",
+      reasonCost: "Both answer {queries} of your queries, so the tie is broken by cost: its total (access + recovery + redundancy) is lower, {winner} vs {other}.",
+      metric: "Metric",
+      legend: "Green: better than the other version. Red: the price paid for this structure.",
+      needVersions: "Create at least two versions to see a winner.",
+    },
+    steps: {
+      welcome: {
+        title: "Welcome to QOLQA!",
+        body: "In a few minutes you'll design a small online store schema: users with an embedded address and their orders.\n\nYou'll learn to model collections, describe how your app reads data with queries, measure the design and compare versions.",
+      },
+      collectionOpen: {
+        title: "Create your first collection",
+        body: "A collection groups documents of the same kind, like a table in SQL. Click \"New Collection\".",
+      },
+      collectionFill: {
+        title: "Give it a name",
+        body: "Type the name of the collection and press \"Create\".",
+        hint: "Try \"users\". Names need at least 4 characters.",
+      },
+      collectionCreated: {
+        title: "Your first collection!",
+        body: "QOLQA added a primary key (users_id) automatically. The header color shows which submodel it belongs to.\n\nTip: you can drag the card around the canvas.",
+      },
+      attributesMenu: {
+        title: "Open the collection menu",
+        body: "Every collection has a ⋯ menu with its actions. Open it.",
+      },
+      attributesOption: {
+        title: "Add attributes",
+        body: "Choose \"Add attributes\".",
+      },
+      attributesFill: {
+        title: "Describe your data",
+        body: "Each attribute has a name and a type (string, integer, double, boolean, date, array). Use \"New attribute\" to add more rows and press \"Create\".",
+        hint: "Try name (string), email (string) and created_at (date).",
+      },
+      nestedMenu: {
+        title: "Now, an embedded document",
+        body: "In document databases you can store related data inside the parent document instead of another collection. This avoids joins when you always read them together. Open the ⋯ menu again.",
+      },
+      nestedOption: {
+        title: "Add a document",
+        body: "Choose \"Add documents\" to create a nested collection.",
+      },
+      nestedFill: {
+        title: "Name the nested collection",
+        body: "Type a name and press \"Create\". It will appear inside the parent collection.",
+        hint: "Try \"address\": a user's address is almost always read together with the user.",
+      },
+      nestedCardinality: {
+        title: "Cardinality",
+        body: "This selector says how many embedded documents each parent has: one (1...1) or many (1...n). It affects the metrics, so pick the one that matches reality.",
+      },
+      secondOpen: {
+        title: "One more collection",
+        body: "Orders grow without limit, so they are better in their own collection. Click \"New Collection\" again.",
+      },
+      secondFill: {
+        title: "Name it",
+        body: "Type the name and press \"Create\".",
+        hint: "Try \"orders\".",
+      },
+      connect: {
+        title: "Connect them (optional)",
+        body: "Drag from the dot on the right side of one collection to the other to create a reference (foreign key). Connected collections share a submodel and color.",
+      },
+      queriesOpen: {
+        title: "How will your app read the data?",
+        body: "A good NoSQL design starts from its queries. Open the \"Queries\" panel.",
+      },
+      queryAdd: {
+        title: "Add a query",
+        body: "Click \"Add Query\".",
+      },
+      queryText: {
+        title: "Write it in plain language",
+        body: "Describe what your app needs to read, then press \"Next\".",
+        hint: "Try \"Get the orders of a user\". Words that match your collection names are detected automatically.",
+      },
+      queryDocs: {
+        title: "Choose the collections involved",
+        body: "Select the collections this query touches (detected words appear as buttons) and press \"Create\".",
+      },
+      metricsOpen: {
+        title: "Measure your design",
+        body: "Open the \"Statistics\" panel to see how good this schema is.",
+      },
+      metricsQueries: {
+        title: "Queries covered",
+        body: "This chart shows how many of your queries the schema can answer. Aim for 100%.",
+      },
+      metricsScores: {
+        title: "Design metrics",
+        body: "Access pattern: how many collections a query has to visit.\nRecovery cost: how expensive it is to read the data.\nRedundancy: how much data is duplicated.\n\nLower is usually better, but it's a trade-off: embedding lowers cost and raises redundancy.",
+      },
+      versionDuplicate: {
+        title: "Create a version",
+        body: "A version is a snapshot of your design, so you can try an alternative without losing this one. Click \"Duplicate version\" (it saves first).",
+      },
+      versionRenameOpen: {
+        title: "You're now in the copy",
+        body: "The original version is safe. Give this copy a name that says what you'll try in it: open the version selector.",
+      },
+      versionRenameEdit: {
+        title: "Rename the copy",
+        body: "The check marks the version you're editing. Click the pencil next to it to rename it (clicking the name switches versions and closes this list).",
+      },
+      versionRenameFill: {
+        title: "Name it",
+        body: "Type the new name and press Enter.",
+        hint: "Try \"project version 2\": in the comparison you'll tell both versions apart at a glance.",
+      },
+      embedMenu: {
+        title: "Experiment: embed the orders",
+        body: "Instead of keeping orders in their own collection, we'll store them inside each user. Open the ⋯ menu of the first collection.",
+      },
+      embedOption: {
+        title: "Add a document",
+        body: "Choose \"Add documents\".",
+      },
+      embedFill: {
+        title: "Embed the orders",
+        body: "Name the nested collection and press \"Create\".",
+        hint: "Use the same name as your second collection, e.g. \"orders\".",
+      },
+      embedDeleteMenu: {
+        title: "Remove the separate collection",
+        body: "The orders now live inside users, so the separate collection is redundant. Open its ⋯ menu.",
+      },
+      embedDeleteOption: {
+        title: "Delete it",
+        body: "Choose \"Delete\".",
+      },
+      embedSave: {
+        title: "Save this version",
+        body: "The comparison uses saved versions. Click the save button to store the changes of this copy.",
+      },
+      compareOpen: {
+        title: "Compare your versions",
+        body: "Click \"Compare schemas\" to see every version side by side.",
+      },
+      analysisCharts: {
+        title: "Metrics per version",
+        body: "Compare your original (referenced orders) with the copy (embedded orders). Embedding usually lowers the access pattern and recovery cost, but raises redundancy.\n\nOn the left, intrinsic metrics; on the right, how well each version serves your queries.",
+      },
+      analysisTable: {
+        title: "Comparison table",
+        body: "Each row is a version (expand it to see its submodels). Tick a row to filter the charts and compare only the ones you care about.",
+      },
+      finish: {
+        title: "You did it! 🎉",
+        body: "You modeled collections, embedded documents and queries, created a version with a different structure and compared both. This is how to read the result:",
+      },
+    },
   },
 
   errors: {
