@@ -1,15 +1,22 @@
 "use client";
 
-import { Chevron } from "@fsd/shared/ui/icons/HeaderIcons";
+import type { SolutionListItem } from "@fsd/entities/solution";
 import { Logo } from "@fsd/shared/ui/logo";
 import {
   ButtonDuplicateVersion,
   ButtonSave,
   VersionDropdown,
 } from "@fsd/features/version-management";
+import { ProjectSwitcher } from "@fsd/features/project-management";
 import { TourLauncher } from "@fsd/features/onboarding-tour";
 
-export const AppHeader = ({ title }: { title: string }) => {
+type AppHeaderProps = {
+  title: string;
+  projectId: string;
+  projects: SolutionListItem[];
+};
+
+export const AppHeader = ({ title, projectId, projects }: AppHeaderProps) => {
   return (
     <header className="flex flex-row items-center w-full h-16 bg-secondary-gray p-4 text-white relative">
       <div className="flex-shrink-0">
@@ -36,7 +43,7 @@ export const AppHeader = ({ title }: { title: string }) => {
           */}
           <div className="flex items-center gap-3">
             <h1 className="text-h4 text-white">{title}</h1>
-            <Chevron className="text-white" />
+            <ProjectSwitcher projects={projects} currentProjectId={projectId} />
           </div>
         </div>
       </div>

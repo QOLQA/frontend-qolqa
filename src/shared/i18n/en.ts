@@ -200,6 +200,8 @@ export const en = {
   header: {
     duplicateVersion: "Duplicate this version",
     saveChanges: "Save changes",
+    switchProject: "Switch project",
+    noOtherProjects: "You have no other projects",
     addNewVersion: "Add new version",
     editVersionName: "Edit version name",
   },

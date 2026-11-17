@@ -203,6 +203,8 @@ export const es = {
   header: {
     duplicateVersion: "Duplicar esta versión",
     saveChanges: "Guardar cambios",
+    switchProject: "Cambiar de proyecto",
+    noOtherProjects: "No tienes otros proyectos",
     addNewVersion: "Agregar nueva versión",
     editVersionName: "Editar nombre de la versión",
   },
