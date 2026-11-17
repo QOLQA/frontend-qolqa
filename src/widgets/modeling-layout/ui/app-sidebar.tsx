@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { useAuthContext } from "@fsd/features/auth";
+import { useSidebarNavStore } from "@fsd/shared/lib/sidebar-nav";
 import { Sidebar, useSidebar } from "@fsd/shared/ui/sidebar";
 import { SidebarContentPrinc } from "@fsd/widgets/modeling-layout/ui/sidebar-content";
 import { SidebarIcons } from "@fsd/widgets/modeling-layout/ui/sidebar-icons";
@@ -11,9 +12,14 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 	navItems: NavItem[];
 };
 
+const databaseItem = "Database";
+
 export function AppSidebar({ navItems, ...props }: AppSidebarProps) {
 	const { setOpen } = useSidebar();
 	const { user: authUser } = useAuthContext();
+	const activeTitle = useSidebarNavStore((state) => state.activeTitle);
+	const setActiveTitle = useSidebarNavStore((state) => state.setActiveTitle);
+	const request = useSidebarNavStore((state) => state.request);
 
 	const data: Data = {
 		user: {
@@ -28,7 +34,28 @@ export function AppSidebar({ navItems, ...props }: AppSidebarProps) {
 	};
 
 	// Safe: callers always pass at least one nav item (enforced by usage contract)
-	const [activeItem, setActiveItem] = useState<NavItem>(navItems[0] as NavItem);
+	const activeItem =
+		navItems.find((item) => item.title === activeTitle) ??
+		(navItems[0] as NavItem);
+
+	const setActiveItem = (item: NavItem) => setActiveTitle(item.title);
+
+	const handledNonce = useRef(request?.nonce ?? 0);
+
+	useEffect(() => {
+		setActiveTitle((navItems[0] as NavItem).title);
+		// Reset to the default panel only when the sidebar mounts.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		if (!request || request.nonce === handledNonce.current) return;
+		handledNonce.current = request.nonce;
+		const target = navItems.find((item) => item.title === request.title);
+		if (!target) return;
+		setActiveTitle(target.title);
+		setOpen(target.title !== databaseItem);
+	}, [request, navItems, setActiveTitle, setOpen]);
 
 	return (
 		<Sidebar
