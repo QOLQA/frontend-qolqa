@@ -201,7 +201,8 @@ export const es = {
 
   // Header
   header: {
-    duplicateVersion: "Duplicar versión",
+    duplicateVersion: "Duplicar esta versión",
+    saveChanges: "Guardar cambios",
     addNewVersion: "Agregar nueva versión",
     editVersionName: "Editar nombre de la versión",
   },

@@ -7,6 +7,7 @@ import { toPng } from "html-to-image";
 import { uploadImage } from "@fsd/shared/lib/image";
 import { toast } from "sonner";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@fsd/shared/ui/tooltip";
 
 const imageWidth = 1024;
 const imageHeight = 768;
@@ -84,8 +85,20 @@ export const ButtonSave = () => {
 	};
 
 	return (
-		<button type="button" className="group cursor-pointer" onClick={handleSave}>
-			<Save className="text-icon-muted cursor-pointer group-hover:text-icon-intense transition-colors duration-300" />
-		</button>
+		<Tooltip delayDuration={300}>
+			<TooltipTrigger asChild>
+				<button
+					type="button"
+					className="group cursor-pointer"
+					onClick={handleSave}
+					aria-label={t("header.saveChanges")}
+				>
+					<Save className="text-icon-muted cursor-pointer group-hover:text-icon-intense transition-colors duration-300" />
+				</button>
+			</TooltipTrigger>
+			<TooltipContent side="bottom" sideOffset={6}>
+				{t("header.saveChanges")}
+			</TooltipContent>
+		</Tooltip>
 	);
 };

@@ -15,8 +15,13 @@ export const AppHeader = ({ title }: { title: string }) => {
       <div className="flex-shrink-0">
         <div className="flex items-center gap-8">
           <Logo className="inline-block" logoClassName="text-blue w-28" />
-          <div data-tour="version-dropdown">
-            <VersionDropdown />
+          <div className="flex items-center gap-3">
+            <div data-tour="version-dropdown">
+              <VersionDropdown />
+            </div>
+            <div data-tour="version-duplicate" className="flex">
+              <ButtonDuplicateVersion />
+            </div>
           </div>
         </div>
       </div>
@@ -39,9 +44,6 @@ export const AppHeader = ({ title }: { title: string }) => {
       <div className="flex-shrink-0 ml-auto">
         <div className="flex items-center gap-4">
           <TourLauncher />
-          <div data-tour="version-duplicate" className="flex">
-            <ButtonDuplicateVersion />
-          </div>
           <div data-tour="save-btn" className="flex">
             <ButtonSave />
           </div>
