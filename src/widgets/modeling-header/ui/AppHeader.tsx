@@ -11,6 +11,7 @@ import {
   ButtonSave,
   VersionDropdown,
 } from "@fsd/features/version-management";
+import { TourLauncher } from "@fsd/features/onboarding-tour";
 
 export const AppHeader = ({ title }: { title: string }) => {
   return (
@@ -18,7 +19,9 @@ export const AppHeader = ({ title }: { title: string }) => {
       <div className="flex-shrink-0">
         <div className="flex items-center gap-8">
           <Logo className="inline-block" logoClassName="text-blue w-28" />
-          <VersionDropdown />
+          <div data-tour="version-dropdown">
+            <VersionDropdown />
+          </div>
         </div>
       </div>
 
@@ -37,8 +40,13 @@ export const AppHeader = ({ title }: { title: string }) => {
 
       <div className="flex-shrink-0 ml-auto">
         <div className="flex items-center gap-4">
-          <ButtonDuplicateVersion />
-          <ButtonSave />
+          <TourLauncher />
+          <div data-tour="version-duplicate" className="flex">
+            <ButtonDuplicateVersion />
+          </div>
+          <div data-tour="save-btn" className="flex">
+            <ButtonSave />
+          </div>
         </div>
       </div>
     </header>

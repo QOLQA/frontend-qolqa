@@ -4,6 +4,7 @@ import "./globals.css";
 import { DropdownProvider } from "@fsd/shared/lib/dropdown-context";
 import { AuthProvider, AuthTokenSync, GoogleProvider } from "@fsd/app/providers";
 import { Toaster } from "@fsd/shared/ui/sonner";
+import { TourProvider } from "@fsd/features/onboarding-tour";
 
 export const metadata: Metadata = {
 	title: "DBCapibara - Database Modeling Tool",
@@ -27,7 +28,10 @@ export default function RootLayout({
 					<AuthProvider>
 						<GoogleProvider>
 							<AuthTokenSync />
-							<DropdownProvider>{children}</DropdownProvider>
+							<DropdownProvider>
+								{children}
+								<TourProvider />
+							</DropdownProvider>
 						</GoogleProvider>
 					</AuthProvider>
 				</ThemeProvider>

@@ -249,6 +249,43 @@
    Tailwind CSS 4 theme — @theme for non-color tokens
    ────────────────────────────────────────────── */
 @theme {
+	/* Guided tutorial animations */
+	--animate-tour-pop: tour-pop 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+	--animate-tour-glow: tour-glow 1.8s ease-in-out infinite;
+	--animate-tour-rise: tour-rise 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+	@keyframes tour-pop {
+		from {
+			opacity: 0;
+			transform: translateY(6px) scale(0.96);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
+	}
+
+	@keyframes tour-glow {
+		0%,
+		100% {
+			box-shadow: 0 0 0 0 color-mix(in oklab, var(--metric-access) 45%, transparent);
+		}
+		50% {
+			box-shadow: 0 0 0 8px color-mix(in oklab, var(--metric-access) 0%, transparent);
+		}
+	}
+
+	@keyframes tour-rise {
+		from {
+			opacity: 0;
+			transform: translateY(12px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
 	/* Breakpoints */
 	--breakpoint-xs: 425px;
 	--breakpoint-mobile: 430px;

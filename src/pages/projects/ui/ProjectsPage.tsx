@@ -15,6 +15,7 @@ import {
   useProjectsStore,
 } from "@fsd/features/project-management";
 import { SolutionCard, type SolutionListItem } from "@fsd/entities/solution";
+import { TourBanner } from "@fsd/features/onboarding-tour";
 
 interface CreateSolutionResponse {
   _id: string;
@@ -51,6 +52,18 @@ export function ProjectsPage({
       router.push(`/projects/${data._id}/modeling`);
     } catch (error) {
       console.error("Error creating solution:", error);
+    }
+  };
+
+  const handleCreatePracticeProject = async (name: string) => {
+    try {
+      const data = await api.post<CreateSolutionResponse>("/solutions", {
+        name,
+      });
+      return data._id;
+    } catch (error) {
+      console.error("Error creating solution:", error);
+      return null;
     }
   };
 
@@ -157,6 +170,12 @@ export function ProjectsPage({
             {t("other.yourProjects")}
           </h1>
           <hr className="mt-[33px] mb-20 border-gray" />
+
+          <TourBanner
+            hasProjects={solutions.length > 0}
+            onCreatePracticeProject={handleCreatePracticeProject}
+            onOpenProject={handleOpenSolution}
+          />
 
           {isPending && (
             <div className="text-center text-white mb-4">

@@ -81,7 +81,9 @@ export function VersionDropdown() {
 
 			{/* Dropdown panel */}
 			{isOpen && (
-				<div className="absolute left-0 top-full mt-1 z-50 w-[360px] max-w-[calc(100vw-2rem)] bg-terciary-gray border border-gray rounded-lg p-[10px] shadow-lg">
+				<div
+					data-tour="version-dropdown-panel"
+					className="absolute left-0 top-full mt-1 z-50 w-[360px] max-w-[calc(100vw-2rem)] bg-terciary-gray border border-gray rounded-lg p-[10px] shadow-lg">
 					{/* Version list */}
 					<ul role="listbox" className="flex flex-col gap-1">
 						{versions.map((version) => {
@@ -125,6 +127,7 @@ export function VersionDropdown() {
 												}}
 												className="w-full bg-gray/40 text-white text-h6 rounded-md px-2 py-2 border border-semilighter-gray outline-none focus:ring-1 focus:ring-blue disabled:opacity-50"
 												aria-label={t("header.editVersionName")}
+												data-tour="version-rename-input"
 											/>
 										) : (
 											<Tooltip delayDuration={300} disableHoverableContent>
@@ -155,7 +158,10 @@ export function VersionDropdown() {
 												e.stopPropagation();
 												startEditVersion(version);
 											}}
-											className="cursor-pointer invisible group-hover:visible shrink-0 p-1 text-lighter-gray hover:text-blue transition-colors rounded focus:outline-none focus:visible"
+											data-tour={isSelected ? "version-rename-btn" : undefined}
+											className={`cursor-pointer shrink-0 p-1 text-lighter-gray hover:text-blue transition-colors rounded focus:outline-none focus:visible ${
+												isSelected ? "visible" : "invisible group-hover:visible"
+											}`}
 											title={t("header.editVersionName")}
 											aria-label={t("header.editVersionName")}
 										>

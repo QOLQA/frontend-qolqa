@@ -22,7 +22,7 @@ export function ComparativeTable({
 		useSchemaMetricsSelection(metricsChartData, onSelectionChange);
 
 	return (
-		<div className="flex flex-col w-[70%] h-auto border border-gray rounded-2xl p-6 gap-6 my-16">
+		<div className="flex flex-col w-full h-auto border border-gray rounded-2xl p-6 gap-6 my-16">
 			<div className="w-full flex flex-row items-center">
 				<div className="w-[10%] flex justify-center items-center text-white gap-3">
 					<div className="w-5" />

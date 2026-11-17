@@ -58,6 +58,7 @@ export const ModalNewQuery = ({
 				setOpen={setOpen}
 				onSubmit={handleSubmit}
 				type="next"
+				tourId="modal-new-query"
 			>
 				<>
 					<div className="my-13 gap-5 flex justify-between items-start flex-col">

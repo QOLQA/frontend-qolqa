@@ -38,6 +38,7 @@ export const NestedTableCardinality = React.memo(
             type="button"
             className="ml-2 px-1.5 py-0.5  text-p-sm bg-transparent hover:bg-gray/50 rounded cursor-pointer transition-colors duration-200 border-none outline-none focus:ring-1 focus:ring-lighter-gray/50"
             onClick={handleClick}
+            data-tour="nested-cardinality"
           >
             {cardinality}
           </button>
@@ -47,6 +48,7 @@ export const NestedTableCardinality = React.memo(
           side="right"
           align="center"
           variant="menu-1"
+          data-tour="nested-cardinality-menu"
         >
           {CARDINALITY_OPTIONS.map((option) => (
             <DropdownMenuItem

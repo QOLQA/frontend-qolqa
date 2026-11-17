@@ -51,6 +51,7 @@ export function ModalAddCollection({ onSubmit, open, setOpen }: ModalAddCollecti
 	return (
 		<Modal
 			title={t("modals.createCollection.title")}
+			tourId="modal-add-collection"
 			onSubmit={handleSubmit}
 			open={open}
 			setOpen={setOpen}

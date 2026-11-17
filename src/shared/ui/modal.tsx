@@ -20,6 +20,8 @@ interface ModalProps {
 	showCloseButton?: boolean;
 	onReturnPreviewsStep?: () => void;
 	contentClassName?: string;
+	/** Anchor used by the guided tutorial (`data-tour`). */
+	tourId?: string;
 	/** Overrides the label derived from `type`. */
 	submitLabel?: string;
 	cancelLabel?: string;
@@ -39,6 +41,7 @@ export function Modal({
 	showCloseButton = true,
 	onReturnPreviewsStep,
 	contentClassName,
+	tourId,
 	submitLabel,
 	cancelLabel,
 	isSubmitting = false,
@@ -105,6 +108,7 @@ export function Modal({
 		>
 			<div
 				onClick={(e) => e.stopPropagation()}
+				data-tour={tourId}
 				className={cn(
 					"w-[730px] bg-secondary-gray border-2 border-gray rounded-lg p-6 relative flex flex-col",
 					contentClassName,

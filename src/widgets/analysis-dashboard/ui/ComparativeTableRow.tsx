@@ -54,6 +54,7 @@ export function ComparativeTableRow({
 								: "border-secondary-white bg-transparent"
 						}`}
 						onClick={onToggleSelection}
+						data-tour="analysis-row-select"
 					>
 						{isSelected && (
 							<svg

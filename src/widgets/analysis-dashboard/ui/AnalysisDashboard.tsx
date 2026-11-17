@@ -31,16 +31,21 @@ export function AnalysisDashboard() {
 					<div className="w-full h-[2px] bg-gray" />
 				</div>
 
-				<div className="flex flex-row w-[70%] justify-between">
+				<div
+					className="flex flex-row w-[70%] justify-between"
+					data-tour="analysis-charts"
+				>
 					<ModelIntrinsicMetrics metricsChartData={filteredMetricsData} />
 					<WorkloadDrivenMetric completudeChartData={filteredCompletudeData} />
 				</div>
 
-				<ComparativeTable
-					metricsChartData={metricsChartData}
-					completudeChartData={completudeChartData}
-					onSelectionChange={setSelectedSchemas}
-				/>
+				<div className="w-[70%]" data-tour="analysis-table">
+					<ComparativeTable
+						metricsChartData={metricsChartData}
+						completudeChartData={completudeChartData}
+						onSelectionChange={setSelectedSchemas}
+					/>
+				</div>
 			</div>
 		</section>
 	);

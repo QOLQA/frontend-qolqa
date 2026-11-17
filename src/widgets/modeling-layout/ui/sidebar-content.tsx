@@ -31,6 +31,7 @@ export const SidebarContentPrinc = ({
 							variant={"outline"}
 							type="button"
 							onClick={activeItem?.aditionalToTitle?.onClick}
+							data-tour="sidebar-title-action"
 							className="w-[6rem] cursor-pointer border border-gray dark:border-none text-h3 text-white bg-primary-gray dark:bg-gray hover:bg-cuartenary-gray dark:hover:bg-semilighter-gray hover:text-white w-fit"
 						>
 							{activeItem?.aditionalToTitle?.titleButton}
