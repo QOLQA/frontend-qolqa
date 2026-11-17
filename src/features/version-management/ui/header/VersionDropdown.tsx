@@ -4,6 +4,10 @@ import { useEffect, useRef } from "react";
 import { Check, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@fsd/shared/ui/tooltip";
+import {
+	AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+	AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@fsd/shared/ui/alert-dialog";
 import { useVersionDropdown } from "../../model/use-version-dropdown";
 import { DeleteVersionModal } from "./DeleteVersionModal";
 
@@ -22,6 +26,10 @@ export function VersionDropdown() {
 		dropdownRef,
 		onVersionChange,
 		onAddEmptyVersion,
+		unsavedChangesDialogOpen,
+		isSavingBeforeChange,
+		cancelVersionChange,
+		saveAndContinue,
 		deleteModalOpen,
 		versionToDelete,
 		openDeleteModal,
@@ -191,6 +199,28 @@ export function VersionDropdown() {
 					</button>
 				</div>
 			)}
+
+			<AlertDialog open={unsavedChangesDialogOpen} onOpenChange={(open) => {
+				if (!open) cancelVersionChange();
+			}}>
+				<AlertDialogContent aria-busy={isSavingBeforeChange}>
+					<AlertDialogHeader>
+						<AlertDialogTitle>{t("modals.unsavedChanges.title")}</AlertDialogTitle>
+						<AlertDialogDescription>{t("modals.unsavedChanges.description")}</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel disabled={isSavingBeforeChange}>
+							{t("modals.unsavedChanges.keepEditing")}
+						</AlertDialogCancel>
+						<AlertDialogAction disabled={isSavingBeforeChange} onClick={(event) => {
+							event.preventDefault();
+							void saveAndContinue();
+						}}>
+							{t(isSavingBeforeChange ? "modals.unsavedChanges.saving" : "modals.unsavedChanges.saveAndContinue")}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 
 			{/* Delete confirmation modal */}
 			{deleteModalOpen && (

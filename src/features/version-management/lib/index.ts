@@ -2,7 +2,6 @@ export { loadCanva } from "./load";
 export {
 	saveCanvas,
 	saveSolution,
-	clearSaveCache,
 } from "./save";
 export {
 	createEmptyVersion,

@@ -99,6 +99,13 @@ export const es = {
 
   // Modals
   modals: {
+    unsavedChanges: {
+      title: "Cambios sin guardar",
+      description: "Guarda los cambios de la versión actual antes de continuar o sigue editando.",
+      keepEditing: "Seguir editando",
+      saveAndContinue: "Guardar y continuar",
+      saving: "Guardando...",
+    },
     createCollection: {
       title: "Crear colección",
       nameLabel: "Nombre",

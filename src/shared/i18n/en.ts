@@ -97,6 +97,13 @@ export const en = {
 
   // Modals
   modals: {
+    unsavedChanges: {
+      title: "Unsaved changes",
+      description: "Save your changes to the current version before continuing, or keep editing.",
+      keepEditing: "Keep editing",
+      saveAndContinue: "Save and continue",
+      saving: "Saving...",
+    },
     createCollection: {
       title: "Create collection",
       nameLabel: "Name",

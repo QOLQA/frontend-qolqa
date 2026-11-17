@@ -1,5 +1,4 @@
 import { Save } from "@fsd/shared/ui/icons/HeaderIcons";
-import { transformVersionToBackend } from "@fsd/entities/solution/lib/conversions";
 import { saveCanvas, saveSolution } from "../../lib";
 import { useSolutionStore } from "@fsd/entities/solution";
 import { useQueriesStore } from "@fsd/entities/query";
@@ -16,33 +15,23 @@ export const ButtonSave = () => {
 	const { t } = useTranslation();
 	const Id = useSolutionStore((state) => state.id);
 	const versionId = useSolutionStore((state) => state.selectedVersionId);
-	const versions = useSolutionStore((state) => state.versions);
 	const nodes = useSolutionStore((state) => state.nodes);
-	const edges = useSolutionStore((state) => state.edges);
 	const queries = useQueriesStore((state) => state.queries);
 
 	const handleSave = async () => {
 		try {
-			const versionActual = versions.filter(
-				(version) => version._id === versionId
-			);
-			const diagram = transformVersionToBackend(
-				versionActual[0],
-				nodes,
-				edges
-			);
-
-			let secureUrl: string;
-			try {
-				secureUrl = await generateImage();
-			} catch (imageError) {
-				console.error("Error generating image:", imageError);
-				secureUrl = "";
-			}
-
 			await Promise.all([
-				secureUrl ? saveSolution(Id, queries, secureUrl) : Promise.resolve(),
-				saveCanvas(Id, versionId, diagram),
+				saveCanvas(Id, versionId, undefined, false),
+				(async () => {
+					let secureUrl: string;
+					try {
+						secureUrl = await generateImage();
+					} catch (imageError) {
+						console.error("Error generating image:", imageError);
+						return;
+					}
+					await saveSolution(Id, queries, secureUrl);
+				})(),
 			]);
 
 			toast.success(t("toasts.canvasSaved"));

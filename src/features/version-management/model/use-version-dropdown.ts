@@ -7,6 +7,8 @@ import type { VersionFrontend } from "@fsd/entities/solution";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
 import { toast } from "sonner";
 import { saveCanvas } from "../lib";
+import { hasUnsavedCanvasChanges } from "../lib/canvas-changes";
+import { useUnsavedCanvasWarning } from "./use-unsaved-canvas-warning";
 import {
 	createEmptyVersion,
 	deleteVersion,
@@ -15,6 +17,8 @@ import {
 } from "../lib/versions";
 
 const MAX_VERSION_DESCRIPTION_LENGTH = 500;
+
+type VersionDestination = { versionId: string } | { create: true };
 
 export interface UseVersionDropdownReturn {
 	// Data
@@ -31,6 +35,10 @@ export interface UseVersionDropdownReturn {
 	// Actions
 	onVersionChange: (versionId: string) => Promise<void>;
 	onAddEmptyVersion: () => Promise<void>;
+	unsavedChangesDialogOpen: boolean;
+	isSavingBeforeChange: boolean;
+	cancelVersionChange: () => void;
+	saveAndContinue: () => Promise<void>;
 
 	// Delete modal state
 	deleteModalOpen: boolean;
@@ -54,6 +62,10 @@ export interface UseVersionDropdownReturn {
 
 export function useVersionDropdown(): UseVersionDropdownReturn {
 	const { t } = useTranslation();
+	useUnsavedCanvasWarning();
+	const [pendingDestination, setPendingDestination] = useState<VersionDestination | null>(null);
+	const [isSavingBeforeChange, setIsSavingBeforeChange] = useState(false);
+	const savingBeforeChangeRef = useRef(false);
 	const {
 		versions,
 		selectedVersionId,
@@ -188,70 +200,64 @@ export function useVersionDropdown(): UseVersionDropdownReturn {
 	const selectedVersion = versions.find((v) => v._id === selectedVersionId);
 	const selectedVersionDescription = selectedVersion?.description ?? "";
 
-	const onVersionChange = useCallback(
-		async (newVersionId: string) => {
-			if (newVersionId === selectedVersionId) {
-				cancelEditVersion();
-				setIsOpen(false);
-				return;
-			}
-
-			cancelEditVersion();
-			setIsChangingVersion(true);
-
-			try {
-				await saveCanvas(solutionId, selectedVersionId, undefined, false);
-			} catch (error) {
-				console.error("Error al guardar antes de cambiar de versión:", error);
-			}
-
-			const updatedVersions = useSolutionStore.getState().versions;
-			const versionIndex = updatedVersions.findIndex(
-				(version) => version._id === newVersionId
-			);
-
-			if (versionIndex === -1) {
-				console.error(`[useVersionDropdown] Version not found: ${newVersionId}`);
-				setIsChangingVersion(false);
-				return;
-			}
-
-			setNodes(updatedVersions[versionIndex].nodes);
-			setEdges(updatedVersions[versionIndex].edges);
-			setSelectedVersionId(newVersionId);
-
-			setTimeout(() => {
-				setIsChangingVersion(false);
-			}, 100);
-
-			setIsOpen(false);
-		},
-		[
-			solutionId,
-			selectedVersionId,
-			cancelEditVersion,
-			setEdges,
-			setIsChangingVersion,
-			setNodes,
-			setSelectedVersionId,
-		]
-	);
-
-	const onAddEmptyVersion = useCallback(async () => {
-		cancelEditVersion();
-		const currentVersions = useSolutionStore.getState().versions;
-		const description = generateNextMajorVersion(currentVersions);
-
-		try {
-			await createEmptyVersion(solutionId, description);
-			toast.success("New version created successfully.");
-		} catch (error) {
-			console.error("Error creating version:", error);
-			toast.error("Error creating version.");
+	const continueToVersion = async (destination: VersionDestination) => {
+		const state = useSolutionStore.getState();
+		if ("create" in destination) {
+			const description = generateNextMajorVersion(state.versions);
+			await createEmptyVersion(state.id, description);
+			toast.success(t("toasts.versionCreated"));
+			return;
 		}
+		const version = state.versions.find((item) => item._id === destination.versionId);
+		if (!version) throw new Error("Version not found");
+		setIsChangingVersion(true);
+		setNodes(version.nodes);
+		setEdges(version.edges);
+		setSelectedVersionId(version._id);
+		setTimeout(() => setIsChangingVersion(false), 100);
+	};
 
+	const requestVersionChange = async (destination: VersionDestination) => {
+		if (savingBeforeChangeRef.current) return;
+		cancelEditVersion();
 		setIsOpen(false);
-	}, [solutionId, cancelEditVersion]);
+		const state = useSolutionStore.getState();
+		if ("versionId" in destination && destination.versionId === state.selectedVersionId) return;
+		if (hasUnsavedCanvasChanges(state)) {
+			setPendingDestination(destination);
+			return;
+		}
+		try {
+			await continueToVersion(destination);
+		} catch {
+			toast.error(t("errors.somethingWentWrong"));
+		}
+	};
+
+	const onVersionChange = (versionId: string) => requestVersionChange({ versionId });
+	const onAddEmptyVersion = () => requestVersionChange({ create: true });
+
+	const cancelVersionChange = () => {
+		if (!savingBeforeChangeRef.current) setPendingDestination(null);
+	};
+
+	const saveAndContinue = async () => {
+		if (!pendingDestination || savingBeforeChangeRef.current) return;
+		savingBeforeChangeRef.current = true;
+		setIsSavingBeforeChange(true);
+		try {
+			const state = useSolutionStore.getState();
+			await saveCanvas(state.id, state.selectedVersionId, undefined, false);
+			if (hasUnsavedCanvasChanges(useSolutionStore.getState())) return;
+			await continueToVersion(pendingDestination);
+			setPendingDestination(null);
+		} catch {
+			toast.error(t("toasts.errorSavingCanvas"));
+		} finally {
+			savingBeforeChangeRef.current = false;
+			setIsSavingBeforeChange(false);
+		}
+	};
 
 	const openDeleteModal = useCallback((version: VersionFrontend) => {
 		cancelEditVersion();
@@ -293,6 +299,10 @@ export function useVersionDropdown(): UseVersionDropdownReturn {
 		dropdownRef,
 		onVersionChange,
 		onAddEmptyVersion,
+		unsavedChangesDialogOpen: pendingDestination !== null,
+		isSavingBeforeChange,
+		cancelVersionChange,
+		saveAndContinue,
 		deleteModalOpen,
 		versionToDelete,
 		openDeleteModal,
