@@ -6,8 +6,8 @@ export type KnownColumnType =
 export const COLUMN_TYPE_LABELS: Record<KnownColumnType, string> = {
   PRIMARY_KEY: "PK",
   FOREIGN_KEY: "FK",
-  FOREIGN_KEY_ARRAY: "FK [ ]",
-};
+  FOREIGN_KEY_ARRAY: "FK []",
+} as const;
 
 export function getColumnTypeLabel(
   type: KnownColumnType | (string & {}),

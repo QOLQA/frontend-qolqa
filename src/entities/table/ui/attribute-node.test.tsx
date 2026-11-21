@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { AttributeNode } from "./attribute-node";
 import { DropdownProvider } from "@fsd/shared/lib/dropdown-context";
 import type { Column } from "@fsd/entities/solution";
+import { COLUMN_TYPE_LABELS } from "@fsd/entities/table/lib/column-type-labels";
 
 // Wrap with the DropdownProvider required by ManagedDropdownMenu
 function renderWithProvider(ui: React.ReactElement) {
@@ -46,7 +47,7 @@ describe("AttributeNode", () => {
         {...baseHandlers}
       />,
     );
-    expect(screen.getByText("FK[]")).toBeInTheDocument();
+    expect(screen.getByText(COLUMN_TYPE_LABELS.FOREIGN_KEY_ARRAY)).toBeInTheDocument();
   });
 
   it("displays 'PK' label for PRIMARY_KEY column", () => {

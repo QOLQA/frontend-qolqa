@@ -1,4 +1,6 @@
-import "@testing-library/jest-dom";
+import { afterEach } from "vitest";
+import { cleanup } from "@testing-library/react";
+import "@testing-library/jest-dom/vitest";
 
 // jsdom does not implement the modal <dialog> API used by the shared Modal.
 if (!HTMLDialogElement.prototype.showModal) {
@@ -9,3 +11,8 @@ if (!HTMLDialogElement.prototype.showModal) {
 		this.removeAttribute("open");
 	};
 }
+
+afterEach(() => {
+	cleanup();
+	window.localStorage.clear();
+});

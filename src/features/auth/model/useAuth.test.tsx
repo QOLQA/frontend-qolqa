@@ -1,5 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
+
+// Mock de next/navigation para que useRouter no requiera el App Router en pruebas.
+vi.mock("next/navigation", () => ({
+	useRouter: () => ({
+		push: vi.fn(),
+		refresh: vi.fn(),
+	}),
+}));
+
 import { useAuth } from "./useAuth";
 
 // Mock fetch globally
