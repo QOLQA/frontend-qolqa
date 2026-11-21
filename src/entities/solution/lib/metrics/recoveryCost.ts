@@ -112,7 +112,7 @@ function getTotalNestedTables(nodes: Node<TableData>[]): number {
 /**
  * Pure function to calculate recovery cost without caching
  */
-function calculateRecoveryCostPure(
+export function calculateRecoveryCostPure(
 	nodes: Node<TableData>[],
 	edges: Edge[]
 ): number {

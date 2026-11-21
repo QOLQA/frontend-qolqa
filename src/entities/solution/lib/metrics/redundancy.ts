@@ -69,7 +69,7 @@ function countDuplicateNames(names: string[]): number {
 /**
  * Pure function to calculate redundancy metrics without caching
  */
-function calculateRedundancyMetricsPure(nodes: Node<TableData>[]): number {
+export function calculateRedundancyMetricsPure(nodes: Node<TableData>[]): number {
 	const allTableNames = getAllTableNames(nodes);
 	const totalDuplications = countDuplicateNames(allTableNames);
 

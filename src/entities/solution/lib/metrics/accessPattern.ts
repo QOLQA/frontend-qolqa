@@ -80,7 +80,7 @@ function getMaxRelations(edges: Edge[]): number {
 /**
  * Pure function to calculate access pattern without caching
  */
-function calculateAccessPatternPure(
+export function calculateAccessPatternPure(
 	nodes: Node<TableData>[],
 	edges: Edge[],
 ): number {
