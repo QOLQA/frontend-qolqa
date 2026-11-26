@@ -11,10 +11,13 @@ export const translations = {
 // Default locale is English
 export const defaultLocale: Locale = "en";
 
+export type TranslationValue = string | { [key: string]: TranslationValue };
+export type TranslationDict = { [key: string]: TranslationValue };
+
 // Helper function to get nested translation value
-export function getTranslation(obj: Record<string, any>, path: string): string {
+export function getTranslation(dict: TranslationDict, path: string): string {
 	const keys = path.split(".");
-	let value: any = obj;
+	let value: TranslationValue = dict;
 
 	for (const key of keys) {
 		if (value && typeof value === "object" && key in value) {
@@ -32,8 +35,7 @@ export function useTranslation(locale: Locale = defaultLocale) {
 	const t = translations[locale] || translations[defaultLocale];
 
 	return {
-		t: (path: string) => getTranslation(t, path),
+		t: (path: string) => getTranslation(t as TranslationDict, path),
 		locale,
 	};
 }
-

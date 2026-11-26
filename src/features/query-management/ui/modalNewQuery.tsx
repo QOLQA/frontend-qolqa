@@ -3,7 +3,7 @@
 import { Modal } from "@fsd/shared/ui/modal";
 import type { Query } from "@fsd/entities/solution";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { ModalSelectDocs } from "./modalSelectDocs";
 
 type ModalProps = {
@@ -41,14 +41,16 @@ export const ModalNewQuery = ({
 		});
 	};
 
-	useEffect(() => {
-		if (mode === "edit") {
-			setQueryText(queryEdit?.full_query || "");
-		} else {
-			setQueryText("");
-		}
+	// Syncs the text area with the query being edited. This runs during render
+	// (React's "adjusting state when a prop changes" pattern) so opening the
+	// modal does not trigger a cascading render from an effect.
+	const [lastModeKey, setLastModeKey] = useState<string | null>(null);
+	const modeKey = `${mode}:${queryEdit?.full_query ?? ""}`;
+	if (lastModeKey !== modeKey) {
+		setLastModeKey(modeKey);
+		setQueryText(mode === "edit" ? queryEdit?.full_query || "" : "");
 		setError(false);
-	}, [queryEdit, mode, setQueryText]);
+	}
 
 	return (
 		<>

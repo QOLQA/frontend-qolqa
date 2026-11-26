@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
 function computeHighlightedWords(words: string[], tables: string[]): string[] {
 	const matchedWords: string[] = [];
@@ -47,21 +47,15 @@ export function useTableSelection(
 	const [error, setError] = useState(false);
 	const words = queryText.trim().split(/\s+/);
 
-	// Guards seeding so selection is initialized only once per modal open.
-	// Manual add/remove afterwards is driven by the exposed handlers and is
-	// never re-seeded by this effect, even if the deps change while open.
-	const seededRef = useRef(false);
+	// Seeds the selection once per modal open. This runs during render (React's
+	// "adjusting state when a prop changes" pattern) instead of inside an effect,
+	// so opening the modal does not trigger a cascading render.
+	// Manual add/remove afterwards is driven by the exposed handlers and is never
+	// re-seeded here, even if the deps change while open.
+	const [seeded, setSeeded] = useState(false);
 
-	useEffect(() => {
-		if (!isOpen) {
-			seededRef.current = false;
-			return;
-		}
-
-		if (seededRef.current) {
-			return;
-		}
-		seededRef.current = true;
+	if (isOpen && !seeded) {
+		setSeeded(true);
 
 		if (queryText.trim()) {
 			const seedWords = queryText.trim().split(/\s+/);
@@ -79,7 +73,9 @@ export function useTableSelection(
 				setHighlightedWords(matchedWords);
 			}
 		}
-	}, [isOpen, queryText, availableTableNames, initialTables]);
+	} else if (!isOpen && seeded) {
+		setSeeded(false);
+	}
 
 	const addTable = (tableName: string) => {
 		if (!selectedTables.includes(tableName)) {

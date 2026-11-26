@@ -7,10 +7,12 @@ import { toast } from "sonner";
 import { parseAndValidateCanvasJson } from "../lib/canvas-schema.lib";
 import type { Node, Edge } from "@xyflow/react";
 
+import type { SolutionStore, TableData } from "@fsd/entities/solution";
+
 export function JsonEditor() {
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const { nodes, edges, setNodes, setEdges } = useCanvasStore(
-    useShallow((state: any) => ({
+    useShallow((state: SolutionStore) => ({
       nodes: state.nodes,
       edges: state.edges,
       setNodes: state.setNodes,
@@ -31,7 +33,7 @@ export function JsonEditor() {
     const result = parseAndValidateCanvasJson(currentContent);
 
     if (result.success && result.data) {
-      setNodes(result.data.nodes as Node[]);
+      setNodes(result.data.nodes as Node<TableData>[]);
       setEdges(result.data.edges as Edge[]);
       let toastMessage = "Schema updated successfully.";
       if (result.sanitizedCount > 0) {

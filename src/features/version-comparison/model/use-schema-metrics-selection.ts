@@ -11,25 +11,30 @@ export function useSchemaMetricsSelection(
 		return new Set(metricsChartData.map((metric) => metric.schema));
 	});
 
-	useEffect(() => {
-		const currentSchemas = new Set(
-			metricsChartData.map((metric) => metric.schema),
-		);
+	// Reconciles the selection with the incoming metrics during render (React's
+	// "adjusting state when a prop changes" pattern) instead of inside an
+	// effect, so a metrics update does not trigger a cascading render.
+	const [seenMetrics, setSeenMetrics] = useState(metricsChartData);
+	if (seenMetrics !== metricsChartData) {
+		setSeenMetrics(metricsChartData);
 		if (metricsChartData.length === 0) {
 			setSelectedSchemas(new Set());
-			return;
-		}
-		setSelectedSchemas((prev) => {
-			const updated = new Set(prev);
-			currentSchemas.forEach((schema) => updated.add(schema));
-			Array.from(updated).forEach((schema) => {
-				if (!currentSchemas.has(schema)) {
-					updated.delete(schema);
-				}
+		} else {
+			const currentSchemas = new Set(
+				metricsChartData.map((metric) => metric.schema),
+			);
+			setSelectedSchemas((prev) => {
+				const updated = new Set(prev);
+				currentSchemas.forEach((schema) => updated.add(schema));
+				Array.from(updated).forEach((schema) => {
+					if (!currentSchemas.has(schema)) {
+						updated.delete(schema);
+					}
+				});
+				return updated;
 			});
-			return updated;
-		});
-	}, [metricsChartData]);
+		}
+	}
 
 	useEffect(() => {
 		onSelectionChange?.(Array.from(selectedSchemas));

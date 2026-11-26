@@ -34,6 +34,8 @@ export const MoreButton = React.forwardRef<
 					fill="currentColor"
 				/>
 			</svg>
-		</Button>
+			</Button>
 	);
 });
+
+MoreButton.displayName = "MoreButton";

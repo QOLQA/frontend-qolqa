@@ -22,7 +22,7 @@ export interface ValidationResult {
  * @returns A ValidationResult object.
  */
 export function parseAndValidateCanvasJson(jsonString: string): ValidationResult {
-  let parsed: any;
+  let parsed: { nodes?: unknown; edges?: unknown };
 
   // 1. Check for valid JSON
   try {
@@ -33,6 +33,7 @@ export function parseAndValidateCanvasJson(jsonString: string): ValidationResult
 
   // 2. Check for basic structure (nodes and edges arrays)
   if (
+    parsed === null ||
     typeof parsed !== "object" ||
     !Array.isArray(parsed.nodes) ||
     !Array.isArray(parsed.edges)
@@ -45,8 +46,8 @@ export function parseAndValidateCanvasJson(jsonString: string): ValidationResult
   }
 
   const schema: CanvasSchema = {
-    nodes: parsed.nodes,
-    edges: parsed.edges,
+    nodes: parsed.nodes as Node[],
+    edges: parsed.edges as Edge[],
   };
 
   // 3. Sanitize dangling edges

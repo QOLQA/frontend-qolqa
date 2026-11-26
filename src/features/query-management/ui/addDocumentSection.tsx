@@ -99,7 +99,7 @@ export function AddDocumentSection({
 							className="px-3 py-2 text-left text-secondary-white hover:bg-gray rounded transition-colors duration-200 flex items-center gap-2"
 						>
 							<Plus className="w-4 h-4" />
-							Add "{searchTerm}"
+							Add &quot;{searchTerm}&quot;
 						</button>
 					)}
 				</div>

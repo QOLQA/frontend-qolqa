@@ -6,6 +6,7 @@ import {
 	useOptimistic,
 	startTransition,
 	useCallback,
+	type SetStateAction,
 } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthContext } from "../../model/auth-context";
@@ -18,7 +19,7 @@ type OptimisticState = {
 };
 
 export function useLoginFlow() {
-	const [isSignUp, setIsSignUp] = useState(false);
+	const [isSignUp, setIsSignUpState] = useState(false);
 	const [serverError, setServerError] = useState<string | null>(null);
 	const { login, register, isAuthenticated } = useAuthContext();
 	const router = useRouter();
@@ -71,9 +72,12 @@ export function useLoginFlow() {
 		}
 	}, [getRedirectPath, isAuthenticated, router]);
 
-	useEffect(() => {
+	// Resets the server error when the mode toggles instead of mirroring
+	// `isSignUp` in an effect (cascading render).
+	const setIsSignUp = useCallback((value: SetStateAction<boolean>) => {
 		setServerError(null);
-	}, [isSignUp]);
+		setIsSignUpState(value);
+	}, []);
 
 	return {
 		isSignUp,
