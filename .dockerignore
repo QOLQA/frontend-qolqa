@@ -49,10 +49,10 @@ coverage
 .DS_Store
 Thumbs.db
 
-# Locks y config de workspace (node_modules ya queda excluido)
+# Locks de gestores no usados por el build (node_modules ya queda excluido).
+# OJO: pnpm-lock.yaml y pnpm-workspace.yaml NO se excluyen; la etapa deps los
+# copia para `pnpm install --frozen-lockfile`. Excluirlos rompe el build.
 package-lock.json
-pnpm-lock.yaml
-pnpm-workspace.yaml
 
 # Documentación / specs internas
 docs

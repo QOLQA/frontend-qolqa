@@ -7,7 +7,8 @@ FROM node:22-alpine3.20 AS base
 
 ENV PNPM_HOME="/pnpm" \
     PATH="/pnpm:$PATH" \
-    NEXT_TELEMETRY_DISABLED=1
+    NEXT_TELEMETRY_DISABLED=1 \
+    COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
 RUN corepack enable && \
     addgroup -g 1001 -S nodejs && \
