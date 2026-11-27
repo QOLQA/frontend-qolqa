@@ -4,7 +4,6 @@ import { Button } from "@fsd/shared/ui/button";
 import { Plus, LogOut } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@fsd/shared/api";
 import { useAuthContext } from "@fsd/features/auth";
 import { Logo } from "@fsd/shared/ui/logo";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
@@ -16,11 +15,12 @@ import {
 } from "@fsd/features/project-management";
 import { SolutionCard, type SolutionListItem } from "@fsd/entities/solution";
 import { TourBanner } from "@fsd/features/onboarding-tour";
-
-interface CreateSolutionResponse {
-  _id: string;
-  name: string;
-}
+import {
+  createPracticeSolution,
+  createSolution,
+  deleteSolution,
+  updateSolution,
+} from "../model/actions";
 
 export function ProjectsPage({
   initialSolutions,
@@ -37,34 +37,21 @@ export function ProjectsPage({
   const { user, logout } = useAuthContext();
 
   const [isPending, startTransition] = useTransition();
-  const [solutions, setSolutions] = useState(initialSolutions);
 
   const { solutionId } = useProjectsStore.getState();
 
   const handleAddSolution = async (name: string) => {
     setIsAddProjectModalOpen(false);
 
-    try {
-      const data = await api.post<CreateSolutionResponse>("/solutions", {
-        name: name,
-      });
+    const result = await createSolution(name);
+    if (!result.ok) return;
 
-      router.push(`/projects/${data._id}/modeling`);
-    } catch (error) {
-      console.error("Error creating solution:", error);
-    }
+    router.push(`/projects/${result.data._id}/modeling`);
   };
 
   const handleCreatePracticeProject = async (name: string) => {
-    try {
-      const data = await api.post<CreateSolutionResponse>("/solutions", {
-        name,
-      });
-      return data._id;
-    } catch (error) {
-      console.error("Error creating solution:", error);
-      return null;
-    }
+    const result = await createPracticeSolution(name);
+    return result.ok ? result.data : null;
   };
 
   const handleRequestDeleteSolution = (solutionId: string) => {
@@ -84,44 +71,18 @@ export function ProjectsPage({
   const handleConfirmDeleteSolution = async () => {
     if (!solutionId) return;
 
-    const id = solutionId;
-
-    try {
-      await api.delete(`/solutions/${id}`);
-      setSolutions(solutions.filter((solution) => solution._id !== id));
-    } catch (error: unknown) {
-      const err = error as Error;
-      if (
-        err?.message?.includes("does not exists") ||
-        err?.message?.includes("404")
-      ) {
-        return;
-      }
-
-      console.error("Error deleting solution:", error);
-      router.refresh();
-    }
+    await deleteSolution(solutionId);
+    // The action revalidates the list on success; a failure also resyncs so the
+    // UI never keeps a card the server no longer has (or hides one it still has).
+    router.refresh();
   };
 
   const handleEditSolution = async () => {
     const { solutionId: sid, solutionDataToEdit } = useProjectsStore.getState();
     if (!sid) return;
 
-    try {
-      await api.patch(`/solutions/${sid}`, {
-        name: solutionDataToEdit?.name,
-      });
-      setSolutions(
-        solutions.map((solution) =>
-          solution._id === sid
-            ? { ...solution, name: solutionDataToEdit?.name ?? solution.name }
-            : solution,
-        ),
-      );
-    } catch (error) {
-      console.error("Error editing solution:", error);
-      router.refresh();
-    }
+    await updateSolution(sid, solutionDataToEdit?.name ?? "");
+    router.refresh();
   };
 
   const handleLogout = () => {
@@ -172,7 +133,7 @@ export function ProjectsPage({
           <hr className="mt-[33px] mb-20 border-gray" />
 
           <TourBanner
-            hasProjects={solutions.length > 0}
+            hasProjects={initialSolutions.length > 0}
             onCreatePracticeProject={handleCreatePracticeProject}
             onOpenProject={handleOpenSolution}
           />
@@ -184,7 +145,7 @@ export function ProjectsPage({
           )}
 
           <ul className="projects grid grid-cols-3 gap-10">
-            {solutions.map((solution) => (
+            {initialSolutions.map((solution) => (
               <SolutionCard
                 {...solution}
                 key={solution._id}
@@ -210,7 +171,7 @@ export function ProjectsPage({
           open={isDeleteProjectModalOpen}
           setOpen={setIsDeleteProjectModalOpen}
           onConfirm={handleConfirmDeleteSolution}
-          solutionName={solutions.find((s) => s._id === solutionId)?.name}
+          solutionName={initialSolutions.find((s) => s._id === solutionId)?.name}
         />
       )}
 
@@ -220,7 +181,7 @@ export function ProjectsPage({
           setOpen={setIsEditProjectModalOpen}
           onSubmit={handleEditSolution}
           solutionNameToEdit={
-            solutions.find((s) => s._id === solutionId)?.name ?? ""
+            initialSolutions.find((s) => s._id === solutionId)?.name ?? ""
           }
         />
       )}

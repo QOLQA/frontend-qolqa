@@ -31,7 +31,7 @@ Agreed routing decisions (from conversation):
 |----|------|------|-------|--------|
 | T1 | S1 | Inventory every API call site: file, endpoint, method, read/mutation, client vs server, consuming UI. Deliver map with `path:line` evidence. | gentle-ai-explore | done (Log L4) |
 | T2 | S1 | Auth to httpOnly server-side: catch-all BFF route handler `app/api/[...path]` (GET/POST/PUT/PATCH/DELETE) using `serverFetchWithAuth`; login/register/google server actions set httpOnly cookie; `fetchWithAuth` base becomes `/api` (cookie same-origin, no localStorage Bearer); remove localStorage token + `AuthTokenSync`; 401 → clear + `/login`. Keeps every existing `api.*` consumer working through the proxy. Risk: item 2 (auth, security). | gentle-ai-worker | 424067c |
-| T3 | S1 | Verify remaining client-driven reads (`load.ts:8`, `queries.ts:27`, `getUserMe.ts:6`) flow through the `/api` proxy; Zod-validate proxy responses at the edge; no direct `NEXT_PUBLIC_BACKEND_URL` reads left in client code. | gentle-ai-worker | |
+| T3 | S1 | Verify remaining client-driven reads (`load.ts:8`, `queries.ts:27`, `getUserMe.ts:6`) flow through the `/api` proxy; Zod-validate proxy responses at the edge; no direct `NEXT_PUBLIC_BACKEND_URL` reads left in client code. | gentle-ai-worker | e66c911 |
 | T4 | S3 | Server actions for mutations (save version, profile update, delete account, avatar upload). | gentle-ai-worker | |
 | T5 | S1 | Remaining read pages to server components: solution reads are already server-side (`getDiagramData.server`, `getSolutions.server`, `getAnalysisData.server`); audit for any remaining client-render reads (e.g. `/auth/me` for dialogs) and confirm server fetchers keep the `"UNAUTHORIZED"/"FORBIDDEN"` string contract. | gentle-ai-worker | |
 | T6 | S2 | Env/config: `BACKEND_URL` server-only, drop `NEXT_PUBLIC_BACKEND_URL` from client code; document Dockploy internal-network setup (backend without published port). | inline | |
@@ -89,3 +89,14 @@ Agreed routing decisions (from conversation):
 - L11 (user decision): T8 approved — Cloudinary fix folded into this migration
   (user: "Sí, agregar T8 ahora"). Signature issued server-side per session;
   direct browser→Cloudinary upload kept (no image bytes through the VPS).
+- L12 (T3 evidence): commit e66c911 — all three client-driven reads were already
+  riding the /api proxy after T2 (no rewiring needed); zero
+  NEXT_PUBLIC_BACKEND_URL/API_URL/localhost:8000 reads left in client-reachable
+  code; LoginResult + dead deleteSolutionRequest + commented block removed;
+  full suite 43 files / 356 tests green; tsc clean. Decision on the
+  "Zod-validate proxy responses at the edge" sub-item: resolved by design —
+  the proxy already guarantees JSON bodies (415 non-JSON, 400 malformed);
+  per-endpoint shape validation is consumer responsibility, not a thin
+  passthrough's; dropped from scope. T4 split into T4a (projects CRUD + user
+  profile mutations) and T4b (editor mutations: save/versions/queries) for
+  ~400-line slices.

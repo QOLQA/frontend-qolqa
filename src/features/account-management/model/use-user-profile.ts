@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { getUserMe } from "@fsd/entities/user/api/getUserMe";
-import { updateUserMe } from "@fsd/entities/user/api/updateUserMe";
-import { deleteUserMe } from "@fsd/entities/user/api/deleteUserMe";
 import { uploadImage } from "@fsd/shared/lib/image/uploadImage";
 import type { User, UserUpdateRequest } from "@fsd/entities/user";
+import { actionFailureMessage } from "./action-results";
+import { deleteUserAccount, updateUserProfile } from "./actions";
 
 interface UseUserProfileOptions {
 	/** The current authenticated user's id — used as public_id for avatar upload. */
@@ -51,16 +51,17 @@ export function useUserProfile({
 
 	const updateProfile = async (data: UserUpdateRequest): Promise<void> => {
 		setError(null);
-		try {
-			await updateUserMe(data);
-			await refreshUser();
-			await onProfileUpdated?.();
-		} catch (err) {
-			const message =
-				err instanceof Error ? err.message : "Failed to update profile";
+
+		// The action returns the updated profile, so no extra /auth/me round trip.
+		const result = await updateUserProfile(data);
+		if (!result.ok) {
+			const message = actionFailureMessage(result);
 			setError(message);
-			throw err;
+			throw new Error(message);
 		}
+
+		setUser(result.data);
+		await onProfileUpdated?.();
 	};
 
 	const uploadAvatar = async (file: File): Promise<string> => {
@@ -92,15 +93,15 @@ export function useUserProfile({
 
 	const deleteAccount = async (): Promise<void> => {
 		setError(null);
-		try {
-			await deleteUserMe();
-			onAccountDeleted();
-		} catch (err) {
-			const message =
-				err instanceof Error ? err.message : "Failed to delete account";
+
+		const result = await deleteUserAccount();
+		if (!result.ok) {
+			const message = actionFailureMessage(result);
 			setError(message);
-			throw err;
+			throw new Error(message);
 		}
+
+		onAccountDeleted();
 	};
 
 	return { user, isLoading, error, updateProfile, uploadAvatar, deleteAccount };
