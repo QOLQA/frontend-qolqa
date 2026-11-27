@@ -441,6 +441,17 @@ export const en = {
   errors: {
     somethingWentWrong: "Something went wrong. Please try again.",
   },
+
+  apiErrors: {
+    sessionExpired: "Session expired or invalid credentials",
+    noPermission: "You don't have permission to perform this action",
+    notFound: "Resource not found",
+    alreadyExists: "Resource already exists",
+    invalidData: "Invalid input data",
+    tooManyRequests: "Too many requests. Please try again later",
+    serverError: "Internal server error",
+    unknownError: "An unknown error occurred",
+  },
 } as const;
 
 export type TranslationKeys = typeof en;
