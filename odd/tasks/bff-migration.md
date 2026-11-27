@@ -158,3 +158,9 @@ Agreed routing decisions (from conversation):
   Cloudinary signature algorithm is SHA-1 — confirm the account's signature
   setting matches at deploy time; .env.example / .env.local unverifiable
   (safety guard); live Cloudinary API acceptance untested (no network).
+- L18 (user request, verbatim): "podrias cambiar el nombre de la rama para que
+  no este feature si no solo feat" — branch renamed feature/bff-migration →
+  feat/bff-migration (git branch -m; earlier Log mentions of the old name are
+  historical). Same session: user asked "saca el gga" — the unconfigured GGA
+  pre-commit hook was removed (.git/hooks/pre-commit deleted; it contained
+  only the gga block).
