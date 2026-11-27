@@ -136,10 +136,12 @@ export async function registerAction(
 	const payload = await readJson<unknown>(response);
 	if (!response.ok) return failureFromResponse(response.status, payload);
 
+	const user = toUserResponse(payload);
+
 	const inlineToken = readAccessToken(payload);
 	if (inlineToken) {
 		await persistAuthCookie(inlineToken);
-		return { ok: true, data: payload as UserResponse };
+		return { ok: true, data: user };
 	}
 
 	// The backend registers without a token: sign the new account in server-side.
@@ -151,8 +153,34 @@ export async function registerAction(
 	if (!login.ok) return login;
 
 	await persistAuthCookie(login.data);
-	return { ok: true, data: payload as UserResponse };
+	return { ok: true, data: user };
 }
+
+/**
+ * Map the backend register payload to the explicit UserResponse fields.
+ * Never passthrough the raw payload: it can inline the access token, which
+ * must never be serialized back to the browser.
+ */
+const toUserResponse = (payload: unknown): UserResponse => {
+	const record =
+		typeof payload === "object" && payload !== null
+			? (payload as Record<string, unknown>)
+			: {};
+
+	return {
+		id: String(record.id ?? ""),
+		username: String(record.username ?? ""),
+		email: String(record.email ?? ""),
+		full_name:
+			typeof record.full_name === "string" ? record.full_name : undefined,
+		profile_picture_url:
+			typeof record.profile_picture_url === "string"
+				? record.profile_picture_url
+				: null,
+		is_active: record.is_active === true,
+		created_at: String(record.created_at ?? ""),
+	};
+};
 
 export async function logoutAction(): Promise<void> {
 	const cookieStore = await cookies();

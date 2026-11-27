@@ -221,7 +221,10 @@ describe("auth server actions", () => {
 				password: "secret123",
 			});
 			expect(loginUrl).toBe(`${backendUrl}/auth/login`);
-			expect(result).toEqual({ ok: true, data: createdUser });
+			expect(result).toEqual({
+				ok: true,
+				data: { ...createdUser, profile_picture_url: null },
+			});
 			expect(mockCookieSet).toHaveBeenCalledWith(
 				AUTH_COOKIE_NAME,
 				"new-token",
@@ -247,6 +250,8 @@ describe("auth server actions", () => {
 				"inline-token",
 				expect.objectContaining({ httpOnly: true }),
 			);
+
+			expect(JSON.stringify(result)).not.toContain("inline-token");
 		});
 
 		it("returns a typed failure when registration is rejected", async () => {
