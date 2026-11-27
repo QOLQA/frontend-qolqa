@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { getUserMe } from "@fsd/entities/user/api/getUserMe";
 import { uploadImage } from "@fsd/shared/lib/image/uploadImage";
 import type { User, UserUpdateRequest } from "@fsd/entities/user";
-import { actionFailureMessage } from "./action-results";
+import { actionFailureMessage } from "@fsd/shared/api/action-results";
 import { deleteUserAccount, updateUserProfile } from "./actions";
 
 interface UseUserProfileOptions {

@@ -8,7 +8,7 @@ import type {
 	VersionFrontend,
 } from "@fsd/entities/solution";
 import type { Node } from "@xyflow/react";
-import type { ActionFailure } from "../model/action-results";
+import type { ActionFailure } from "@fsd/shared/api/action-results";
 import {
 	createEmptyVersion as createEmptyVersionAction,
 	deleteVersion as deleteVersionAction,

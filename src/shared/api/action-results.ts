@@ -1,12 +1,14 @@
 /**
- * Pure result shaping for the account-management server actions.
+ * Pure result shaping shared by every server action.
  *
- * Same contract as the auth actions: expected failures come back as objects,
- * never as thrown errors, and `actionFailureMessage` turns a failure into the
- * string the profile UI already displays.
+ * Actions never throw for expected failures: they return these objects so
+ * callers (pages, hooks, optimistic store flows) can branch on the outcome
+ * instead of wrapping every call in a try/catch. Auth (features/auth/model),
+ * projects (pages/projects/model), account-management, version-management and
+ * query-management all use this contract.
  */
 
-import { handleApiError } from "@fsd/shared/api/handleApiError";
+import { handleApiError } from "./handleApiError";
 
 export interface ActionFailure {
 	ok: false;
@@ -72,7 +74,7 @@ export const invalidResponseFailure = (): ActionFailure => ({
 	detail: INVALID_RESPONSE_MESSAGE,
 });
 
-/** Input rejected by the shared Zod schema before reaching the backend. */
+/** Input rejected by a shared Zod schema before reaching the backend. */
 export const invalidInputFailure = (fieldErrors: string[]): ActionFailure => ({
 	ok: false,
 	status: ACTION_INVALID_INPUT_STATUS,

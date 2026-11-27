@@ -10,7 +10,7 @@ import {
 	deleteQuery as deleteQueryAction,
 	updateQuery as updateQueryAction,
 } from "./actions";
-import type { ActionFailure } from "./action-results";
+import type { ActionFailure } from "@fsd/shared/api/action-results";
 
 /**
  * Server actions report expected failures as data; the hook keeps its

@@ -17,7 +17,7 @@ import {
 	saveSolutionQueriesAndImage,
 	saveVersionDiagram,
 } from "./actions";
-import { ACTION_NETWORK_ERROR_MESSAGE } from "./action-results";
+import { ACTION_NETWORK_ERROR_MESSAGE } from "@fsd/shared/api/action-results";
 
 const jsonResponse = (status: number, body: unknown) => ({
 	ok: status >= 200 && status < 300,

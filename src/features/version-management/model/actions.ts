@@ -19,7 +19,7 @@ import {
 	invalidResponseFailure,
 	networkFailure,
 	type ActionResult,
-} from "./action-results";
+} from "@fsd/shared/api/action-results";
 
 const SOLUTIONS_ENDPOINT = "/solutions";
 const VERSIONS_ENDPOINT = "/versions";

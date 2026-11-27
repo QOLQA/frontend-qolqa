@@ -2,7 +2,7 @@ import type { Query, VersionBackend } from "@fsd/entities/solution";
 import { loadCanva } from "./load";
 import { transformVersionToBackend } from "@fsd/entities/solution/lib/conversions";
 import { useSolutionStore } from "@fsd/entities/solution";
-import type { ActionFailure } from "../model/action-results";
+import type { ActionFailure } from "@fsd/shared/api/action-results";
 import {
 	saveSolutionQueriesAndImage,
 	saveVersionDiagram,

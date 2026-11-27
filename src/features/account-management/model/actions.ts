@@ -18,7 +18,7 @@ import {
 	invalidResponseFailure,
 	networkFailure,
 	type ActionResult,
-} from "./action-results";
+} from "@fsd/shared/api/action-results";
 
 const USERS_ME_ENDPOINT = "/users/me";
 const JSON_HEADERS = { "Content-Type": "application/json" };

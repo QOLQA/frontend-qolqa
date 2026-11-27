@@ -9,7 +9,7 @@ vi.mock("@fsd/shared/api/server", () => ({
 }));
 
 import { deleteUserAccount, updateUserProfile } from "./actions";
-import { ACTION_NETWORK_ERROR_MESSAGE } from "./action-results";
+import { ACTION_NETWORK_ERROR_MESSAGE } from "@fsd/shared/api/action-results";
 
 const userResponse = {
 	id: "user-1",

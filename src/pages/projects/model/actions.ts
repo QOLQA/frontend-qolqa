@@ -18,7 +18,7 @@ import {
 	networkFailure,
 	type ActionFailure,
 	type ActionResult,
-} from "./action-results";
+} from "@fsd/shared/api/action-results";
 
 /** Server component that re-reads the list after a mutation. */
 const PROJECTS_PATH = "/projects";
