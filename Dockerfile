@@ -34,6 +34,10 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 # ========================================
 FROM deps AS development
 
+# Bake the source into the dev image so `docker compose up` works standalone;
+# `docker compose watch` still syncs host changes on top of this.
+COPY --chown=nextjs:nodejs . .
+
 RUN mkdir -p /code/.next && chown -R nextjs:nodejs /code
 USER nextjs
 

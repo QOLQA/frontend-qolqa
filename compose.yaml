@@ -1,0 +1,76 @@
+services:
+  fastapi:
+    build:
+      context: ../backend-qolqa
+      dockerfile: Dockerfile
+      target: development
+    image: qolqa/pipenv-fastapi
+    env_file:
+      - path: ../backend-qolqa/.env
+        required: true
+    environment:
+      - ENVIRONMENT=development
+      - TYPE_DB=mongo
+      - SECRET_KEY=dev-secret-key-CHANGE-THIS-IN-PRODUCTION-min-32-characters
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+      - DEBUG=true
+    volumes:
+      - ../backend-qolqa/logs:/code/logs
+    ports:
+      - "8000:8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ../backend-qolqa
+          target: /code
+          ignore:
+            - __pycache__/
+            - .venv/
+        - action: rebuild
+          path: ../backend-qolqa/requirements.txt
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: qolqa/frontend-next
+    env_file:
+      - path: .env.local
+        required: true
+    environment:
+      - BACKEND_URL=http://fastapi:8000
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+      - NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=solutions-service
+      - NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET_2=versions-service
+    working_dir: /code
+    ports:
+      - "3000:3000"
+    depends_on:
+      fastapi:
+        condition: service_healthy
+    command: pnpm run dev
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /code
+          ignore:
+            - node_modules/
+            - .next/
+        - action: rebuild
+          path: package.json
