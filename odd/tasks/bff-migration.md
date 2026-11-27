@@ -33,10 +33,10 @@ Agreed routing decisions (from conversation):
 | T2 | S1 | Auth to httpOnly server-side: catch-all BFF route handler `app/api/[...path]` (GET/POST/PUT/PATCH/DELETE) using `serverFetchWithAuth`; login/register/google server actions set httpOnly cookie; `fetchWithAuth` base becomes `/api` (cookie same-origin, no localStorage Bearer); remove localStorage token + `AuthTokenSync`; 401 → clear + `/login`. Keeps every existing `api.*` consumer working through the proxy. Risk: item 2 (auth, security). | gentle-ai-worker | 424067c |
 | T3 | S1 | Verify remaining client-driven reads (`load.ts:8`, `queries.ts:27`, `getUserMe.ts:6`) flow through the `/api` proxy; Zod-validate proxy responses at the edge; no direct `NEXT_PUBLIC_BACKEND_URL` reads left in client code. | gentle-ai-worker | e66c911 |
 | T4 | S3 | Server actions for mutations (save version, profile update, delete account, avatar upload). Split: T4a projects CRUD + profile (a694a91); T4b editor save/versions/queries (03ec8ee). | gentle-ai-worker | a694a91, 03ec8ee |
-| T5 | S1 | Remaining read pages to server components: solution reads are already server-side (`getDiagramData.server`, `getSolutions.server`, `getAnalysisData.server`); audit for any remaining client-render reads (e.g. `/auth/me` for dialogs) and confirm server fetchers keep the `"UNAUTHORIZED"/"FORBIDDEN"` string contract. | gentle-ai-worker | |
-| T6 | S2 | Env/config: `BACKEND_URL` server-only, drop `NEXT_PUBLIC_BACKEND_URL` from client code; document Dockploy internal-network setup (backend without published port). | inline | |
-| T7 | S1–S3 | Independent verification of the auth unit (high-risk item 2): session integrity, 401 flows, no token exposure to JS. | gentle-ai-verify | — |
-| T8 | S1 | Cloudinary signed uploads server-side: route handler `app/api/cloudinary/sign` requiring the httpOnly session, signing upload params with a server-only `CLOUDINARY_API_SECRET`; refactor `src/shared/lib/image/uploadImage.ts` to request the server signature and keep uploading directly to Cloudinary; remove `NEXT_PUBLIC_CLOUDINARY_API_SECRET` from client code. Risk: item 2 (secret in bundle). | gentle-ai-worker | |
+| T5 | S1 | Remaining read pages to server components: solution reads are already server-side (`getDiagramData.server`, `getSolutions.server`, `getAnalysisData.server`); audit for any remaining client-render reads (e.g. `/auth/me` for dialogs) and confirm server fetchers keep the `"UNAUTHORIZED"/"FORBIDDEN"` string contract. | gentle-ai-worker (audit via T3) + inline hoist | 544660a |
+| T6 | S2 | Env/config: `BACKEND_URL` server-only, drop `NEXT_PUBLIC_BACKEND_URL` from client code; document Dockploy internal-network setup (backend without published port). | inline | 615a24f |
+| T7 | S1–S3 | Independent verification of the auth unit (high-risk item 2): session integrity, 401 flows, no token exposure to JS. Ran at HEAD 615a24f with live next build + stub backend: Unit B (Cloudinary) PASS; Unit A (auth) FAIL → blocker fixed in 84228d7 (register payload token leak) with regression test; all other checks PASS. | gentle-ai-verify | 84228d7 |
+| T8 | S1 | Cloudinary signed uploads server-side: route handler `app/api/cloudinary/sign` requiring the httpOnly session, signing upload params with a server-only `CLOUDINARY_API_SECRET`; refactor `src/shared/lib/image/uploadImage.ts` to request the server signature and keep uploading directly to Cloudinary; remove `NEXT_PUBLIC_CLOUDINARY_API_SECRET` from client code. Risk: item 2 (secret in bundle). | gentle-ai-worker | add8efc |
 
 ## Log
 
@@ -119,3 +119,42 @@ Agreed routing decisions (from conversation):
   is client-driven; duplicate flow already calls router.refresh).
   action-results helpers now duplicated across 4 slices — hoist refactor
   planned as its own unit before close.
+- L15 (T8 evidence): commit add8efc — POST /api/cloudinary/sign (session-
+  required, param allowlist, sha1 spec signature, server-only
+  CLOUDINARY_API_SECRET); uploadImage keeps its consumer contract
+  (ButtonSave/use-user-profile unchanged) and uploads bytes directly to
+  Cloudinary; zero NEXT_PUBLIC_CLOUDINARY_API_SECRET hits left in src/ and
+  app/. Full suite 55 files / 493 tests green; tsc clean. Signature now
+  follows Cloudinary's SHA-1 spec (previous browser code used SHA-256).
+  Env vars for T6: NEW server-only CLOUDINARY_API_SECRET (Next container);
+  remove NEXT_PUBLIC_CLOUDINARY_API_SECRET from .github/workflows/ci.yml
+  (still referenced there); NEXT_PUBLIC_CLOUDINARY_URL/_API_KEY unchanged;
+  UPLOAD_PRESET vars still unused (compose.yaml:58-59). User action
+  recommended: rotate the api_secret at deploy time (it was public in the
+  JS bundle until this commit).
+- L16 (T5+T6 evidence): T5 commit 544660a — action-results helpers hoisted
+  to @fsd/shared/api/action-results (4 slice copies deleted; superset with
+  invalidInputFailure + actionFailureMessage; FSD-safe); read pages were
+  already server components (audit evidence in L4/L12); full suite 493 green.
+  T6 commit 615a24f — compose.yaml drops NEXT_PUBLIC_BACKEND_URL + unused
+  upload presets (BACKEND_URL comment added); Dockerfile drops 3 dead ARGs;
+  ci.yml drops NEXT_PUBLIC_BACKEND_URL, upload presets and
+  NEXT_PUBLIC_CLOUDINARY_API_SECRET; docs/deployment-dockploy.md added
+  (env table, internal-network isolation, deploy checklist with secret
+  rotation). NOTE: .env.example / .env.local were NOT touched (env files are
+  off-limits to the agent) — user must update them from the doc's table.
+- L17 (T7 evidence): verifier ran full suite (493), tsc, a real next build
+  (exit 0, routes /api/[...path] and /api/cloudinary/sign present) and live
+  HTTP probes against next start + stub backend. PASS: no token/secret in
+  bundles or localStorage; cookie httpOnly/Lax/Secure; proxy never forwards
+  browser cookies, absolute-URL abuse impossible (path always /-prefixed and
+  encoded); session probe never bounces anonymous visitors; Cloudinary sign
+  route 401s without cookie, allowlist-only params, sha1 spec, secret never
+  echoed. BLOCKER found: registerAction returned the raw backend payload —
+  JWT leak when /auth/register inlines access_token. Fixed in 84228d7
+  (toUserResponse explicit mapping + regression test; full suite 493 green).
+  Advisories (open, non-blocking): proxyToBackend has no try/catch → unreachable
+  backend surfaces a Next 500 instead of JSON 502 (src/shared/api/server/proxy.ts:24);
+  Cloudinary signature algorithm is SHA-1 — confirm the account's signature
+  setting matches at deploy time; .env.example / .env.local unverifiable
+  (safety guard); live Cloudinary API acceptance untested (no network).
