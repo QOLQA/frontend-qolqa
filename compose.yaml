@@ -53,10 +53,9 @@ services:
       - path: .env.local
         required: true
     environment:
+      # Server-only: the BFF proxy and server actions call the backend through
+      # the Docker network; the browser never learns this URL.
       - BACKEND_URL=http://fastapi:8000
-      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
-      - NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=solutions-service
-      - NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET_2=versions-service
     working_dir: /code
     ports:
       - "3000:3000"
