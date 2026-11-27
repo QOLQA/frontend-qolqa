@@ -445,4 +445,15 @@ export const es = {
   errors: {
     somethingWentWrong: "Algo salió mal. Por favor, inténtalo de nuevo.",
   },
+
+  apiErrors: {
+    sessionExpired: "Sesión expirada o credenciales inválidas",
+    noPermission: "No tienes permiso para realizar esta acción",
+    notFound: "Recurso no encontrado",
+    alreadyExists: "El recurso ya existe",
+    invalidData: "Datos de entrada inválidos",
+    tooManyRequests: "Demasiadas solicitudes. Inténtalo de nuevo más tarde",
+    serverError: "Error interno del servidor",
+    unknownError: "Ocurrió un error desconocido",
+  },
 } as const satisfies TranslationShape;
