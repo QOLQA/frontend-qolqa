@@ -1,0 +1,160 @@
+"use server";
+
+/**
+ * Auth server actions (S3 pattern: the login flow model).
+ *
+ * Every call hits the backend with the server-only BACKEND_URL, keeps the JWT on
+ * the server and stores it in an httpOnly cookie. The browser only receives a
+ * typed result object — never the token — and expected auth failures are
+ * returned, not thrown.
+ */
+
+import { cookies } from "next/headers";
+import type { UserResponse } from "@fsd/entities/user";
+import {
+	AUTH_COOKIE_NAME,
+	createAuthCookieOptions,
+	createExpiredAuthCookieOptions,
+} from "@fsd/shared/api/auth-cookie";
+import { getBackendUrl } from "@fsd/shared/api/server";
+import {
+	failureFromResponse,
+	invalidResponseFailure,
+	networkFailure,
+	readAccessToken,
+	type AuthActionResult,
+} from "./auth-action-results";
+
+interface LoginInput {
+	username: string;
+	password: string;
+}
+
+interface RegisterInput {
+	username: string;
+	email: string;
+	password: string;
+	full_name?: string;
+}
+
+const JSON_HEADERS = { "Content-Type": "application/json" };
+const FORM_HEADERS = { "Content-Type": "application/x-www-form-urlencoded" };
+
+async function persistAuthCookie(token: string): Promise<void> {
+	const cookieStore = await cookies();
+	cookieStore.set(AUTH_COOKIE_NAME, token, createAuthCookieOptions());
+}
+
+async function postToBackend(
+	path: string,
+	body: BodyInit,
+	headers: Record<string, string>,
+): Promise<Response | null> {
+	try {
+		return await fetch(`${getBackendUrl()}${path}`, {
+			method: "POST",
+			headers,
+			body,
+			cache: "no-store",
+		});
+	} catch {
+		return null;
+	}
+}
+
+async function readJson<T>(response: Response): Promise<T | null> {
+	try {
+		return (await response.json()) as T;
+	} catch {
+		return null;
+	}
+}
+
+function encodeCredentials(username: string, password: string): string {
+	const form = new URLSearchParams();
+	form.set("username", username);
+	form.set("password", password);
+	return form.toString();
+}
+
+/** Exchanges credentials for a token, without touching the cookie jar yet. */
+async function requestToken(
+	path: string,
+	body: BodyInit,
+	headers: Record<string, string>,
+): Promise<AuthActionResult<string>> {
+	const response = await postToBackend(path, body, headers);
+	if (!response) return networkFailure();
+
+	const payload = await readJson<unknown>(response);
+	if (!response.ok) return failureFromResponse(response.status, payload);
+
+	const token = readAccessToken(payload);
+	return token ? { ok: true, data: token } : invalidResponseFailure();
+}
+
+export async function loginAction(
+	input: LoginInput,
+): Promise<AuthActionResult<null>> {
+	const result = await requestToken(
+		"/auth/login",
+		encodeCredentials(input.username, input.password),
+		FORM_HEADERS,
+	);
+
+	if (!result.ok) return result;
+
+	await persistAuthCookie(result.data);
+	return { ok: true, data: null };
+}
+
+export async function googleLoginAction(
+	credential: string,
+): Promise<AuthActionResult<null>> {
+	const result = await requestToken(
+		"/auth/google",
+		JSON.stringify({ credential }),
+		JSON_HEADERS,
+	);
+
+	if (!result.ok) return result;
+
+	await persistAuthCookie(result.data);
+	return { ok: true, data: null };
+}
+
+export async function registerAction(
+	input: RegisterInput,
+): Promise<AuthActionResult<UserResponse>> {
+	const response = await postToBackend(
+		"/auth/register",
+		JSON.stringify(input),
+		JSON_HEADERS,
+	);
+	if (!response) return networkFailure();
+
+	const payload = await readJson<unknown>(response);
+	if (!response.ok) return failureFromResponse(response.status, payload);
+
+	const inlineToken = readAccessToken(payload);
+	if (inlineToken) {
+		await persistAuthCookie(inlineToken);
+		return { ok: true, data: payload as UserResponse };
+	}
+
+	// The backend registers without a token: sign the new account in server-side.
+	const login = await requestToken(
+		"/auth/login",
+		encodeCredentials(input.username, input.password),
+		FORM_HEADERS,
+	);
+	if (!login.ok) return login;
+
+	await persistAuthCookie(login.data);
+	return { ok: true, data: payload as UserResponse };
+}
+
+export async function logoutAction(): Promise<void> {
+	const cookieStore = await cookies();
+	cookieStore.set(AUTH_COOKIE_NAME, "", createExpiredAuthCookieOptions());
+}

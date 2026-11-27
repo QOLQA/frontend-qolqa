@@ -1,12 +1,6 @@
-export {
-	API_URL,
-	getAuthToken,
-	setAuthCookie,
-	clearAuthCookie,
-	isTokenExpired,
-	fetchWithAuth,
-	api,
-} from "./client";
+export { API_PROXY_BASE, resolveApiUrl, clearAuthCookie, fetchWithAuth, api } from "./client";
+export type { FetchOptions, ApiRequestOptions } from "./client";
+export { AUTH_COOKIE_NAME, createAuthCookieOptions, createExpiredAuthCookieOptions } from "./auth-cookie";
 export {
 	validatePassword,
 	validateUsername,

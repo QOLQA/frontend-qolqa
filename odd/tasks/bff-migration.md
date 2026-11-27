@@ -1,0 +1,69 @@
+# BFF Migration — server proxy, server actions, server components
+
+Migrate all browser→backend traffic to go through the Next.js server: hide the
+backend on the Docker internal network, move JWT auth to an httpOnly cookie set
+by the server, and split data flows into server components (reads at render),
+server actions (user-triggered mutations), and route handlers (client-driven
+reads for the interactive editor).
+
+Deployment target: Dockploy on a VPS, front and back as containers on the same
+Docker network (Spec S2).
+
+## Specs
+
+- S1: "mira lo que quiero hacer es convertir las peticiones en server componentes o tambien podria hacer un route handler ya que tengo la idea de comunicar con su backend a travez del servidor interno por temas de seguridad"
+- S2: "para que tengas contexto estoy desplegando el front y el back en un vps a travez de dockply"
+- S3: "es que tambien estube viendo que si en caso no son server componentes entonces se puede trabajar con server actions como lo hace en login esto para el caso de los que no es recomendable mandarlo como un server components"
+- S4: "si arraca con el plan"
+
+Agreed routing decisions (from conversation):
+- Route handlers `/api/*` (thin BFF proxy) for client-driven reads.
+- Server actions for user-triggered mutations (login pattern in
+  `features/auth/login/model/actions.ts` is the model).
+- Server components for read-at-render pages using `serverFetchWithAuth`.
+- JWT moves from `localStorage` to an httpOnly cookie set server-side.
+- Backend URL becomes server-only env (`BACKEND_URL`), no
+  `NEXT_PUBLIC_BACKEND_URL` in client code.
+
+## Tasks
+
+| ID | Spec | Task | Route | Commit |
+|----|------|------|-------|--------|
+| T1 | S1 | Inventory every API call site: file, endpoint, method, read/mutation, client vs server, consuming UI. Deliver map with `path:line` evidence. | gentle-ai-explore | done (Log L4) |
+| T2 | S1 | Auth to httpOnly server-side: catch-all BFF route handler `app/api/[...path]` (GET/POST/PUT/PATCH/DELETE) using `serverFetchWithAuth`; login/register/google server actions set httpOnly cookie; `fetchWithAuth` base becomes `/api` (cookie same-origin, no localStorage Bearer); remove localStorage token + `AuthTokenSync`; 401 → clear + `/login`. Keeps every existing `api.*` consumer working through the proxy. Risk: item 2 (auth, security). | gentle-ai-worker | |
+| T3 | S1 | Verify remaining client-driven reads (`load.ts:8`, `queries.ts:27`, `getUserMe.ts:6`) flow through the `/api` proxy; Zod-validate proxy responses at the edge; no direct `NEXT_PUBLIC_BACKEND_URL` reads left in client code. | gentle-ai-worker | |
+| T4 | S3 | Server actions for mutations (save version, profile update, delete account, avatar upload). | gentle-ai-worker | |
+| T5 | S1 | Remaining read pages to server components: solution reads are already server-side (`getDiagramData.server`, `getSolutions.server`, `getAnalysisData.server`); audit for any remaining client-render reads (e.g. `/auth/me` for dialogs) and confirm server fetchers keep the `"UNAUTHORIZED"/"FORBIDDEN"` string contract. | gentle-ai-worker | |
+| T6 | S2 | Env/config: `BACKEND_URL` server-only, drop `NEXT_PUBLIC_BACKEND_URL` from client code; document Dockploy internal-network setup (backend without published port). | inline | |
+| T7 | S1–S3 | Independent verification of the auth unit (high-risk item 2): session integrity, 401 flows, no token exposure to JS. | gentle-ai-verify | — |
+
+## Log
+
+- L1: User request (verbatim S1–S3); accepted plan with "si arraca con el plan".
+- L2: Routing agreed: BFF hybrid — server components for render reads, server
+  actions for mutations, route handlers for client-driven editor reads;
+  httpOnly cookie auth; backend isolated on Docker internal network under
+  Dockploy/VPS (S2). Performance concern dismissed: internal hop < 1 ms.
+- L3: Branch `feature/bff-migration` created from `main`; work-unit commits
+  per task, T2 (Risk: item 2) gets its own commit and independent verification
+  (T7).
+- L4 (T1 evidence): Login/register/google + `/auth/me` (checkAuth, refreshUser)
+  and getUserMe are raw client fetches with localStorage Bearer
+  (`useAuth.ts:26,64,108,169,227`); cookie set/clear spans `useAuth.ts:79-80,130-143,213`,
+  `client.ts:20,24,62,87`, `AuthTokenSync.tsx:12-19` — all client-side, so the
+  cookie is forgeable today. `proxy.ts:36` reads the cookie (server middleware,
+  can read httpOnly) with optimistic exp decode. Solution reads are ALREADY
+  server-side (`solution.ts:8,24` via serverFetchWithAuth). Mutations to route
+  as actions: projects CRUD (`ProjectsPage.tsx:48,60,90,111`), save/versions
+  (`save.ts:21,43`, `versions.ts:176,235,312`, `version.ts:9`), queries CRUD
+  (`queries.ts:10,17,21`), user profile (`updateUserMe.ts:6`, `deleteUserMe.ts:4`).
+  Client-driven reads to route as handlers: `load.ts:8`, `queries.ts:27`,
+  `getUserMe.ts:6`. ProjectsPage mutates local state optimistically → needs
+  `revalidatePath`/`router.refresh` after actions.
+- L5 (out-of-scope flag, user decision pending): `uploadImage.ts:3,34-42` ships
+  `NEXT_PUBLIC_CLOUDINARY_API_SECRET` to the browser and hand-rolls signatures;
+  compose.yaml `*_UPLOAD_PRESET` env vars are unused. Blocks the goal of shipping
+  no secrets to the client but is Cloudinary, not backend traffic — reported to
+  user; not part of T2–T7 unless approved.
+- L6 (dead code): `solution.ts:37` DELETE exported but no consumer; ProjectsPage
+  deletes via client `api.delete`.

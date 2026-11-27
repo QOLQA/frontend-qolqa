@@ -1,17 +1,20 @@
 /**
  * Utilidades de API para server-side
- * Next.js server components y server actions
+ * Next.js server components, server actions y route handlers
  */
 
 import { cookies } from "next/headers";
 
-// En producción (plataformas separadas): usa la URL pública del backend
-// En desarrollo con Docker: usa BACKEND_URL (nombre del contenedor)
-// En desarrollo sin Docker: usa localhost
-const API_URL =
-	process.env.BACKEND_URL ||
-	process.env.NEXT_PUBLIC_BACKEND_URL ||
-	"http://localhost:8000";
+/**
+ * URL interna del backend. Solo se resuelve en el servidor: el navegador nunca
+ * conoce esta dirección porque todo pasa por el proxy `/api/*`.
+ *
+ * En Docker/Dockploy: nombre del contenedor (ej. http://fastapi:8000)
+ * En desarrollo sin Docker: localhost
+ */
+export function getBackendUrl(): string {
+	return process.env.BACKEND_URL || "http://localhost:8000";
+}
 
 /**
  * Obtiene el token de autenticación de las cookies
@@ -31,7 +34,9 @@ export async function isAuthenticated(): Promise<boolean> {
 }
 
 /**
- * Fetch con autenticación para server-side
+ * Fetch con autenticación para server-side.
+ * Construye sus propios headers a partir del token en la cookie httpOnly: nunca
+ * reenvía las cookies del navegador al backend.
  */
 export async function serverFetchWithAuth(
 	endpoint: string,
@@ -48,7 +53,7 @@ export async function serverFetchWithAuth(
 		headers["Authorization"] = `Bearer ${token}`;
 	}
 
-	const url = endpoint.startsWith("http") ? endpoint : `${API_URL}${endpoint}`;
+	const url = endpoint.startsWith("http") ? endpoint : `${getBackendUrl()}${endpoint}`;
 
 	return fetch(url, {
 		...options,
