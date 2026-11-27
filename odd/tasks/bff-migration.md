@@ -32,7 +32,7 @@ Agreed routing decisions (from conversation):
 | T1 | S1 | Inventory every API call site: file, endpoint, method, read/mutation, client vs server, consuming UI. Deliver map with `path:line` evidence. | gentle-ai-explore | done (Log L4) |
 | T2 | S1 | Auth to httpOnly server-side: catch-all BFF route handler `app/api/[...path]` (GET/POST/PUT/PATCH/DELETE) using `serverFetchWithAuth`; login/register/google server actions set httpOnly cookie; `fetchWithAuth` base becomes `/api` (cookie same-origin, no localStorage Bearer); remove localStorage token + `AuthTokenSync`; 401 → clear + `/login`. Keeps every existing `api.*` consumer working through the proxy. Risk: item 2 (auth, security). | gentle-ai-worker | 424067c |
 | T3 | S1 | Verify remaining client-driven reads (`load.ts:8`, `queries.ts:27`, `getUserMe.ts:6`) flow through the `/api` proxy; Zod-validate proxy responses at the edge; no direct `NEXT_PUBLIC_BACKEND_URL` reads left in client code. | gentle-ai-worker | e66c911 |
-| T4 | S3 | Server actions for mutations (save version, profile update, delete account, avatar upload). | gentle-ai-worker | |
+| T4 | S3 | Server actions for mutations (save version, profile update, delete account, avatar upload). Split: T4a projects CRUD + profile (a694a91); T4b editor save/versions/queries (03ec8ee). | gentle-ai-worker | a694a91, 03ec8ee |
 | T5 | S1 | Remaining read pages to server components: solution reads are already server-side (`getDiagramData.server`, `getSolutions.server`, `getAnalysisData.server`); audit for any remaining client-render reads (e.g. `/auth/me` for dialogs) and confirm server fetchers keep the `"UNAUTHORIZED"/"FORBIDDEN"` string contract. | gentle-ai-worker | |
 | T6 | S2 | Env/config: `BACKEND_URL` server-only, drop `NEXT_PUBLIC_BACKEND_URL` from client code; document Dockploy internal-network setup (backend without published port). | inline | |
 | T7 | S1–S3 | Independent verification of the auth unit (high-risk item 2): session integrity, 401 flows, no token exposure to JS. | gentle-ai-verify | — |
@@ -110,3 +110,12 @@ Agreed routing decisions (from conversation):
   L7: action-results helpers exist in pages/projects and
   features/account-management — hoist candidate into shared/api once that
   surface reopens; fold into T5 or a final refactor commit.
+- L14 (T4b evidence): commit 03ec8ee — features/version-management and
+  features/query-management server actions for all editor mutations;
+  save.ts/versions.ts are thin adapters; optimistic commit/rollback, autosave
+  and modal contracts preserved; dead mutation fetchers removed
+  (version.ts git rm'd by parent). Full suite 52 files / 434 tests green;
+  tsc clean. Editor actions deliberately skip revalidatePath (modeling page
+  is client-driven; duplicate flow already calls router.refresh).
+  action-results helpers now duplicated across 4 slices — hoist refactor
+  planned as its own unit before close.
