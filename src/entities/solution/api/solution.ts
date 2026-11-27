@@ -33,15 +33,3 @@ export async function getSolutionsRequest(): Promise<SolutionListItem[]> {
 	return response.json();
 }
 
-export async function deleteSolutionRequest(solutionId: string): Promise<void> {
-	const response = await serverFetchWithAuth(`/solutions/${solutionId}`, {
-		method: "DELETE",
-	});
-
-	if (!response.ok) {
-		if (response.status === 401) {
-			throw new Error("UNAUTHORIZED");
-		}
-		throw new Error("Failed to delete solution");
-	}
-}

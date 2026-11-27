@@ -3,6 +3,11 @@ import { getTranslation, translations } from "@fsd/shared/i18n";
 const defaultT = (path: string): string =>
 	getTranslation(translations.en, path);
 
+/** Structural subset of a Response, so callers can map a bare status too. */
+export interface ApiStatusResponse {
+	status: number;
+}
+
 /**
  * Centralized API error handling
  * @param error - The error object
@@ -11,7 +16,7 @@ const defaultT = (path: string): string =>
  */
 export const handleApiError = (
 	error: unknown,
-	response?: Response,
+	response?: ApiStatusResponse,
 	t?: (path: string) => string,
 ): string => {
 	const translate = (path: string): string => (t ? t(path) : defaultT(path));

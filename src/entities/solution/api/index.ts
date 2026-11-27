@@ -1,6 +1,1 @@
-export {
-	getSolutionRequest,
-	getSolutionsRequest,
-	deleteSolutionRequest,
-} from "./solution";
-export { updateVersionDescriptionRequest } from "./version";
+export { getSolutionRequest, getSolutionsRequest } from "./solution";

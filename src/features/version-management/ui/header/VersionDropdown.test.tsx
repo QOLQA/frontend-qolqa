@@ -3,13 +3,31 @@ import { act, cleanup, fireEvent, render, screen, within } from "@testing-librar
 import userEvent from "@testing-library/user-event";
 import type { Node } from "@xyflow/react";
 import { useSolutionStore, type TableData, type VersionFrontend } from "@fsd/entities/solution";
-import { api } from "@fsd/shared/api";
 import { toast } from "sonner";
 import { hasUnsavedCanvasChanges } from "../../lib/canvas-changes";
 import { saveCanvas } from "../../lib/save";
 import { VersionDropdown } from "./VersionDropdown";
 
-vi.mock("@fsd/shared/api", () => ({ api: { patch: vi.fn(), post: vi.fn() } }));
+const {
+	mockSaveVersionDiagram,
+	mockCreateEmptyVersion,
+	mockRenameVersion,
+	mockDeleteVersion,
+} = vi.hoisted(() => ({
+	mockSaveVersionDiagram: vi.fn(),
+	mockCreateEmptyVersion: vi.fn(),
+	mockRenameVersion: vi.fn(),
+	mockDeleteVersion: vi.fn(),
+}));
+
+vi.mock("../../model/actions", () => ({
+	saveVersionDiagram: mockSaveVersionDiagram,
+	createEmptyVersion: mockCreateEmptyVersion,
+	renameVersion: mockRenameVersion,
+	deleteVersion: mockDeleteVersion,
+	duplicateVersion: vi.fn(),
+	saveSolutionQueriesAndImage: vi.fn(),
+}));
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 function makeNode(): Node<TableData> {
@@ -40,7 +58,16 @@ async function requestSecondVersion() {
 
 beforeEach(() => {
 	vi.clearAllMocks();
-	vi.mocked(api.patch).mockResolvedValue({});
+	mockSaveVersionDiagram.mockResolvedValue({ ok: true, data: null });
+	mockCreateEmptyVersion.mockResolvedValue({
+		ok: true,
+		data: { _id: "v3", solution_id: "project", description: "project v3.0", submodels: [] },
+	});
+	mockRenameVersion.mockResolvedValue({
+		ok: true,
+		data: { _id: "v1", solution_id: "project", description: "project v1.0", submodels: [] },
+	});
+	mockDeleteVersion.mockResolvedValue({ ok: true, data: null });
 	const version: VersionFrontend = {
 		_id: "v1", solution_id: "project", description: "project v1.0", nodes: [makeNode()], edges: [],
 	};
@@ -60,7 +87,7 @@ describe("version changes with pending edits", () => {
 		render(<VersionDropdown />);
 		await requestSecondVersion();
 		expect(useSolutionStore.getState().selectedVersionId).toBe("v2");
-		expect(api.patch).not.toHaveBeenCalled();
+		expect(mockSaveVersionDiagram).not.toHaveBeenCalled();
 		expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
 	});
 
@@ -70,7 +97,7 @@ describe("version changes with pending edits", () => {
 		await requestSecondVersion();
 		const dialog = screen.getByRole("alertdialog");
 		expect(within(dialog).getAllByRole("button")).toHaveLength(2);
-		expect(api.patch).not.toHaveBeenCalled();
+		expect(mockSaveVersionDiagram).not.toHaveBeenCalled();
 		await userEvent.click(within(dialog).getByRole("button", { name: "Keep editing" }));
 		expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
 		expect(useSolutionStore.getState().selectedVersionId).toBe("v1");
@@ -80,16 +107,16 @@ describe("version changes with pending edits", () => {
 	it("waits for server confirmation and prevents duplicate submissions", async () => {
 		editColumn();
 		let resolveSave!: (value: object) => void;
-		vi.mocked(api.patch).mockImplementationOnce(() => new Promise((resolve) => { resolveSave = resolve; }));
+		mockSaveVersionDiagram.mockImplementationOnce(() => new Promise((resolve) => { resolveSave = resolve; }));
 		render(<VersionDropdown />);
 		await requestSecondVersion();
 		await userEvent.click(screen.getByRole("button", { name: "Save and continue" }));
 		expect(screen.getByRole("button", { name: "Saving..." })).toBeDisabled();
 		expect(useSolutionStore.getState().selectedVersionId).toBe("v1");
 		expect(unloadIsPrevented()).toBe(true);
-		await act(async () => resolveSave({}));
-		expect(api.patch).toHaveBeenCalledTimes(1);
-		expect(api.patch).toHaveBeenCalledWith("/solutions/project/versions/v1", expect.objectContaining({
+		await act(async () => resolveSave({ ok: true, data: null }));
+		expect(mockSaveVersionDiagram).toHaveBeenCalledTimes(1);
+		expect(mockSaveVersionDiagram).toHaveBeenCalledWith("project", "v1", expect.objectContaining({
 			submodels: [expect.objectContaining({ nodes: [expect.objectContaining({
 				cols: [expect.objectContaining({ name: "full_name" })],
 			})] })],
@@ -101,7 +128,7 @@ describe("version changes with pending edits", () => {
 
 	it("keeps the dialog and edits after a failed save and allows retrying", async () => {
 		editColumn();
-		vi.mocked(api.patch).mockRejectedValueOnce(new Error("offline"));
+		mockSaveVersionDiagram.mockResolvedValueOnce({ ok: false, status: 0, detail: "offline" });
 		render(<VersionDropdown />);
 		await requestSecondVersion();
 		await userEvent.click(screen.getByRole("button", { name: "Save and continue" }));
@@ -116,12 +143,12 @@ describe("version changes with pending edits", () => {
 	it("does not switch if additional edits arrive while saving", async () => {
 		editColumn();
 		let resolveSave!: (value: object) => void;
-		vi.mocked(api.patch).mockImplementationOnce(() => new Promise((resolve) => { resolveSave = resolve; }));
+		mockSaveVersionDiagram.mockImplementationOnce(() => new Promise((resolve) => { resolveSave = resolve; }));
 		render(<VersionDropdown />);
 		await requestSecondVersion();
 		await userEvent.click(screen.getByRole("button", { name: "Save and continue" }));
 		act(() => editColumn("newer_name"));
-		await act(async () => resolveSave({}));
+		await act(async () => resolveSave({ ok: true, data: null }));
 		expect(useSolutionStore.getState().selectedVersionId).toBe("v1");
 		expect(screen.getByRole("alertdialog")).toBeInTheDocument();
 		expect(unloadIsPrevented()).toBe(true);
@@ -133,7 +160,7 @@ describe("version changes with pending edits", () => {
 		await userEvent.click(screen.getByRole("button", { name: "project v1.0" }));
 		await userEvent.click(screen.getByRole("button", { name: "Add new version" }));
 		expect(screen.getByRole("alertdialog")).toBeInTheDocument();
-		expect(api.post).not.toHaveBeenCalled();
+		expect(mockCreateEmptyVersion).not.toHaveBeenCalled();
 	});
 
 	it("warns on reload only while there are unsaved changes, including after manual save", async () => {
@@ -162,17 +189,39 @@ describe("version changes with pending edits", () => {
 
 	it("saves before creating and selecting a new version after confirmation", async () => {
 		editColumn();
-		vi.mocked(api.post).mockResolvedValueOnce({
-			_id: "v3", solution_id: "project", description: "project v3.0", submodels: [],
-		});
 		render(<VersionDropdown />);
 		await userEvent.click(screen.getByRole("button", { name: "project v1.0" }));
 		await userEvent.click(screen.getByRole("button", { name: "Add new version" }));
 		await userEvent.click(screen.getByRole("button", { name: "Save and continue" }));
-		expect(api.patch).toHaveBeenCalledTimes(1);
-		expect(api.post).toHaveBeenCalledTimes(1);
+		expect(mockSaveVersionDiagram).toHaveBeenCalledTimes(1);
+		expect(mockCreateEmptyVersion).toHaveBeenCalledTimes(1);
 		expect(useSolutionStore.getState().selectedVersionId).toBe("v3");
 		expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+	});
+
+	it("renames a version through the rename action", async () => {
+		mockRenameVersion.mockResolvedValueOnce({
+			ok: true,
+			data: { _id: "v1", solution_id: "project", description: "embedded orders", submodels: [] },
+		});
+		render(<VersionDropdown />);
+		await userEvent.click(screen.getByRole("button", { name: "project v1.0" }));
+		await userEvent.click(screen.getAllByRole("button", { name: "Edit version name" })[0]);
+		const input = screen.getByRole("textbox", { name: "Edit version name" });
+		await userEvent.clear(input);
+		await userEvent.type(input, "embedded orders{Enter}");
+		expect(mockRenameVersion).toHaveBeenCalledWith("project", "v1", "embedded orders");
+		expect(useSolutionStore.getState().versions[0].description).toBe("embedded orders");
+		expect(toast.success).toHaveBeenCalled();
+	});
+
+	it("deletes a version after confirming the modal", async () => {
+		render(<VersionDropdown />);
+		await userEvent.click(screen.getByRole("button", { name: "project v1.0" }));
+		await userEvent.click(screen.getByRole("button", { name: "Delete version project v1.0" }));
+		await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+		expect(mockDeleteVersion).toHaveBeenCalledWith("v1");
+		expect(useSolutionStore.getState().versions.map((version) => version._id)).toEqual(["v2"]);
 	});
 
 	it("ignores selection and dimensions, but detects attribute types, positions and nested fields", () => {
@@ -195,6 +244,6 @@ describe("version changes with pending edits", () => {
 		await userEvent.click(screen.getByRole("button", { name: "project v1.0" }));
 		fireEvent.click(within(screen.getByRole("listbox")).getByRole("button", { name: "project v1.0" }));
 		expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
-		expect(api.patch).not.toHaveBeenCalled();
+		expect(mockSaveVersionDiagram).not.toHaveBeenCalled();
 	});
 });

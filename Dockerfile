@@ -52,11 +52,8 @@ FROM deps AS build
 COPY --chown=nextjs:nodejs . .
 
 # Variables públicas necesarias en tiempo de compilación (puedes pasarlas via --build-arg)
-ARG NEXT_PUBLIC_BACKEND_URL
 ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
 ARG NEXT_PUBLIC_CLOUDINARY_URL
-ARG NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
-ARG NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET_2
 
 RUN pnpm run build
 

@@ -56,7 +56,7 @@ describe("useGoogleLogin", () => {
 	});
 
 	it("calls googleLogin with credential on valid input", async () => {
-		mockGoogleLogin.mockResolvedValueOnce({ access_token: "tok" });
+		mockGoogleLogin.mockResolvedValueOnce(undefined);
 
 		const { result } = renderHook(() => useGoogleLogin(), {
 			wrapper: createWrapper(),
@@ -90,7 +90,7 @@ describe("useGoogleLogin", () => {
 	});
 
 	it("redirects to /projects on successful submit", async () => {
-		mockGoogleLogin.mockResolvedValueOnce({ access_token: "tok" });
+		mockGoogleLogin.mockResolvedValueOnce(undefined);
 
 		const { result } = renderHook(() => useGoogleLogin(), {
 			wrapper: createWrapper(),
@@ -105,7 +105,7 @@ describe("useGoogleLogin", () => {
 	});
 
 	it("redirects to the redirect search param when present", async () => {
-		mockGoogleLogin.mockResolvedValueOnce({ access_token: "tok" });
+		mockGoogleLogin.mockResolvedValueOnce(undefined);
 		mockSearchParams.get.mockReturnValue("/modeling");
 
 		const { result } = renderHook(() => useGoogleLogin(), {
@@ -120,7 +120,7 @@ describe("useGoogleLogin", () => {
 	});
 
 	it("falls back to /projects when redirect is an external URL", async () => {
-		mockGoogleLogin.mockResolvedValueOnce({ access_token: "tok" });
+		mockGoogleLogin.mockResolvedValueOnce(undefined);
 		mockSearchParams.get.mockReturnValue("https://evil.com");
 
 		const { result } = renderHook(() => useGoogleLogin(), {
@@ -135,7 +135,7 @@ describe("useGoogleLogin", () => {
 	});
 
 	it("falls back to /projects when redirect starts with //", async () => {
-		mockGoogleLogin.mockResolvedValueOnce({ access_token: "tok" });
+		mockGoogleLogin.mockResolvedValueOnce(undefined);
 		mockSearchParams.get.mockReturnValue("//evil.com");
 
 		const { result } = renderHook(() => useGoogleLogin(), {

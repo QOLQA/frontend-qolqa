@@ -2,14 +2,24 @@
 
 import { useCallback } from "react";
 import { useSolutionStore } from "@fsd/entities/solution";
-import {
-	createQueryRequest,
-	updateQueryRequest,
-	deleteQueryRequest,
-	getQueriesBySolutionRequest,
-} from "@fsd/entities/query/api";
+import { getQueriesBySolutionRequest } from "@fsd/entities/query/api";
 import { useQueriesStore } from "@fsd/entities/query/model/state/queriesStore";
 import type { Query } from "@fsd/entities/solution";
+import {
+	createQuery as createQueryAction,
+	deleteQuery as deleteQueryAction,
+	updateQuery as updateQueryAction,
+} from "./actions";
+import type { ActionFailure } from "@fsd/shared/api/action-results";
+
+/**
+ * Server actions report expected failures as data; the hook keeps its
+ * reject-on-failure contract so callers can roll back and toast.
+ */
+const actionFailureToError = (
+	failure: ActionFailure,
+	fallback: string,
+): Error => new Error(failure.detail ?? fallback);
 
 /**
  * Hook para manejar operaciones CRUD de queries con optimistic updates
@@ -37,11 +47,14 @@ export const useQueryOperations = () => {
 					solution_id: solutionId,
 				};
 
-				const createdQuery = await createQueryRequest(createData);
+				const created = await createQueryAction(createData);
+				if (!created.ok) {
+					throw actionFailureToError(created, "Failed to create query");
+				}
 
-				editQueryInStore(tempId, createdQuery);
+				editQueryInStore(tempId, created.data);
 
-				return createdQuery;
+				return created.data;
 			} catch (error) {
 				removeQueryFromStore(tempId);
 				console.error("Failed to create query:", error);
@@ -68,11 +81,14 @@ export const useQueryOperations = () => {
 			editQueryInStore(queryId, updatedQuery);
 
 			try {
-				const backendQuery = await updateQueryRequest(queryId, updates);
+				const updated = await updateQueryAction(queryId, updates);
+				if (!updated.ok) {
+					throw actionFailureToError(updated, "Failed to update query");
+				}
 
-				editQueryInStore(queryId, backendQuery);
+				editQueryInStore(queryId, updated.data);
 
-				return backendQuery;
+				return updated.data;
 			} catch (error) {
 				editQueryInStore(queryId, originalQuery);
 				console.error("Failed to update query:", error);
@@ -95,7 +111,10 @@ export const useQueryOperations = () => {
 			removeQueryFromStore(queryId);
 
 			try {
-				await deleteQueryRequest(queryId);
+				const deleted = await deleteQueryAction(queryId);
+				if (!deleted.ok) {
+					throw actionFailureToError(deleted, "Failed to delete query");
+				}
 			} catch (error) {
 				addQueryToStore(queryToDelete);
 				console.error("Failed to delete query:", error);

@@ -12,13 +12,9 @@ jobs:
     timeout-minutes: 15
 
     env:
-      NEXT_PUBLIC_BACKEND_URL: http://localhost:8000
       NEXT_PUBLIC_GOOGLE_CLIENT_ID: dummy-client-id.apps.googleusercontent.com
       NEXT_PUBLIC_CLOUDINARY_URL: https://api.cloudinary.com/v1_1/dummy/image/upload
-      NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: solutions-service
-      NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET_2: versions-service
       NEXT_PUBLIC_CLOUDINARY_API_KEY: dummy-key
-      NEXT_PUBLIC_CLOUDINARY_API_SECRET: dummy-secret
 
     steps:
       - name: Checkout repository
@@ -64,10 +60,7 @@ jobs:
           target: production
           push: false
           build-args: |
-            NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
             NEXT_PUBLIC_GOOGLE_CLIENT_ID=dummy-client-id.apps.googleusercontent.com
             NEXT_PUBLIC_CLOUDINARY_URL=https://api.cloudinary.com/v1_1/dummy/image/upload
-            NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=solutions-service
-            NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET_2=versions-service
           cache-from: type=gha
           cache-to: type=gha,mode=max

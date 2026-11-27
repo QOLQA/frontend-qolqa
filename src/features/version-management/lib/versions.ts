@@ -1,9 +1,5 @@
-import { api } from "@fsd/shared/api";
 import { transformVersionToBackend } from "@fsd/entities/solution/lib/conversions";
-import {
-	updateVersionDescriptionRequest,
-	useSolutionStore,
-} from "@fsd/entities/solution";
+import { useSolutionStore } from "@fsd/entities/solution";
 import type {
 	NestedNode,
 	NodeBackend,
@@ -12,6 +8,20 @@ import type {
 	VersionFrontend,
 } from "@fsd/entities/solution";
 import type { Node } from "@xyflow/react";
+import type { ActionFailure } from "@fsd/shared/api/action-results";
+import {
+	createEmptyVersion as createEmptyVersionAction,
+	deleteVersion as deleteVersionAction,
+	duplicateVersion as duplicateVersionAction,
+	renameVersion,
+} from "../model/actions";
+
+/**
+ * Server actions report expected failures as data; the editor flows keep their
+ * reject-on-failure contract for toasts and dialogs, so adapt them here.
+ */
+const failureToError = (failure: ActionFailure, fallback: string): Error =>
+	new Error(failure.detail ?? fallback);
 
 // ---------------------------------------------------------------------------
 // Versioning pure functions
@@ -165,100 +175,78 @@ export async function createEmptyVersion(
 	solutionId: string,
 	description: string
 ): Promise<VersionFrontend> {
-	try {
-		const versionData: VersionBackend = {
-			submodels: [],
-			description: description,
-			solution_id: solutionId,
-			_id: "",
-		};
-
-		const createdVersion = await api.post<VersionBackend>(
-			`/solutions/${solutionId}/versions`,
-			versionData
-		);
-
-		const transformedVersion =
-			transformVersionBackendToFrontend(createdVersion);
-
-		const {
-			versions,
-			setVersions,
-			setNodes,
-			setEdges,
-			setSelectedVersionId,
-		} = useSolutionStore.getState();
-		const updatedVersions = [...versions, transformedVersion];
-
-		setVersions(updatedVersions);
-		setNodes(transformedVersion.nodes);
-		setEdges(transformedVersion.edges);
-		setSelectedVersionId(transformedVersion._id);
-
-		return transformedVersion;
-	} catch (error) {
-		console.error("Error creating empty version:", error);
-		throw error;
+	const result = await createEmptyVersionAction(solutionId, description);
+	if (!result.ok) {
+		throw failureToError(result, "Error creating empty version");
 	}
+
+	const transformedVersion = transformVersionBackendToFrontend(result.data);
+
+	const {
+		versions,
+		setVersions,
+		setNodes,
+		setEdges,
+		setSelectedVersionId,
+	} = useSolutionStore.getState();
+	const updatedVersions = [...versions, transformedVersion];
+
+	setVersions(updatedVersions);
+	setNodes(transformedVersion.nodes);
+	setEdges(transformedVersion.edges);
+	setSelectedVersionId(transformedVersion._id);
+
+	return transformedVersion;
 }
 
 export async function duplicateVersion(
 	solutionId: string,
 	versionId: string
 ): Promise<VersionFrontend> {
-	try {
-		const { versions } = useSolutionStore.getState();
+	const { versions } = useSolutionStore.getState();
 
-		const currentVersion = versions.find((v) => v._id === versionId);
-		if (!currentVersion) {
-			throw new Error("Current version not found");
-		}
-
-		const versionBackend = transformVersionToBackend(
-			currentVersion,
-			currentVersion.nodes,
-			currentVersion.edges
-		);
-
-		const duplicateDescription = generateNextMinorVersion(
-			currentVersion.description,
-			versions
-		);
-
-		const versionData: VersionBackend = {
-			submodels: versionBackend.submodels,
-			description: duplicateDescription,
-			solution_id: solutionId,
-			_id: "",
-		};
-
-		const createdVersion = await api.post<VersionBackend>(
-			`/solutions/${solutionId}/versions`,
-			versionData
-		);
-
-		const transformedVersion =
-			transformVersionBackendToFrontend(createdVersion);
-
-		const {
-			versions: currentVersions,
-			setVersions,
-			setNodes,
-			setEdges,
-			setSelectedVersionId,
-		} = useSolutionStore.getState();
-		const updatedVersions = [...currentVersions, transformedVersion];
-
-		setVersions(updatedVersions);
-		setNodes(transformedVersion.nodes);
-		setEdges(transformedVersion.edges);
-		setSelectedVersionId(transformedVersion._id);
-
-		return transformedVersion;
-	} catch (error) {
-		console.error("Error duplicating version:", error);
-		throw error;
+	const currentVersion = versions.find((v) => v._id === versionId);
+	if (!currentVersion) {
+		throw new Error("Current version not found");
 	}
+
+	const versionBackend = transformVersionToBackend(
+		currentVersion,
+		currentVersion.nodes,
+		currentVersion.edges
+	);
+
+	const duplicateDescription = generateNextMinorVersion(
+		currentVersion.description,
+		versions
+	);
+
+	const result = await duplicateVersionAction(
+		solutionId,
+		duplicateDescription,
+		versionBackend.submodels
+	);
+	if (!result.ok) {
+		throw failureToError(result, "Error duplicating version");
+	}
+
+	const transformedVersion = transformVersionBackendToFrontend(result.data);
+
+	const {
+		versions: currentVersions,
+		setVersions,
+		setNodes,
+		setEdges,
+		setSelectedVersionId,
+	} = useSolutionStore.getState();
+	const updatedVersions = [...currentVersions, transformedVersion];
+
+	setVersions(updatedVersions);
+	setNodes(transformedVersion.nodes);
+	setEdges(transformedVersion.edges);
+	setSelectedVersionId(transformedVersion._id);
+
+	return transformedVersion;
 }
 
 export async function updateVersionDescription(
@@ -266,28 +254,21 @@ export async function updateVersionDescription(
 	versionId: string,
 	newDescription: string
 ): Promise<VersionFrontend> {
-	try {
-		const updatedVersion = await updateVersionDescriptionRequest(
-			solutionId,
-			versionId,
-			newDescription,
-		);
-
-		const transformedVersion =
-			transformVersionBackendToFrontend(updatedVersion);
-
-		const { versions, setVersions } = useSolutionStore.getState();
-		const updatedVersions = versions.map((v) =>
-			v._id === versionId ? transformedVersion : v
-		);
-
-		setVersions(updatedVersions);
-
-		return transformedVersion;
-	} catch (error) {
-		console.error("Error updating version description:", error);
-		throw error;
+	const result = await renameVersion(solutionId, versionId, newDescription);
+	if (!result.ok) {
+		throw failureToError(result, "Error updating version description");
 	}
+
+	const transformedVersion = transformVersionBackendToFrontend(result.data);
+
+	const { versions, setVersions } = useSolutionStore.getState();
+	const updatedVersions = versions.map((v) =>
+		v._id === versionId ? transformedVersion : v
+	);
+
+	setVersions(updatedVersions);
+
+	return transformedVersion;
 }
 
 /**
@@ -309,7 +290,10 @@ export async function deleteVersion(versionId: string): Promise<void> {
 		throw new Error("Cannot delete the only version");
 	}
 
-	await api.delete(`/versions/${versionId}`);
+	const result = await deleteVersionAction(versionId);
+	if (!result.ok) {
+		throw failureToError(result, "Error deleting version");
+	}
 
 	const remainingVersions = versions.filter((v) => v._id !== versionId);
 	setVersions(remainingVersions);

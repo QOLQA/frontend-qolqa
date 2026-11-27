@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import { DropdownProvider } from "@fsd/shared/lib/dropdown-context";
-import { AuthProvider, AuthTokenSync, GoogleProvider } from "@fsd/app/providers";
+import { AuthProvider, GoogleProvider } from "@fsd/app/providers";
 import { Toaster } from "@fsd/shared/ui/sonner";
 import { TourProvider } from "@fsd/features/onboarding-tour";
 
@@ -27,7 +27,6 @@ export default function RootLayout({
 					<Toaster position="top-center" />
 					<AuthProvider>
 						<GoogleProvider>
-							<AuthTokenSync />
 							<DropdownProvider>
 								{children}
 								<TourProvider />

@@ -1,93 +1,74 @@
 /**
- * API service with automatic JWT authentication
- * Handles tokens, headers and authentication errors
+ * Same-origin API client for browser code.
+ *
+ * Every request goes through the Next.js BFF proxy (`app/api/[...path]`), which
+ * attaches the httpOnly `access_token` cookie server-side. The backend URL and
+ * the JWT never reach the browser: there is no localStorage token and no
+ * Authorization header here.
  */
 
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+import { AUTH_COOKIE_NAME } from "./auth-cookie";
+import { redirectToLogin } from "./redirect";
 
-export { API_URL };
+export const API_PROXY_BASE = "/api";
 
 // Error keys — consumers are responsible for i18n translation
 export const API_ERROR_SESSION_EXPIRED = "errors.session_expired";
 export const API_ERROR_REQUEST_FAILED = "errors.request_failed";
 
-const AUTH_COOKIE = "access_token";
+const CLEAR_AUTH_COOKIE = `${AUTH_COOKIE_NAME}=; path=/; SameSite=Lax; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
 
-function authCookieFlags(): string {
-	const isProduction = process.env.NODE_ENV === "production";
-	return ["path=/", "SameSite=Lax", isProduction ? "Secure" : ""]
-		.filter(Boolean)
-		.join("; ");
-}
-
-export const setAuthCookie = (token: string): void => {
-	if (typeof document === "undefined") return;
-	document.cookie = `${AUTH_COOKIE}=${token}; ${authCookieFlags()}; max-age=1800`;
-};
-
+/**
+ * Best-effort client cleanup. The httpOnly cookie is owned and cleared by the
+ * server (logout action and the proxy's own 401 handling).
+ */
 export const clearAuthCookie = (): void => {
 	if (typeof document === "undefined") return;
-	document.cookie = `${AUTH_COOKIE}=; ${authCookieFlags()}; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+	document.cookie = CLEAR_AUTH_COOKIE;
 };
 
-export const getAuthToken = (): string | null => {
-	if (typeof window === "undefined") return null;
-	return localStorage.getItem("access_token");
-};
+/** Relative endpoints ride the BFF proxy; absolute URLs (e.g. uploads) pass through. */
+export const resolveApiUrl = (endpoint: string): string =>
+	endpoint.startsWith("http") ? endpoint : `${API_PROXY_BASE}${endpoint}`;
 
-export const isTokenExpired = (token: string): boolean => {
-	try {
-		const payload = JSON.parse(atob(token.split(".")[1]));
-		return payload.exp * 1000 < Date.now();
-	} catch {
-		return true;
-	}
-};
+export interface ApiRequestOptions {
+	/**
+	 * When false, a 401 clears the cookie and throws without navigating to
+	 * `/login`. Session probes on public pages use it so anonymous visitors
+	 * are not bounced off the landing page.
+	 */
+	redirectOnUnauthorized?: boolean;
+}
 
-interface FetchOptions extends RequestInit {
+export interface FetchOptions extends RequestInit, ApiRequestOptions {
 	headers?: Record<string, string>;
 }
 
-/**
- * Fetch with automatic authentication
- * Adds JWT token to all requests
- */
 export const fetchWithAuth = async (
 	endpoint: string,
 	options: FetchOptions = {},
 ): Promise<Response> => {
-	const token = getAuthToken();
-
-	if (token && isTokenExpired(token)) {
-		localStorage.removeItem("access_token");
-		clearAuthCookie();
-		if (typeof window !== "undefined") {
-			window.location.href = "/login";
-		}
-		throw new Error(API_ERROR_SESSION_EXPIRED);
-	}
+	const {
+		redirectOnUnauthorized = true,
+		headers: optionHeaders,
+		...init
+	} = options;
 
 	const headers: Record<string, string> = {
 		"Content-Type": "application/json",
-		...options.headers,
+		...optionHeaders,
 	};
 
-	if (token) {
-		headers["Authorization"] = `Bearer ${token}`;
-	}
-
-	const url = endpoint.startsWith("http") ? endpoint : `${API_URL}${endpoint}`;
-
-	const response = await fetch(url, {
-		...options,
+	const response = await fetch(resolveApiUrl(endpoint), {
+		...init,
 		headers,
 	});
 
+	// An expired or missing session: drop the cookie and send the user to /login.
 	if (response.status === 401) {
-		localStorage.removeItem("access_token");
 		clearAuthCookie();
-		if (typeof window !== "undefined") {
-			window.location.href = "/login";
+		if (redirectOnUnauthorized) {
+			redirectToLogin();
 		}
 		throw new Error(API_ERROR_SESSION_EXPIRED);
 	}
@@ -95,12 +76,25 @@ export const fetchWithAuth = async (
 	return response;
 };
 
+interface ApiErrorBody {
+	detail?: unknown;
+}
+
+const readErrorDetail = async (response: Response): Promise<string> => {
+	const body = (await response
+		.json()
+		.catch(() => null)) as ApiErrorBody | null;
+	const detail = body?.detail;
+	return typeof detail === "string" && detail.length > 0
+		? detail
+		: API_ERROR_REQUEST_FAILED;
+};
+
 export const api = {
-	async get<T>(endpoint: string): Promise<T> {
-		const response = await fetchWithAuth(endpoint);
+	async get<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+		const response = await fetchWithAuth(endpoint, options);
 		if (!response.ok) {
-			const error = await response.json();
-			throw new Error(error.detail || API_ERROR_REQUEST_FAILED);
+			throw new Error(await readErrorDetail(response));
 		}
 		return response.json();
 	},
@@ -111,8 +105,7 @@ export const api = {
 			body: JSON.stringify(data),
 		});
 		if (!response.ok) {
-			const error = await response.json();
-			throw new Error(error.detail || API_ERROR_REQUEST_FAILED);
+			throw new Error(await readErrorDetail(response));
 		}
 		return response.json();
 	},
@@ -123,8 +116,7 @@ export const api = {
 			body: JSON.stringify(data),
 		});
 		if (!response.ok) {
-			const error = await response.json();
-			throw new Error(error.detail || API_ERROR_REQUEST_FAILED);
+			throw new Error(await readErrorDetail(response));
 		}
 		return response.json();
 	},
@@ -134,8 +126,7 @@ export const api = {
 			method: "DELETE",
 		});
 		if (!response.ok && response.status !== 204) {
-			const error = await response.json();
-			throw new Error(error.detail || API_ERROR_REQUEST_FAILED);
+			throw new Error(await readErrorDetail(response));
 		}
 	},
 };

@@ -2,9 +2,30 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { handleApiError, API_URL, setAuthCookie, clearAuthCookie } from "@fsd/shared/api";
+import { api, clearAuthCookie } from "@fsd/shared/api";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
-import type { User, UserResponse, LoginResult, LoginCredentials, RegisterData } from "@fsd/entities/user";
+import type {
+	User,
+	UserResponse,
+	LoginCredentials,
+	RegisterData,
+} from "@fsd/entities/user";
+import {
+	googleLoginAction,
+	loginAction,
+	logoutAction,
+	registerAction,
+} from "./auth-actions";
+import {
+	AUTH_GOOGLE_ERROR_MESSAGE,
+	AUTH_INVALID_CREDENTIAL_MESSAGE,
+	AUTH_NETWORK_ERROR_MESSAGE,
+	authFailureMessage,
+	googleErrorMessage,
+} from "./auth-action-results";
+
+const AUTH_ME_ENDPOINT = "/auth/me";
+const LOGIN_ROUTE = "/login";
 
 export const useAuth = () => {
 	const { t } = useTranslation();
@@ -15,31 +36,16 @@ export const useAuth = () => {
 
 	// React Compiler cannot optimize: async function used as dep in useEffect below
 	const checkAuth = useCallback(async () => {
-		const token = localStorage.getItem("access_token");
-
-		if (!token) {
-			setLoading(false);
-			return;
-		}
-
 		try {
-			const response = await fetch(`${API_URL}/auth/me`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
+			// The httpOnly cookie travels on this same-origin call; the proxy turns
+			// it into the backend bearer token for us.
+			const userData = await api.get<User>(AUTH_ME_ENDPOINT, {
+				redirectOnUnauthorized: false,
 			});
-
-			if (response.ok) {
-				const userData = await response.json();
-				setUser(userData);
-			} else {
-				localStorage.removeItem("access_token");
-				clearAuthCookie();
-				setUser(null);
-			}
+			setUser(userData);
 		} catch {
-			localStorage.removeItem("access_token");
-			clearAuthCookie();
+			// No usable session (or the backend is down): stay signed out without
+			// bouncing anonymous visitors off public pages.
 			setUser(null);
 		} finally {
 			setLoading(false);
@@ -50,38 +56,16 @@ export const useAuth = () => {
 		checkAuth();
 	}, [checkAuth]);
 
-	// React Compiler cannot optimize: depends on checkAuth (stable ref needed to avoid stale closure)
 	const login = useCallback(
-		async (credentials: LoginCredentials): Promise<LoginResult> => {
+		async (credentials: LoginCredentials): Promise<void> => {
 			setError(null);
 			setLoading(true);
 
 			try {
-				const formData = new URLSearchParams();
-				formData.append("username", credentials.username);
-				formData.append("password", credentials.password);
-
-				const response = await fetch(`${API_URL}/auth/login`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-					},
-					body: formData,
-				});
-
-				if (!response.ok) {
-					const errorData = await response.json().catch(() => ({}));
-					const errorMessage = handleApiError(errorData, response, t);
-					throw new Error(errorMessage);
-				}
-
-				const data = await response.json();
-				localStorage.setItem("access_token", data.access_token);
-				setAuthCookie(data.access_token);
+				const result = await loginAction(credentials);
+				if (!result.ok) throw new Error(authFailureMessage(result, t));
 
 				await checkAuth();
-
-				return data;
 			} catch (err) {
 				const errorMessage =
 					err instanceof Error ? err.message : "Error al iniciar sesión";
@@ -91,72 +75,41 @@ export const useAuth = () => {
 				setLoading(false);
 			}
 		},
-		[checkAuth, t]
+		[checkAuth, t],
 	);
 
 	// React Compiler cannot optimize: async callback exposed through AuthContext (stable ref for consumers)
 	const googleLogin = useCallback(
-		async (credential: string): Promise<LoginResult> => {
+		async (credential: string): Promise<void> => {
 			if (!credential) {
-				throw new Error("Credencial de Google vacía");
+				throw new Error(AUTH_INVALID_CREDENTIAL_MESSAGE);
 			}
 
 			setError(null);
 			setLoading(true);
 
 			try {
-				const response = await fetch(`${API_URL}/auth/google`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ credential }),
-				});
+				const result = await googleLoginAction(credential);
 
-				if (!response.ok) {
-					const statusMessages: Record<number, string> = {
-						401: "Token de Google inválido. Intentá de nuevo.",
-						403: "Esta cuenta usa login con contraseña. Usá el formulario de email/password.",
-						429: "Demasiados intentos. Esperá un momento.",
-						503: "Login con Google no disponible temporalmente.",
-					};
-
-					const message =
-						statusMessages[response.status] || "Error al iniciar sesión con Google";
-					throw new Error(message);
-				}
-
-				const data: LoginResult = await response.json();
-				localStorage.setItem("access_token", data.access_token);
-
-				if (typeof document !== "undefined") {
-					const isProduction = process.env.NODE_ENV === "production";
-					const cookieOptions = [
-						`access_token=${data.access_token}`,
-						"path=/",
-						"max-age=1800",
-						"SameSite=Lax",
-						isProduction ? "Secure" : "",
-					]
-						.filter(Boolean)
-						.join("; ");
-
-					document.cookie = cookieOptions;
+				if (!result.ok) {
+					throw new Error(
+						result.status === 0
+							? AUTH_NETWORK_ERROR_MESSAGE
+							: googleErrorMessage(result.status),
+					);
 				}
 
 				await checkAuth();
-
-				return data;
 			} catch (err) {
 				const errorMessage =
-					err instanceof Error ? err.message : "Error al iniciar sesión con Google";
+					err instanceof Error ? err.message : AUTH_GOOGLE_ERROR_MESSAGE;
 				setError(errorMessage);
 				throw err;
 			} finally {
 				setLoading(false);
 			}
 		},
-		[checkAuth]
+		[checkAuth],
 	);
 
 	// React Compiler cannot optimize: depends on login (stable ref needed to avoid stale closure)
@@ -166,36 +119,11 @@ export const useAuth = () => {
 			setLoading(true);
 
 			try {
-				const response = await fetch(`${API_URL}/auth/register`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(data),
-				});
+				const result = await registerAction(data);
+				if (!result.ok) throw new Error(authFailureMessage(result, t));
 
-				if (!response.ok) {
-					const errorData = await response.json().catch(() => ({}));
-
-					if (Array.isArray(errorData.detail)) {
-						const messages = errorData.detail
-							.map((err: { msg?: string }) => err.msg)
-							.join(", ");
-						throw new Error(messages);
-					}
-
-					const errorMessage = handleApiError(errorData, response, t);
-					throw new Error(errorMessage);
-				}
-
-				const userData = await response.json();
-
-				await login({
-					username: data.username,
-					password: data.password,
-				});
-
-				return userData;
+				await checkAuth();
+				return result.data;
 			} catch (err) {
 				const errorMessage =
 					err instanceof Error ? err.message : "Error al registrar";
@@ -205,35 +133,33 @@ export const useAuth = () => {
 				setLoading(false);
 			}
 		},
-		[login, t]
+		[checkAuth, t],
 	);
 
 	// React Compiler cannot optimize: closure over setUser/setError state setters
-	const logout = useCallback(() => {
-		localStorage.removeItem("access_token");
-		clearAuthCookie();
-		setUser(null);
-		setError(null);
-		router.push("/login");
-		router.refresh();
+	const logout = useCallback(async (): Promise<void> => {
+		try {
+			// Clear the httpOnly cookie server-side first: navigating while it is
+			// still valid would bounce back from /login through the proxy.
+			await logoutAction();
+		} catch {
+			// The local cleanup below still signs the user out of this tab.
+		} finally {
+			clearAuthCookie();
+			setUser(null);
+			setError(null);
+			router.push(LOGIN_ROUTE);
+			router.refresh();
+		}
 	}, [router]);
 
 	// React Compiler cannot optimize: async function passed as stable ref to AuthContext consumers
 	const refreshUser = useCallback(async (): Promise<void> => {
-		const token = localStorage.getItem("access_token");
-		if (!token) return;
-
 		try {
-			const response = await fetch(`${API_URL}/auth/me`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
+			const userData = await api.get<User>(AUTH_ME_ENDPOINT, {
+				redirectOnUnauthorized: false,
 			});
-
-			if (response.ok) {
-				const userData = await response.json();
-				setUser(userData);
-			}
+			setUser(userData);
 		} catch {
 			// Refresh is best-effort — user stays as-is if the request fails
 		}

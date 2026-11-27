@@ -2,7 +2,6 @@ import { createContext, useContext } from "react";
 import type {
 	User,
 	UserResponse,
-	LoginResult,
 	LoginCredentials,
 	RegisterData,
 } from "@fsd/entities/user";
@@ -11,10 +10,11 @@ export interface AuthContextType {
 	user: User | null;
 	loading: boolean;
 	error: string | null;
-	login: (credentials: LoginCredentials) => Promise<LoginResult>;
-	googleLogin: (credential: string) => Promise<LoginResult>;
+	/** Signs in through the server action; resolves once the cookie is set. */
+	login: (credentials: LoginCredentials) => Promise<void>;
+	googleLogin: (credential: string) => Promise<void>;
 	register: (data: RegisterData) => Promise<UserResponse>;
-	logout: () => void;
+	logout: () => Promise<void>;
 	refreshUser: () => Promise<void>;
 	isAuthenticated: boolean;
 }
