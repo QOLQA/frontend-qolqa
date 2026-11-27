@@ -1,8 +1,19 @@
 import type { Query, VersionBackend } from "@fsd/entities/solution";
 import { loadCanva } from "./load";
-import { api } from "@fsd/shared/api";
 import { transformVersionToBackend } from "@fsd/entities/solution/lib/conversions";
 import { useSolutionStore } from "@fsd/entities/solution";
+import type { ActionFailure } from "../model/action-results";
+import {
+	saveSolutionQueriesAndImage,
+	saveVersionDiagram,
+} from "../model/actions";
+
+/**
+ * Server actions report expected failures as data; the editor flow keeps its
+ * reject-on-failure contract for toasts and dialogs, so adapt them here.
+ */
+const failureToError = (failure: ActionFailure, fallback: string): Error =>
+	new Error(failure.detail ?? fallback);
 
 export const saveCanvas = async (
 	diagramId: string,
@@ -18,7 +29,8 @@ export const saveCanvas = async (
 	const savedEdges = structuredClone(edges);
 	const diagramToSave = diagram ?? transformVersionToBackend(version, savedNodes, savedEdges);
 
-	await api.patch(`/solutions/${diagramId}/versions/${versionId}`, diagramToSave);
+	const result = await saveVersionDiagram(diagramId, versionId, diagramToSave);
+	if (!result.ok) throw failureToError(result, "Failed to save canvas");
 
 	const state = useSolutionStore.getState();
 	if (state.id !== diagramId) return;
@@ -34,15 +46,10 @@ export const saveSolution = async (
 	queries: Query[],
 	src_img: string
 ) => {
-	if (!src_img) {
-		console.warn("src_img is empty, skipping solution image update");
-		return;
-	}
+	// The image upload is a separate, skippable step: without it there is nothing
+	// new to persist for the solution document.
+	if (!src_img) return;
 
-	try {
-		await api.patch(`/solutions/${diagramId}`, { queries, src_img });
-	} catch (error) {
-		console.error("Error saving solution:", error);
-		throw new Error("Failed to save solution");
-	}
+	const result = await saveSolutionQueriesAndImage(diagramId, queries, src_img);
+	if (!result.ok) throw failureToError(result, "Failed to save solution");
 };

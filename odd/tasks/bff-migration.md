@@ -100,3 +100,13 @@ Agreed routing decisions (from conversation):
   passthrough's; dropped from scope. T4 split into T4a (projects CRUD + user
   profile mutations) and T4b (editor mutations: save/versions/queries) for
   ~400-line slices.
+- L13 (T4a evidence): commit a694a91 — src/pages/projects/model/actions.ts
+  (create/create-practice/delete/update solution, revalidatePath("/projects")),
+  features/account-management/model/actions.ts (updateUserProfile Zod-validated,
+  deleteUserAccount); ProjectsPage optimistic list state replaced by
+  revalidatePath + router.refresh; dead fetchers updateUserMe/deleteUserMe
+  removed; nav-user.tsx unchanged (hook contract preserved). Full suite
+  47 files / 389 tests green; tsc clean. Known duplication, deliberate per
+  L7: action-results helpers exist in pages/projects and
+  features/account-management — hoist candidate into shared/api once that
+  surface reopens; fold into T5 or a final refactor commit.
