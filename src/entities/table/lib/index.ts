@@ -1,5 +1,4 @@
 export {
-	deleteTableRecursively,
 	addAttributeToNestedTables,
 	addNestedTableRecursively,
 	createNestedTable,
