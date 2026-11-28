@@ -1,6 +1,5 @@
 "use client";
 
-import { useReactFlow } from "@xyflow/react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useSolutionStore } from "@fsd/entities/solution";
@@ -23,7 +22,6 @@ interface UseTableNodeContentProps {
 }
 
 export const useTableNodeContent = ({ id, data }: UseTableNodeContentProps) => {
-	const { setNodes } = useReactFlow();
 	const { nodes, editNode, edges, setEdges, removeNode } = useSolutionStore(
 		useShallow((state) => ({
 			nodes: state.nodes,
@@ -46,13 +44,15 @@ export const useTableNodeContent = ({ id, data }: UseTableNodeContentProps) => {
 	const handleAddAtribute = useAddAttribute({
 		nodeId: id,
 		targetTableId: attributeModal.attributeTargetTableId,
-		setNodes,
+		nodes,
+		editNode,
 	});
 	const handleAddNestedTable = useAddNestedTable({
 		nodeId: id,
 		submodelIndex: data.submodelIndex,
 		targetTableId: documentModal.documentTargetTableId,
-		setNodes,
+		nodes,
+		editNode,
 	});
 	const handleEditAtribute = useEditAttribute({
 		nodeId: id,

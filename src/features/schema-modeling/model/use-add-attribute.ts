@@ -8,17 +8,24 @@ import type { AttributeModalType, TableAttribute } from "./use-attribute-modal";
 interface UseAddAttributeParams {
 	nodeId: string;
 	targetTableId: string | null;
-	setNodes: (updater: (nodes: Node[]) => Node[]) => void;
+	nodes: Node<TableData>[];
+	editNode: (nodeId: string, newNode: Node<TableData>) => void;
 }
 
 export const useAddAttribute = ({
 	nodeId,
 	targetTableId,
-	setNodes,
+	nodes,
+	editNode,
 }: UseAddAttributeParams) => {
 	return useCallback(
 		(newAtributes: TableAttribute[], typeModal: AttributeModalType) => {
 			if (!targetTableId) return;
+
+			const node = nodes.find((candidate: Node<TableData>) => {
+				return candidate.id === nodeId;
+			});
+			if (!node) return;
 
 			const newAtributesWithId =
 				typeModal === "create"
@@ -30,44 +37,31 @@ export const useAddAttribute = ({
 						}))
 					: newAtributes;
 
-			setNodes((currentNodes: Node[]) => {
-				return currentNodes?.map((node: Node) => {
-					if (node.id !== nodeId) return node;
+			const tableData = node.data;
 
-					const tableData = node.data as TableData;
+			let updatedData: TableData;
+			if (tableData.id === targetTableId) {
+				updatedData = {
+					...tableData,
+					columns:
+						typeModal === "create"
+							? [...tableData.columns, ...newAtributesWithId]
+							: newAtributesWithId,
+				};
+			} else {
+				updatedData = {
+					...tableData,
+					nestedTables: addAttributeToNestedTables(
+						tableData.nestedTables ?? [],
+						targetTableId,
+						newAtributesWithId as Column[],
+						typeModal,
+					),
+				};
+			}
 
-					if (tableData.id === targetTableId) {
-						return {
-							...node,
-							data: {
-								...tableData,
-								columns:
-									typeModal === "create"
-										? [...tableData.columns, ...newAtributesWithId]
-										: newAtributesWithId,
-							},
-						};
-					}
-
-					if (tableData.nestedTables && tableData.nestedTables.length > 0) {
-						return {
-							...node,
-							data: {
-								...tableData,
-								nestedTables: addAttributeToNestedTables(
-									tableData.nestedTables,
-									targetTableId,
-									newAtributesWithId as Column[],
-									typeModal,
-								),
-							},
-						};
-					}
-
-					return node;
-				});
-			});
+			editNode(nodeId, { ...node, data: updatedData });
 		},
-		[nodeId, targetTableId, setNodes],
+		[nodeId, targetTableId, nodes, editNode],
 	);
 };
