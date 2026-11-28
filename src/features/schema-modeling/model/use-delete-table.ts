@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import type { Node } from "@xyflow/react";
-import { getKeySegment } from "@fsd/shared/lib/keys";
+import { removeTableFromTree } from "@fsd/entities/table/lib";
 import type { TableData } from "@fsd/entities/solution";
-import { deleteTableRecursively } from "@fsd/entities/table/lib";
+import { findRootNodeByTableId } from "./find-root-node";
 
 interface UseDeleteTableParams {
 	nodes: Node<TableData>[];
@@ -19,35 +19,19 @@ export const useDeleteTable = ({
 }: UseDeleteTableParams) => {
 	const handleDeleteTable = useCallback(
 		(tableId: string) => {
-			const numLayers = tableId.split("-").length;
-			const rootId = getKeySegment(tableId, 1);
-			const originalNode = nodes.find(
-				(node) => node.id === rootId,
-			) as Node<TableData>;
+			const rootNode = findRootNodeByTableId(nodes, tableId);
+			if (!rootNode) return;
 
-			if (!originalNode) return;
-
-			if (numLayers === 1) {
+			if (rootNode.id === tableId) {
 				removeNode(tableId);
 				handleNodeRemove(tableId, nodes);
 				return;
 			}
 
-			let editableNode: Node<TableData>;
-			try {
-				editableNode = structuredClone(originalNode);
-			} catch (error) {
-				console.error("Error cloning node:", error);
-				return;
-			}
-
-			editableNode.data = deleteTableRecursively(
-				editableNode.data,
-				tableId,
-				numLayers,
-				1,
-			);
-			editNode(rootId as string, editableNode);
+			editNode(rootNode.id, {
+				...rootNode,
+				data: removeTableFromTree(rootNode.data, tableId),
+			});
 			handleNodeRemove(tableId, nodes);
 		},
 		[nodes, editNode, removeNode, handleNodeRemove],

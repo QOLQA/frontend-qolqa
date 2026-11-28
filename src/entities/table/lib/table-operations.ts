@@ -1,33 +1,5 @@
 import type { TableData, Column } from "@fsd/entities/solution";
-import { getKeySegment } from "@fsd/shared/lib/keys";
 import { generateRandomId } from "@fsd/shared/lib/ids";
-
-export const deleteTableRecursively = (
-	nestedTables: TableData,
-	tableId: string,
-	numLayers: number,
-	layer: number,
-): TableData => {
-	if (layer === numLayers - 1) {
-		nestedTables.nestedTables = nestedTables.nestedTables?.filter(
-			(nestedTable: TableData) => nestedTable.id !== tableId,
-		);
-		return nestedTables;
-	}
-
-	const nestedTableResultId = getKeySegment(tableId, layer + 1);
-	const nestedTableResult = nestedTables.nestedTables?.map(
-		(nestedTable: TableData) =>
-			nestedTable.id === nestedTableResultId
-				? deleteTableRecursively(nestedTable, tableId, numLayers, layer + 1)
-				: nestedTable,
-	) as TableData[];
-
-	return {
-		...nestedTables,
-		nestedTables: nestedTableResult,
-	};
-};
 
 export const addAttributeToNestedTables = (
 	nestedTables: TableData[],

@@ -1,9 +1,15 @@
 export {
-	deleteTableRecursively,
 	addAttributeToNestedTables,
 	addNestedTableRecursively,
 	createNestedTable,
 } from "./table-operations";
+export {
+	findTableInTree,
+	findTableWithColumn,
+	removeColumnFromTree,
+	removeTableFromTree,
+	updateTableInTree,
+} from "./tree-traversal";
 export {
 	getNestedTableLayout,
 	NESTED_BESIDE_ATTRIBUTE_THRESHOLD,

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import type { Node } from "@xyflow/react";
-import { getKeySegment } from "@fsd/shared/lib/keys";
+import { findTableWithColumn } from "@fsd/entities/table/lib";
 import type { Column, TableData } from "@fsd/entities/solution";
 import type { TableAttribute } from "./use-attribute-modal";
 
@@ -20,29 +20,16 @@ export const useEditAttribute = ({
 }: UseEditAttributeParams) => {
 	return useCallback(
 		(selectedColumn: Column) => {
-			const numLayers = selectedColumn.id.split("-").length;
-			let k = 1;
 			const node = nodes?.find((n: Node<TableData>) => n.id === nodeId);
-			let table = node?.data;
+			const table = node && findTableWithColumn(node.data, selectedColumn.id);
+			if (!table) return;
 
-			while (k < numLayers - 1) {
-				k = k + 1;
-				const segmentedKey = getKeySegment(selectedColumn.id, k);
-				table = table?.nestedTables?.find(
-					(t: TableData) => t.id === segmentedKey,
-				) as TableData;
-			}
+			const columns = table.columns.map((column: Column) => ({
+				...column,
+				ableToEdit: column.id === selectedColumn.id,
+			}));
 
-			const columns =
-				table?.columns?.map((column: Column) => ({
-					...column,
-					ableToEdit: column.id === selectedColumn.id,
-				})) || [];
-
-			openUpdateAttributesModal(
-				getKeySegment(selectedColumn.id, numLayers - 1) as string,
-				columns,
-			);
+			openUpdateAttributesModal(table.id, columns);
 		},
 		[nodes, nodeId, openUpdateAttributesModal],
 	);
