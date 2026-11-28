@@ -1,20 +1,27 @@
 "use client";
 
 import React, { type ReactNode } from "react";
+import { Check, X } from "lucide-react";
 import type { Query } from "@fsd/entities/solution";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
+import { cn } from "@fsd/shared/lib/classnames";
 
 type QueryItemProps = {
 	query: Query;
 	actionsSlot?: ReactNode;
+	isHandled?: boolean;
 };
 
 const WordSelector = ({ word }: { word: string }) => {
 	return <span className="text-blue">{`${word} `} </span>;
 };
 
-export const QueryItem = ({ query, actionsSlot }: QueryItemProps) => {
+export const QueryItem = ({ query, actionsSlot, isHandled }: QueryItemProps) => {
 	const { t } = useTranslation();
+	const satisfactionLabel =
+		isHandled === true
+			? t("other.querySatisfied")
+			: t("other.queryNotSatisfied");
 
 	return (
 		<div className="flex flex-col items-start bg-terciary-gray border border-gray w-full p-4 gap-3 rounded-lg relative">
@@ -27,6 +34,25 @@ export const QueryItem = ({ query, actionsSlot }: QueryItemProps) => {
 					return <React.Fragment key={key}>{` ${word} `}</React.Fragment>;
 				})}
 			</div>
+			{typeof isHandled === "boolean" && (
+				<div
+					className={cn(
+						"flex items-center gap-1.5 text-p rounded-lg py-1 px-3 border self-start",
+						isHandled
+							? "text-green border-green"
+							: "text-red border-red"
+					)}
+					title={satisfactionLabel}
+					aria-label={satisfactionLabel}
+				>
+					{isHandled ? (
+						<Check className="size-4" aria-hidden="true" />
+					) : (
+						<X className="size-4" aria-hidden="true" />
+					)}
+					<span>{satisfactionLabel}</span>
+				</div>
+			)}
 			<span className="text-p text-secondary-white">
 				{t("other.involvedCollections")}
 			</span>

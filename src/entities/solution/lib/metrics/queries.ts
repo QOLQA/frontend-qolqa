@@ -280,6 +280,24 @@ function getHandledQueriesCount(
 }
 
 /**
+ * Calculates, for each query, whether the current schema satisfies it
+ * (all collections exist and are pairwise connected).
+ * Mirrors calculateHandledQueriesPercentage but keeps a boolean per query.
+ */
+export function calculateHandledQueries(
+	queries: Query[],
+	nodes: Node<TableData>[],
+	edges: Edge[]
+): boolean[] {
+	const tableNamesMap = getAllTableNames(nodes);
+	const graph = buildConnectionGraph(nodes, edges);
+
+	return queries.map((query) =>
+		isQueryFullyHandled(query.collections, tableNamesMap, graph)
+	);
+}
+
+/**
  * Calculates the percentage of handled queries in an optimized way
  */
 export function calculateHandledQueriesPercentage(

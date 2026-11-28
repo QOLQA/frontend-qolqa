@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
-import type { Edge, Node } from "@xyflow/react";
-import type { Query, TableData } from "@fsd/entities/solution";
+import type { Node } from "@xyflow/react";
+import type { TableData } from "@fsd/entities/solution";
 import {
+	calculateHandledQueries,
 	calculateHandledQueriesPercentage,
 } from "./queries";
 import {
@@ -16,6 +17,69 @@ function buildNodes(tableDataList: TableData[]): Node<TableData>[] {
 		createMockTableNode(td.id, { ...td })
 	);
 }
+
+describe("calculateHandledQueries (satisfacción por query)", () => {
+	it("lista de queries vacía devuelve un array vacío", () => {
+		const nodes = buildNodes([createMockTableData("users")]);
+		expect(calculateHandledQueries([], nodes, [])).toEqual([]);
+	});
+
+	it("query cuyas colecciones existen y están conectadas: true", () => {
+		const nodes = buildNodes([
+			createMockTableData("users"),
+			createMockTableData("orders"),
+		]);
+		const edges = [createMockEdge("users", "orders")];
+		const queries = [createMockQuery("q1", ["users", "orders"])];
+		expect(calculateHandledQueries(queries, nodes, edges)).toEqual([true]);
+	});
+
+	it("query que nombra una colección inexistente: false", () => {
+		const nodes = buildNodes([createMockTableData("users")]);
+		const queries = [createMockQuery("q1", ["inexistente"])];
+		expect(calculateHandledQueries(queries, nodes, [])).toEqual([false]);
+	});
+
+	it("query con colecciones existentes pero no conectadas: false", () => {
+		const nodes = buildNodes([
+			createMockTableData("users"),
+			createMockTableData("orders"),
+		]);
+		const queries = [createMockQuery("q1", ["users", "orders"])];
+		expect(calculateHandledQueries(queries, nodes, [])).toEqual([false]);
+	});
+
+	it("lista mixta devuelve booleanos alineados al orden de entrada", () => {
+		const nodes = buildNodes([
+			createMockTableData("users"),
+			createMockTableData("orders"),
+			createMockTableData("products"),
+		]);
+		const edges = [createMockEdge("users", "orders")];
+		const queries = [
+			createMockQuery("q1", ["users", "orders"]), // true
+			createMockQuery("q2", ["inexistente"]), // false
+			createMockQuery("q3", ["products", "users"]), // false (sin camino)
+			createMockQuery("q4", ["products"]), // true
+		];
+		expect(calculateHandledQueries(queries, nodes, edges)).toEqual([
+			true,
+			false,
+			false,
+			true,
+		]);
+	});
+
+	it("tabla padre y su tabla anidada cuentan como conectadas: true", () => {
+		const nodes = [
+			createMockTableNode("orders", {
+				nestedTables: [createMockTableData("order_items")],
+			}),
+		];
+		const queries = [createMockQuery("q1", ["orders", "order_items"])];
+		expect(calculateHandledQueries(queries, nodes, [])).toEqual([true]);
+	});
+});
 
 describe("calculateHandledQueriesPercentage (C - completitud)", () => {
 	it("lista de queries vacía devuelve 0 (división por cero controlada)", () => {

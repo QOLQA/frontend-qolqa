@@ -187,6 +187,8 @@ export const en = {
   // Other
   other: {
     involvedCollections: "Involved collections:",
+    querySatisfied: "Satisfied by current schema",
+    queryNotSatisfied: "Not satisfied yet",
     newProject: "New project",
     yourProjects: "Your projects",
     lastEdited: "Last edited:",
