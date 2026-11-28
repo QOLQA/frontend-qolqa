@@ -3,7 +3,6 @@ import { renderHook } from "@testing-library/react";
 import type { Node } from "@xyflow/react";
 import type { TableData } from "@fsd/entities/solution";
 import { useAddAttribute } from "./use-add-attribute";
-import type { TableAttribute } from "./use-attribute-modal";
 
 const ROOT_ID = "node1111";
 const NESTED_ID = `${ROOT_ID}-nested999`;
