@@ -10,18 +10,25 @@ interface UseAddNestedTableParams {
 	nodeId: string;
 	submodelIndex?: number;
 	targetTableId: string | null;
-	setNodes: (updater: (nodes: Node[]) => Node[]) => void;
+	nodes: Node<TableData>[];
+	editNode: (nodeId: string, newNode: Node<TableData>) => void;
 }
 
 export const useAddNestedTable = ({
 	nodeId,
 	submodelIndex,
 	targetTableId,
-	setNodes,
+	nodes,
+	editNode,
 }: UseAddNestedTableParams) => {
 	return useCallback(
 		(tableName: string) => {
 			if (!targetTableId) return;
+
+			const node = nodes.find((candidate: Node<TableData>) => {
+				return candidate.id === nodeId;
+			});
+			if (!node) return;
 
 			const newNestedTable = createNestedTable(
 				targetTableId,
@@ -29,43 +36,27 @@ export const useAddNestedTable = ({
 				submodelIndex,
 			);
 
-			setNodes((currentNodes: Node[]) => {
-				return currentNodes?.map((node: Node) => {
-					if (node.id !== nodeId) return node;
+			const tableData = node.data;
 
-					const tableData = node.data as TableData;
+			let updatedData: TableData;
+			if (tableData.id === targetTableId) {
+				updatedData = {
+					...tableData,
+					nestedTables: [...(tableData.nestedTables ?? []), newNestedTable],
+				};
+			} else {
+				updatedData = {
+					...tableData,
+					nestedTables: addNestedTableRecursively(
+						tableData.nestedTables ?? [],
+						targetTableId,
+						newNestedTable,
+					),
+				};
+			}
 
-					if (tableData.id === targetTableId) {
-						return {
-							...node,
-							data: {
-								...tableData,
-								nestedTables: [
-									...(tableData.nestedTables || []),
-									newNestedTable,
-								],
-							},
-						};
-					}
-
-					if (tableData.nestedTables && tableData.nestedTables.length > 0) {
-						return {
-							...node,
-							data: {
-								...tableData,
-								nestedTables: addNestedTableRecursively(
-									tableData.nestedTables,
-									targetTableId,
-									newNestedTable,
-								),
-							},
-						};
-					}
-
-					return node;
-				});
-			});
+			editNode(nodeId, { ...node, data: updatedData });
 		},
-		[nodeId, submodelIndex, targetTableId, setNodes],
+		[nodeId, submodelIndex, targetTableId, nodes, editNode],
 	);
 };
