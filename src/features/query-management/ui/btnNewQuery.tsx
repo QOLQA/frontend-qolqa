@@ -11,7 +11,11 @@ export const BtnNewQuery = () => {
 		<>
 			<button
 				type="button"
-				onClick={() => setOpen(true)}
+				onClick={() => {
+				// Reset stale text from a previous create session on open.
+				setQueryText("");
+				setOpen(true);
+			}}
 				data-tour="add-query-btn"
 				className="w-full h-auto py-4 flex justify-center rounded-xl items-center border-2 border-dashed border-gray bg-transparent text-semilighter-gray"
 			>

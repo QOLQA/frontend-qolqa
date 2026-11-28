@@ -5,7 +5,6 @@ import type { Query } from "@fsd/entities/solution";
 import { useTranslation } from "@fsd/shared/i18n/use-translation";
 import { useState, useTransition } from "react";
 import { ModalSelectDocs } from "./modalSelectDocs";
-
 type ModalProps = {
 	open: boolean;
 	setOpen: (open: boolean) => void;
@@ -41,16 +40,10 @@ export const ModalNewQuery = ({
 		});
 	};
 
-	// Syncs the text area with the query being edited. This runs during render
-	// (React's "adjusting state when a prop changes" pattern) so opening the
-	// modal does not trigger a cascading render from an effect.
-	const [lastModeKey, setLastModeKey] = useState<string | null>(null);
-	const modeKey = `${mode}:${queryEdit?.full_query ?? ""}`;
-	if (lastModeKey !== modeKey) {
-		setLastModeKey(modeKey);
-		setQueryText(mode === "edit" ? queryEdit?.full_query || "" : "");
-		setError(false);
-	}
+	// The query text belongs to the parent (shared with ModalSelectDocs), so
+	// the parent resets it when opening the modal. Adjusting a parent's state
+	// during this component's render is not allowed by React and previously
+	// logged "Cannot update a component while rendering a different component".
 
 	return (
 		<>
