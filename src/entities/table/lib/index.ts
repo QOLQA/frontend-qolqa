@@ -5,6 +5,13 @@ export {
 	createNestedTable,
 } from "./table-operations";
 export {
+	findTableInTree,
+	findTableWithColumn,
+	removeColumnFromTree,
+	removeTableFromTree,
+	updateTableInTree,
+} from "./tree-traversal";
+export {
 	getNestedTableLayout,
 	NESTED_BESIDE_ATTRIBUTE_THRESHOLD,
 	NESTED_GRID_MAX_COLUMNS,
