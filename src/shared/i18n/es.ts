@@ -190,6 +190,8 @@ export const es = {
   // Other
   other: {
     involvedCollections: "Colecciones involucradas:",
+    querySatisfied: "Cumplida por el esquema actual",
+    queryNotSatisfied: "Aún no cumplida",
     newProject: "Nuevo proyecto",
     yourProjects: "Tus proyectos",
     lastEdited: "Última edición:",

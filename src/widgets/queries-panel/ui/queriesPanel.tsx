@@ -2,11 +2,13 @@
 
 import { QueryItem, useQueriesStore } from "@fsd/entities/query";
 import { BtnNewQuery } from "@fsd/features/query-management";
+import { useHandledQueries } from "@fsd/features/schema-metrics-calculation";
 import { DropdownQueries } from "./dropdownQueries";
 
 export const QueriesPanel = () => {
 	const queries = useQueriesStore((state) => state.queries);
 	const isSyncingQueries = useQueriesStore((state) => state.isSyncingQueries);
+	const handledQueries = useHandledQueries();
 
 	if (isSyncingQueries) {
 		return (
@@ -24,6 +26,7 @@ export const QueriesPanel = () => {
 					<QueryItem
 						key={`${query.collections[0]}-${index}-queries`}
 						query={query}
+						isHandled={handledQueries[index]}
 						actionsSlot={<DropdownQueries editQuery={query} />}
 					/>
 				))}
